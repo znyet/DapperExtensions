@@ -2,3 +2,5 @@ DapperExtensions/bin
 DapperExtensions/obj
 Test/bin
 Test/obj
+*.suo
+*.user
