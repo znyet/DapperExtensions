@@ -1,2 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+DapperExtensions/bin
+DapperExtensions/obj
+Test/bin
+Test/obj
