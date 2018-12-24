@@ -106,7 +106,7 @@ namespace DapperExtensions
             TableAttribute table = t.GetCustomAttributes(false).FirstOrDefault(f => f is TableAttribute) as TableAttribute;
             if (table == null)
             {
-                throw new Exception("类未标注TableAttribute,请先标注");
+                throw new Exception("Class " + t.Name + " is not labeled [TableAttribute], please label it first");
             }
             else
             {
@@ -139,23 +139,115 @@ namespace DapperExtensions
 
         }
 
-        public static string CreateUpdateSql(TableEntity model, string updateFields, string leftChar, string rightChar)
+        public static void InitTable(TableEntity table, string leftChar, string rightChar) //初始化增删改等语句
+        {
+            string Fields = CommonUtil.GetFieldsStr(table.AllFieldList, leftChar, rightChar);
+            string FieldsAt = CommonUtil.GetFieldsAtStr(table.AllFieldList);
+            string FieldsEq = CommonUtil.GetFieldsEqStr(table.AllFieldList, leftChar, rightChar);
+
+            string FieldsExtKey = CommonUtil.GetFieldsStr(table.ExceptKeyFieldList, leftChar, rightChar);
+            string FieldsAtExtKey = CommonUtil.GetFieldsAtStr(table.ExceptKeyFieldList);
+            string FieldsEqExtKey = CommonUtil.GetFieldsEqStr(table.ExceptKeyFieldList, leftChar, rightChar);
+
+            table.AllFields = Fields;
+            table.AllFieldsAt = FieldsAt;
+            table.AllFieldsAtEq = FieldsEq;
+
+            table.AllFieldsExceptKey = FieldsExtKey;
+            table.AllFieldsAtExceptKey = FieldsAtExtKey;
+            table.AllFieldsAtEqExceptKey = FieldsEqExtKey;
+
+            if (!string.IsNullOrEmpty(table.KeyName)) //有主键
+            {
+                if (table.IsIdentity) //是自增
+                {
+                    table.InsertSql = string.Format("INSERT INTO {3}{0}{4}({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey, leftChar, rightChar);
+                }
+
+                table.InsertKeySql = string.Format("INSERT INTO {3}{0}{4}({1})VALUES({2})", table.TableName, Fields, FieldsAt, leftChar, rightChar);
+
+                table.DeleteByIdSql = string.Format("DELETE FROM {2}{0}{3} WHERE {2}{1}{3}=@id", table.TableName, table.KeyName, leftChar, rightChar);
+                table.DeleteByIdsSql = string.Format("DELETE FROM {2}{0}{3} WHERE {2}{1}{3} IN @ids", table.TableName, table.KeyName, leftChar, rightChar);
+                table.GetByIdSql = string.Format("SELECT {0} FROM {3}{1}]{4} WHERE {3}{2}{4}=@id", Fields, table.TableName, table.KeyName, leftChar, rightChar);
+                table.GetByIdsSql = string.Format("SELECT {0} FROM {3}{1}{4} WHERE {3}{2}{4} IN @ids", Fields, table.TableName, table.KeyName, leftChar, rightChar);
+                table.UpdateSql = string.Format("UPDATE {3}{0}{4} SET {1} WHERE {3}{2}{4}=@{2}", table.TableName, FieldsEqExtKey, table.KeyName, leftChar, rightChar);
+            }
+            else
+            {
+                table.InsertSql = string.Format("INSERT INTO {3}{0}{4}({1})VALUES({2})", table.TableName, Fields, FieldsAt, leftChar, rightChar);
+            }
+
+            table.DeleteAllSql = string.Format("DELETE FROM {1}{0}{2}", table.TableName, leftChar, rightChar);
+            table.GetAllSql = string.Format("SELECT {0} FROM {2}{1}{3}", Fields, table.TableName, leftChar, rightChar);
+        }
+
+        public static void InitTableForSqlServer(TableEntity table) //初始化增删改等语句
+        {
+            string Fields = CommonUtil.GetFieldsStr(table.AllFieldList, "[", "]");
+            string FieldsAt = CommonUtil.GetFieldsAtStr(table.AllFieldList);
+            string FieldsEq = CommonUtil.GetFieldsEqStr(table.AllFieldList, "[", "]");
+
+            string FieldsExtKey = CommonUtil.GetFieldsStr(table.ExceptKeyFieldList, "[", "]");
+            string FieldsAtExtKey = CommonUtil.GetFieldsAtStr(table.ExceptKeyFieldList);
+            string FieldsEqExtKey = CommonUtil.GetFieldsEqStr(table.ExceptKeyFieldList, "[", "]");
+
+            table.AllFields = Fields;
+            table.AllFieldsAt = FieldsAt;
+            table.AllFieldsAtEq = FieldsEq;
+
+            table.AllFieldsExceptKey = FieldsExtKey;
+            table.AllFieldsAtExceptKey = FieldsAtExtKey;
+            table.AllFieldsAtEqExceptKey = FieldsEqExtKey;
+
+            if (!string.IsNullOrEmpty(table.KeyName)) //有主键
+            {
+                if (table.IsIdentity) //是自增
+                {
+                    table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey);
+                }
+                table.InsertKeySql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+                table.DeleteByIdSql = string.Format("DELETE FROM [{0}] WHERE [{1}]=@id", table.TableName, table.KeyName);
+                table.DeleteByIdsSql = string.Format("DELETE FROM [{0}] WHERE [{1}] IN @ids", table.TableName, table.KeyName);
+                table.GetByIdSql = string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) WHERE [{2}]=@id", Fields, table.TableName, table.KeyName);
+                table.GetByIdsSql = string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) WHERE [{2}] IN @ids", Fields, table.TableName, table.KeyName);
+                table.UpdateSql = string.Format("UPDATE [{0}] SET {1} WHERE [{2}]=@{2}", table.TableName, FieldsEqExtKey, table.KeyName);
+            }
+            else
+            {
+                table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+            }
+
+            table.DeleteAllSql = string.Format("DELETE FROM [{0}]", table.TableName);
+            table.GetAllSql = string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK)", Fields, table.TableName);
+        }
+
+        public static void CheckTableKey(TableEntity table)
+        {
+            if (string.IsNullOrEmpty(table.KeyName))
+            {
+                string msg = "table [" + table.TableName + "] has no primary key";
+                throw new Exception(msg);
+            }
+
+        }
+
+        public static string CreateUpdateSql(TableEntity table, string updateFields, string leftChar, string rightChar)
         {
             string updateList = GetFieldsEqStr(updateFields.Split(',').ToList(), leftChar, rightChar);
-            string sql = string.Format("UPDATE {0}{1}{2} SET {3} WHERE {0}{4}{2}=@{4}", leftChar, model.TableName, rightChar, updateList, model.KeyName);
-            return sql;
+            return string.Format("UPDATE {0}{1}{2} SET {3} WHERE {0}{4}{2}=@{4}", leftChar, table.TableName, rightChar, updateList, table.KeyName);
         }
-        public static string CreateUpdateByWhereSql(TableEntity model, string where, string updateFields, string leftChar, string rightChar)
+
+        public static string CreateUpdateByWhereSql(TableEntity table, string where, string updateFields, string leftChar, string rightChar)
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendFormat("UPDATE {0}{1}{2} SET ", leftChar, model.TableName, rightChar);
+            sb.AppendFormat("UPDATE {0}{1}{2} SET ", leftChar, table.TableName, rightChar);
             if (string.IsNullOrEmpty(updateFields)) //修改所有
             {
-                if (!string.IsNullOrEmpty(model.KeyName)) //有主键
-                    sb.AppendFormat(model.AllFieldsAtEqExceptKey);
+                if (!string.IsNullOrEmpty(table.KeyName)) //有主键
+                    sb.AppendFormat(table.AllFieldsAtEqExceptKey);
                 else
-                    sb.AppendFormat(model.AllFieldsAtEq);
+                    sb.AppendFormat(table.AllFieldsAtEq);
             }
             else
             {

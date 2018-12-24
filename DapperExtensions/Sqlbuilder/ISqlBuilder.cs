@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DapperExtensions
 {
-    public partial class OracleExt 
+    public interface ISqlBuilder
     {
-
+        string InsertSql<T>();
+        string InsertWithKeySql<T>();
+        string UpdateSql<T>(string updateFields);
     }
 }

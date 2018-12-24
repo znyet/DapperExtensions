@@ -52,25 +52,18 @@
     <Compile Include="Cache\PostgreCache.cs" />
     <Compile Include="Cache\SqliteCache.cs" />
     <Compile Include="Cache\SqlServerCache.cs" />
-    <Compile Include="DapperExt.cs" />
-    <Compile Include="DapperExtAsync.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="DapperExtensionAsync.cs" />
+    <Compile Include="DapperExtension.cs" />
     <Compile Include="Entity\PageEntity.cs" />
     <Compile Include="Entity\TableEntity.cs" />
-    <Compile Include="ExtAsync\MySqlExtAsync.cs" />
-    <Compile Include="ExtAsync\OracleExtAsync.cs" />
-    <Compile Include="ExtAsync\PostgreExtAsync.cs" />
-    <Compile Include="ExtAsync\SqliteExtAsync.cs" />
-    <Compile Include="ExtAsync\SqlServerExtAsync.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Ext\MySqlExt.cs" />
-    <Compile Include="Ext\OracleExt.cs" />
-    <Compile Include="Ext\PostgreExt.cs" />
-    <Compile Include="Ext\SqliteExt.cs" />
-    <Compile Include="Ext\SqlServerExt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sqlbuilder\BuilderFactory.cs" />
+    <Compile Include="Sqlbuilder\ISqlBuilder.cs" />
+    <Compile Include="Sqlbuilder\MySqlBuilder.cs" />
+    <Compile Include="Sqlbuilder\OracleBuilder.cs" />
+    <Compile Include="Sqlbuilder\PostgreBuilder.cs" />
+    <Compile Include="Sqlbuilder\SqliteBuilder.cs" />
+    <Compile Include="Sqlbuilder\SqlServerBuilder.cs" />
     <Compile Include="Util\CommonUtil.cs" />
   </ItemGroup>
   <ItemGroup />
