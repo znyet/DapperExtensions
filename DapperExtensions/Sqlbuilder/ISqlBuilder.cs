@@ -11,5 +11,7 @@ namespace DapperExtensions
         string InsertSql<T>();
         string InsertWithKeySql<T>();
         string UpdateSql<T>(string updateFields);
+        string UpdateByWhere<T>(string where, string updateFields);
+        string ExistsKeySql<T>();
     }
 }

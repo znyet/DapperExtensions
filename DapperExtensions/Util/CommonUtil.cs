@@ -157,6 +157,7 @@ namespace DapperExtensions
             table.AllFieldsAtExceptKey = FieldsAtExtKey;
             table.AllFieldsAtEqExceptKey = FieldsEqExtKey;
 
+            table.InsertSql = string.Format("INSERT INTO {3}{0}{4}({1})VALUES({2})", table.TableName, Fields, FieldsAt, leftChar, rightChar);
             if (!string.IsNullOrEmpty(table.KeyName)) //有主键
             {
                 if (table.IsIdentity) //是自增
@@ -172,16 +173,12 @@ namespace DapperExtensions
                 table.GetByIdsSql = string.Format("SELECT {0} FROM {3}{1}{4} WHERE {3}{2}{4} IN @ids", Fields, table.TableName, table.KeyName, leftChar, rightChar);
                 table.UpdateSql = string.Format("UPDATE {3}{0}{4} SET {1} WHERE {3}{2}{4}=@{2}", table.TableName, FieldsEqExtKey, table.KeyName, leftChar, rightChar);
             }
-            else
-            {
-                table.InsertSql = string.Format("INSERT INTO {3}{0}{4}({1})VALUES({2})", table.TableName, Fields, FieldsAt, leftChar, rightChar);
-            }
 
             table.DeleteAllSql = string.Format("DELETE FROM {1}{0}{2}", table.TableName, leftChar, rightChar);
             table.GetAllSql = string.Format("SELECT {0} FROM {2}{1}{3}", Fields, table.TableName, leftChar, rightChar);
         }
 
-        public static void InitTableForSqlServer(TableEntity table) //初始化增删改等语句
+        public static void InitTableForSqlServer(TableEntity table) //初始化增删改等语句sqlserver专用
         {
             string Fields = CommonUtil.GetFieldsStr(table.AllFieldList, "[", "]");
             string FieldsAt = CommonUtil.GetFieldsAtStr(table.AllFieldList);
@@ -199,22 +196,19 @@ namespace DapperExtensions
             table.AllFieldsAtExceptKey = FieldsAtExtKey;
             table.AllFieldsAtEqExceptKey = FieldsEqExtKey;
 
+            table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, Fields, FieldsAt);
             if (!string.IsNullOrEmpty(table.KeyName)) //有主键
             {
                 if (table.IsIdentity) //是自增
                 {
                     table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey);
                 }
-                table.InsertKeySql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+                table.InsertKeySql = string.Format("SET IDENTITY_INSERT [{0}] ON;INSERT INTO [{0}]({1})VALUES({2});SET IDENTITY_INSERT [{0}] OFF", table.TableName, Fields, FieldsAt);
                 table.DeleteByIdSql = string.Format("DELETE FROM [{0}] WHERE [{1}]=@id", table.TableName, table.KeyName);
                 table.DeleteByIdsSql = string.Format("DELETE FROM [{0}] WHERE [{1}] IN @ids", table.TableName, table.KeyName);
                 table.GetByIdSql = string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) WHERE [{2}]=@id", Fields, table.TableName, table.KeyName);
                 table.GetByIdsSql = string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) WHERE [{2}] IN @ids", Fields, table.TableName, table.KeyName);
                 table.UpdateSql = string.Format("UPDATE [{0}] SET {1} WHERE [{2}]=@{2}", table.TableName, FieldsEqExtKey, table.KeyName);
-            }
-            else
-            {
-                table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, Fields, FieldsAt);
             }
 
             table.DeleteAllSql = string.Format("DELETE FROM [{0}]", table.TableName);

@@ -8,24 +8,19 @@ namespace DapperExtensions
 {
     public class SqlServerBuilder : ISqlBuilder
     {
-
-        string ISqlBuilder.InsertSql<T>()
+        public string InsertSql<T>()
         {
             return SqlServerCache.GetTableEntity<T>().InsertSql;
         }
 
-        string ISqlBuilder.InsertWithKeySql<T>()
+        public string InsertWithKeySql<T>()
         {
             var table = SqlServerCache.GetTableEntity<T>();
             CommonUtil.CheckTableKey(table);
-            if (table.IsIdentity)
-            {
-                return string.Format("SET IDENTITY_INSERT [{0}] ON;{1};SET IDENTITY_INSERT [{0}] OFF;", table.TableName, table.InsertKeySql);
-            }
             return table.InsertKeySql;
         }
 
-        string ISqlBuilder.UpdateSql<T>(string updateFields)
+        public string UpdateSql<T>(string updateFields)
         {
             var table = SqlServerCache.GetTableEntity<T>();
             CommonUtil.CheckTableKey(table);
@@ -35,5 +30,19 @@ namespace DapperExtensions
             }
             return CommonUtil.CreateUpdateSql(table, updateFields, "[", "]");
         }
+
+        public string UpdateByWhere<T>(string where, string updateFields)
+        {
+            var table = SqlServerCache.GetTableEntity<T>();
+            return CommonUtil.CreateUpdateByWhereSql(table, where, updateFields, "[", "]");
+        }
+
+        public string ExistsKeySql<T>()
+        {
+            var table = SqlServerCache.GetTableEntity<T>();
+            CommonUtil.CheckTableKey(table);
+            return string.Format("SELECT COUNT(1) FROM [{0}] WITH(NOLOCK) WHERE [{1}]=@{1}", table.TableName, table.KeyName);
+        }
+
     }
 }

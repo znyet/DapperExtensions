@@ -80,6 +80,11 @@ namespace DapperExtensions
             return conn.Execute(sql, param, tran, commandTimeout, commandType);
         }
 
+        public T ExecuteScalar<T>(string sql, object param)
+        {
+            return conn.ExecuteScalar<T>(sql, param, tran, commandTimeout, commandType);
+        }
+
         #endregion
 
         #region method (Insert Update Delete)
@@ -88,6 +93,13 @@ namespace DapperExtensions
         {
             return Execute(sqlBuilder.InsertSql<T>(), model);
         }
+
+        /// <summary>
+        /// for sqlserver insert identity
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public int InsertWithKey<T>(T model)
         {
             return Execute(sqlBuilder.InsertWithKeySql<T>(), model);
@@ -98,15 +110,51 @@ namespace DapperExtensions
         }
         public int UpdateByWhere<T>(string where, string updateFields, T model)
         {
-            return 0;
+            return Execute(sqlBuilder.UpdateByWhere<T>(where, updateFields), model);
         }
         public int InsertOrUpdate<T>(T model, string updateFields = null, bool update = true)
         {
-            return 0;
+            int effectRow = 0;
+            dynamic total = ExecuteScalar<dynamic>(sqlBuilder.ExistsKeySql<T>(), model);
+            if (total > 0)
+            {
+                if (update)
+                {
+                    effectRow += Update(model, updateFields);
+                }
+            }
+            else
+            {
+                effectRow += Insert(model);
+            }
+
+            return effectRow;
         }
+        /// <summary>
+        /// for sqlserver insert identity
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <param name="updateFields"></param>
+        /// <param name="update"></param>
+        /// <returns></returns>
         public int InsertWithKeyOrUpdate<T>(T model, string updateFields = null, bool update = true)
         {
-            return 0;
+            int effectRow = 0;
+            dynamic total = ExecuteScalar<dynamic>(sqlBuilder.ExistsKeySql<T>(), model);
+            if (total > 0)
+            {
+                if (update)
+                {
+                    effectRow += Update(model, updateFields);
+                }
+            }
+            else
+            {
+                effectRow += InsertWithKey(model);
+            }
+
+            return effectRow;
         }
         public int Delete<T>(object id)
         {
@@ -184,7 +232,7 @@ namespace DapperExtensions
             return null;
         }
 
-        public object GetTotal<T>(string where = null, object param = null)
+        public dynamic GetTotal<T>(string where = null, object param = null)
         {
             return null;
         }

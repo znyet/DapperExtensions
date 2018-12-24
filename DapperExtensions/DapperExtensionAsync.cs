@@ -38,10 +38,7 @@ namespace DapperExtensions
 
         public async Task<int> UpdateByWhereAsync<T>(string where, string updateFields, T model)
         {
-            return await Task.Run(() =>
-            {
-                return UpdateByWhere(where, updateFields, model);
-            });
+            return await ExecuteAsync(sqlBuilder.UpdateByWhere<T>(where, updateFields), model);
         }
 
         public async Task<int> InsertOrUpdateAsync<T>(T model, string updateFields = null, bool update = true)
@@ -180,7 +177,7 @@ namespace DapperExtensions
             });
         }
 
-        public async Task<object> GetTotalAsync<T>(string where = null, object param = null)
+        public async Task<dynamic> GetTotalAsync<T>(string where = null, object param = null)
         {
             return await Task.Run(() =>
             {
