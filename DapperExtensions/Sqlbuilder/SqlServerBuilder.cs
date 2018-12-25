@@ -8,6 +8,22 @@ namespace DapperExtensions
 {
     public class SqlServerBuilder : ISqlBuilder
     {
+
+        public string SchemaTable<T>(string returnFields)
+        {
+            var table = SqlServerCache.GetTableEntity<T>();
+            string sql;
+            if (returnFields == "*" || string.IsNullOrEmpty(returnFields))
+            {
+                sql = string.Format("SELECT TOP 0 {0} FROM [{1}]", table.AllFields, table.TableName);
+            }
+            else
+            {
+                sql = string.Format("SELECT TOP 0 {0} FROM [{1}]", returnFields, table.TableName);
+            }
+            return sql;
+        }
+
         public string InsertSql<T>()
         {
             return SqlServerCache.GetTableEntity<T>().InsertSql;
@@ -17,7 +33,7 @@ namespace DapperExtensions
         {
             var table = SqlServerCache.GetTableEntity<T>();
             CommonUtil.CheckTableKey(table);
-            return table.InsertKeySql;
+            return table.InsertIdentityKeySql;
         }
 
         public string UpdateSql<T>(string updateFields)
@@ -44,5 +60,19 @@ namespace DapperExtensions
             return string.Format("SELECT COUNT(1) FROM [{0}] WITH(NOLOCK) WHERE [{1}]=@{1}", table.TableName, table.KeyName);
         }
 
+        public string DeleteById<T>()
+        {
+            return SqlServerCache.GetTableEntity<T>().DeleteByIdSql;
+        }
+
+        public string DeleteByIds<T>()
+        {
+            return SqlServerCache.GetTableEntity<T>().DeleteByIdsSql;
+        }
+
+        public string DeleteAllSql<T>()
+        {
+            return SqlServerCache.GetTableEntity<T>().DeleteAllSql;
+        }
     }
 }

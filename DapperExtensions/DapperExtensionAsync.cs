@@ -5,248 +5,158 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Dapper;
+using System.Data;
 
 namespace DapperExtensions
 {
-    public partial class DapperExtension
+    public static partial class DapperExtension
     {
-        #region common method
+        #region common method for ado.net
 
-        public async Task<int> ExecuteAsync(string sql, object param)
+        public static async Task<DataTable> GetDataTableAsync(this IDbConnection conn, string sql, object param = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
-            return await conn.ExecuteAsync(sql, param, tran, commandTimeout, commandType);
+            return await Task.Run(() =>
+            {
+                return GetDataTable(conn, sql, param, tran, commandTimeout, commandType);
+            });
         }
 
+        public static async Task<DataSet> GetDataSetAsync(this IDbConnection conn, string sql, object param = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            return await Task.Run(() =>
+            {
+                return GetDataSet(conn, sql, param, tran, commandTimeout, commandType);
+            });
+        }
+
+        public static async Task<DataTable> GetSchemaTableAsync<T>(this IDbConnection conn, string returnFields = "*", IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            return await Task.Run(() =>
+            {
+                return GetSchemaTable<T>(conn, returnFields, tran, commandTimeout, commandType);
+            });
+        }
+
+        public static async Task<bool> BulkCopyAsync(this IDbConnection conn, DataTable dt, string tableName, string copyFields = "*", bool insert_identity = false, IDbTransaction tran = null, int batchSize = 20000, int timeOut = 100)
+        {
+            return await Task.Run(() =>
+            {
+                return BulkCopy(conn, dt, tableName, copyFields, insert_identity, tran, batchSize, timeOut);
+            });
+
+        }
+
+        public static async Task<bool> BulkCopyAsync<T>(this IDbConnection conn, DataTable dt, string copyFields = "*", bool insert_identity = false, IDbTransaction tran = null, int batchSize = 20000, int timeOut = 100)
+        {
+            return await Task.Run(() =>
+            {
+                return BulkCopy<T>(conn, dt, copyFields, insert_identity, tran, batchSize, timeOut);
+            });
+        }
+
+        #endregion
+
+        #region method (Insert Update Delete)
+
+        public static async Task<int> InsertAsync<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteAsync(builder.InsertSql<T>(), model, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<int> InsertIdentityAsync<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteAsync(builder.InsertWithKeySql<T>(), model, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<int> UpdateAsync<T>(this IDbConnection conn, T model, string updateFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteAsync(builder.UpdateSql<T>(updateFields), model, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<int> UpdateByWhereAsync<T>(this IDbConnection conn, string where, string updateFields, T model, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteAsync(builder.UpdateByWhere<T>(where, updateFields), model, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<int> InsertOrUpdateAsync<T>(this IDbConnection conn, T model, string updateFields = null, bool update = true, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            return await Task.Run(() =>
+            {
+                var builder = BuilderFactory.GetBuilder(conn);
+                int effectRow = 0;
+                dynamic total = conn.ExecuteScalar<dynamic>(builder.ExistsKeySql<T>(), model, tran, commandTimeout, commandType);
+                if (total > 0)
+                {
+                    if (update)
+                    {
+                        effectRow += Update(conn, model, updateFields, tran, commandTimeout, commandType);
+                    }
+                }
+                else
+                {
+                    effectRow += Insert(conn, model, tran, commandTimeout, commandType);
+                }
+
+                return effectRow;
+            });
+        }
+
+        public static async Task<int> InsertIdentityOrUpdateAsync<T>(this IDbConnection conn, T model, string updateFields = null, bool update = true, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            return await Task.Run(() =>
+            {
+                var builder = BuilderFactory.GetBuilder(conn);
+                int effectRow = 0;
+                dynamic total = conn.ExecuteScalar<dynamic>(builder.ExistsKeySql<T>(), model, tran, commandTimeout, commandType);
+                if (total > 0)
+                {
+                    if (update)
+                    {
+                        effectRow += Update(conn, model, updateFields, tran, commandTimeout, commandType);
+                    }
+                }
+                else
+                {
+                    effectRow += InsertIdentity(conn, model, tran, commandTimeout, commandType);
+                }
+
+                return effectRow;
+            });
+        }
+
+        public static async Task<int> DeleteAsync<T>(this IDbConnection conn, object id, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteAsync(builder.DeleteById<T>(), new { id = id }, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<int> DeleteByIdsAsync<T>(this IDbConnection conn, object ids, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            DynamicParameters dpar = new DynamicParameters();
+            dpar.Add("@ids", ids);
+            return await conn.ExecuteAsync(builder.DeleteByIds<T>(), dpar, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<int> DeleteByWhereAsync<T>(this IDbConnection conn, string where, object param, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteAsync(builder.DeleteAllSql<T>() + where, param, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<int> DeleteAllAsync<T>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteAsync(builder.DeleteAllSql<T>(), null, tran, commandTimeout, commandType);
+
+        }
 
 
         #endregion
 
-        public async Task<int> InsertAsync<T>(T model)
-        {
-            return await ExecuteAsync(sqlBuilder.InsertSql<T>(), model);
-        }
-
-        public async Task<int> InsertWithKeyAsync<T>(T model)
-        {
-            return await ExecuteAsync(sqlBuilder.InsertWithKeySql<T>(), model);
-        }
-
-        public async Task<int> UpdateAsync<T>(T model, string updateFields = null)
-        {
-            return await ExecuteAsync(sqlBuilder.UpdateSql<T>(updateFields), model);
-        }
-
-        public async Task<int> UpdateByWhereAsync<T>(string where, string updateFields, T model)
-        {
-            return await ExecuteAsync(sqlBuilder.UpdateByWhere<T>(where, updateFields), model);
-        }
-
-        public async Task<int> InsertOrUpdateAsync<T>(T model, string updateFields = null, bool update = true)
-        {
-            return await Task.Run(() =>
-            {
-                return InsertOrUpdate(model, updateFields, update);
-            });
-        }
-
-        public async Task<int> InsertWithKeyOrUpdateAsync<T>(T model, string updateFields = null, bool update = true)
-        {
-            return await Task.Run(() =>
-            {
-                return InsertWithKeyOrUpdate(model, updateFields, update);
-            });
-        }
-
-        public async Task<int> DeleteAsync<T>(object id)
-        {
-            return await Task.Run(() =>
-            {
-                return Delete<T>(id);
-            });
-        }
-
-        public async Task<int> DeleteByIdsAsync<T>(object ids)
-        {
-            return await Task.Run(() =>
-            {
-                return DeleteByIds<T>(ids);
-            });
-        }
-
-        public async Task<int> DeleteByWhereAsync<T>(string where, object param)
-        {
-            return await Task.Run(() =>
-            {
-                return DeleteByWhere<T>(where, param);
-            });
-        }
-
-        public async Task<int> DeleteAllAsync<T>()
-        {
-            return await Task.Run(() =>
-            {
-                return DeleteAll<T>();
-            });
-        }
-
-        public async Task<IdType> GetInsertIdAsync<IdType>()
-        {
-            return await Task.Run(() =>
-            {
-                return GetInsertId<IdType>();
-            });
-        }
-
-        public async Task<IEnumerable<T>> GetAllAsync<T>(string returnFields = null, string orderBy = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetAll<T>(returnFields, orderBy);
-            });
-        }
-
-        public async Task<IEnumerable<dynamic>> GetAllDynamicAsync<T>(string returnFields = null, string orderBy = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetAllDynamic<T>(returnFields, orderBy);
-            });
-        }
-
-        public async Task<T> GetByIdAsync<T>(object id, string returnFields = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetById<T>(id, returnFields);
-            });
-        }
-
-        public async Task<dynamic> GetByIdDynamicAsync<T>(object id, string returnFields = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByIdDynamic<T>(id, returnFields);
-            });
-        }
-
-        public async Task<IEnumerable<T>> GetByIdsAsync<T>(object ids, string returnFields = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByIds<T>(ids, returnFields);
-            });
-        }
-
-        public async Task<IEnumerable<dynamic>> GetByIdsDynamicAsync<T>(object ids, string returnFields = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByIdsDynamic<T>(ids, returnFields);
-            });
-        }
-
-        public async Task<IEnumerable<T>> GetByWhereAsync<T>(string where, object param = null, string returnFields = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByWhere<T>(where, param, returnFields);
-            });
-        }
-
-        public async Task<IEnumerable<dynamic>> GetByWhereDynamicAsync<T>(string where, object param = null, string returnFields = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByWhereDynamic<T>(where, param, returnFields);
-            });
-        }
-
-        public async Task<T> GetByWhereFirstAsync<T>(string where, object param = null, string returnFields = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByWhereFirst<T>(where, param, returnFields);
-            });
-        }
-
-        public async Task<dynamic> GetByWhereFirstDynamicAsync<T>(string where, object param = null, string returnFields = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByWhereFirstDynamic<T>(where, param, returnFields);
-            });
-        }
-
-        public async Task<dynamic> GetTotalAsync<T>(string where = null, object param = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetTotal<T>(where, param);
-            });
-        }
-
-        public async Task<IEnumerable<T>> GetByIdsWithFieldAsync<T>(object ids, string field, string returnFields = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByIdsWithField<T>(ids, field, returnFields);
-            });
-        }
-
-        public async Task<IEnumerable<dynamic>> GetByIdsWithFieldDynamicAsync<T>(object ids, string field, string returnFields = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByIdsWithFieldDynamic<T>(ids, field, returnFields);
-            });
-        }
-
-        public async Task<IEnumerable<T>> GetBySkipTakeAsync<T>(int skip, int take, string where = null, object param = null, string returnFields = null, string orderBy = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetBySkipTake<T>(skip, take, where, param, returnFields, orderBy);
-            });
-        }
-
-        public async Task<IEnumerable<dynamic>> GetBySkipTakeDynamicAsync<T>(int skip, int take, string where = null, object param = null, string returnFields = null, string orderBy = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetBySkipTakeDynamic<T>(skip, take, where, param, returnFields, orderBy);
-            });
-        }
-
-        public async Task<IEnumerable<T>> GetByPageIndexAsync<T>(int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByPageIndex<T>(pageIndex, pageSize, where, param, returnFields, orderBy);
-            });
-        }
-
-        public async Task<IEnumerable<dynamic>> GetByPageIndexDynamicAsync<T>(int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetByPageIndexDynamic<T>(pageIndex, pageSize, where, param, returnFields, orderBy);
-            });
-        }
-
-        public async Task<PageEntity<T>> GetPageAsync<T>(int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetPage<T>(pageIndex, pageSize, where, param, returnFields, orderBy);
-            });
-        }
-
-        public async Task<PageEntity<dynamic>> GetPageDynamicAsync<T>(int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null)
-        {
-            return await Task.Run(() =>
-            {
-                return GetPageDynamic<T>(pageIndex, pageSize, where, param, returnFields, orderBy);
-            });
-        }
     }
 }

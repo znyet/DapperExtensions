@@ -25,7 +25,7 @@ namespace DapperExtensions
         public string AllFieldsAtEqExceptKey { get; set; }//[name]=@name,[sex]=@sex
 
         public string InsertSql { get; set; }
-        public string InsertKeySql { get; set; }
+        public string InsertIdentityKeySql { get; set; }
         public string GetByIdSql { get; set; }
         public string GetByIdsSql { get; set; }
         public string GetAllSql { get; set; }
