@@ -8,6 +8,7 @@ using Dapper;
 using System.Data;
 using System.Data.SqlClient;
 
+
 namespace DapperExtensions
 {
     public static partial class DapperExtension

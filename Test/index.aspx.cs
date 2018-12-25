@@ -88,7 +88,7 @@ namespace Test
                 p.Age = second;
                 p.AddTime = DateTime.Now;
                 roweffect = conn.InsertIdentity(p);
-
+                
                 ShowEffect();
 
             }
@@ -100,8 +100,8 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                //IEnumerable<int> ids = new List<int>() { 1, 2, 3 };
-                int[] ids = new int[] {1,2,3 };
+                IEnumerable<int> ids = new List<int>() { 1, 2, 3 };
+                //int[] ids = new int[] {1,2,3 };
                 roweffect += conn.DeleteByIds<People>(ids);
                 ShowEffect();
             }
