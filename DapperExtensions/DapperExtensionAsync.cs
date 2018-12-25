@@ -29,7 +29,7 @@ namespace DapperExtensions
             });
         }
 
-        public static async Task<DataTable> GetSchemaTableAsync<T>(this IDbConnection conn, string returnFields = "*", IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static async Task<DataTable> GetSchemaTableAsync<T>(this IDbConnection conn, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             return await Task.Run(() =>
             {
@@ -37,20 +37,36 @@ namespace DapperExtensions
             });
         }
 
-        public static async Task<bool> BulkCopyAsync(this IDbConnection conn, DataTable dt, string tableName, string copyFields = "*", bool insert_identity = false, IDbTransaction tran = null, int batchSize = 20000, int timeOut = 100)
+        public static async Task BulkCopyAsync(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeOut = 100)
         {
-            return await Task.Run(() =>
-            {
-                return BulkCopy(conn, dt, tableName, copyFields, insert_identity, tran, batchSize, timeOut);
-            });
+            await Task.Run(() =>
+           {
+               BulkCopy(conn, tran, dt, tableName, copyFields, insert_identity, batchSize, timeOut);
+           });
 
         }
 
-        public static async Task<bool> BulkCopyAsync<T>(this IDbConnection conn, DataTable dt, string copyFields = "*", bool insert_identity = false, IDbTransaction tran = null, int batchSize = 20000, int timeOut = 100)
+        public static async Task BulkCopyAsync<T>(this IDbConnection conn, IDbTransaction tran, DataTable dt, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeOut = 100)
         {
-            return await Task.Run(() =>
+            await Task.Run(() =>
             {
-                return BulkCopy<T>(conn, dt, copyFields, insert_identity, tran, batchSize, timeOut);
+                BulkCopy<T>(conn, tran, dt, copyFields, insert_identity, batchSize, timeOut);
+            });
+        }
+
+        public static async Task BulkUpdateAsync(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string column = "*", int batchSize = 20000, int timeOut = 100)
+        {
+            await Task.Run(() =>
+            {
+                BulkUpdate(conn, tran, dt, tableName, column, batchSize, timeOut);
+            });
+        }
+
+        public static async Task BulkUpdateAsync<T>(this IDbConnection conn, IDbTransaction tran, DataTable dt, string column = "*", int batchSize = 20000, int timeOut = 100)
+        {
+            await Task.Run(() =>
+            {
+                BulkUpdate<T>(conn, tran, dt, column, batchSize, timeOut);
             });
         }
 

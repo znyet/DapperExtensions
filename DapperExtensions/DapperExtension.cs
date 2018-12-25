@@ -16,7 +16,6 @@ namespace DapperExtensions
 
         #region common method for ado.net
 
-
         public static DataTable GetDataTable(this IDbConnection conn, string sql, object param = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             using (IDataReader reader = conn.ExecuteReader(sql, param, tran, commandTimeout, commandType))
@@ -45,7 +44,7 @@ namespace DapperExtensions
             }
         }
 
-        public static DataTable GetSchemaTable<T>(this IDbConnection conn, string returnFields = "*", IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static DataTable GetSchemaTable<T>(this IDbConnection conn, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
             return GetDataTable(conn, builder.SchemaTable<T>(returnFields), null, tran, commandTimeout, commandType);
@@ -63,16 +62,14 @@ namespace DapperExtensions
         /// <param name="batchSize">default 20000</param>
         /// <param name="timeOut">second default 100s</param>
         /// <returns>true means ok,if false you must rollback tran</returns>
-        /// 
-        public static bool BulkCopy(this IDbConnection conn, DataTable dt, string tableName, string copyFields = "*", bool insert_identity = false, IDbTransaction tran = null, int batchSize = 20000, int timeOut = 100)
+        public static void BulkCopy(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeOut = 100)
         {
             if (conn.ToString() != "System.Data.SqlClient.SqlConnection")
             {
-                throw new Exception("only sqlserver use BulkCopy");
+                throw new Exception("only sqlserver can use BulkCopy");
             }
-            bool isOk = true;
             SqlBulkCopyOptions option = SqlBulkCopyOptions.Default;
-            if (insert_identity == true)
+            if (insert_identity)
             {
                 option = SqlBulkCopyOptions.KeepIdentity;
             }
@@ -81,37 +78,67 @@ namespace DapperExtensions
                 bulkCopy.BatchSize = batchSize;
                 bulkCopy.BulkCopyTimeout = timeOut;
                 bulkCopy.DestinationTableName = tableName;
-                try
-                {
-                    if (copyFields != "*" || !string.IsNullOrEmpty(copyFields))
-                    {
-                        foreach (var item in copyFields.Split(','))
-                        {
-                            bulkCopy.ColumnMappings.Add(item, item);
-                        }
-                    }
-                    else
-                    {
-                        foreach (DataColumn col in dt.Columns)
-                        {
-                            bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
-                        }
-                    }
-                    bulkCopy.WriteToServer(dt);
-                }
-                catch (Exception ex)
-                {
-                    isOk = false;
-                }
 
+                if (!string.IsNullOrEmpty(copyFields))
+                {
+                    foreach (var item in copyFields.Split(','))
+                    {
+                        bulkCopy.ColumnMappings.Add(item, item);
+                    }
+                }
+                else
+                {
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+                    }
+                }
+                bulkCopy.WriteToServer(dt);
             }
-            return isOk;
         }
 
-        public static bool BulkCopy<T>(this IDbConnection conn, DataTable dt, string copyFields = "*", bool insert_identity = false, IDbTransaction tran = null, int batchSize = 20000, int timeOut = 100)
+        public static void BulkCopy<T>(this IDbConnection conn, IDbTransaction tran, DataTable dt, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeOut = 100)
         {
             var table = SqlServerCache.GetTableEntity<T>();
-            return BulkCopy(conn, dt, table.TableName, copyFields, insert_identity, tran, batchSize, timeOut);
+            BulkCopy(conn, tran, dt, table.TableName, copyFields, insert_identity, batchSize, timeOut);
+        }
+
+        public static void BulkUpdate(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string column = "*", int batchSize = 20000, int timeOut = 100)
+        {
+            if (conn.ToString() != "System.Data.SqlClient.SqlConnection")
+            {
+                throw new Exception("only sqlserver can use BulkUpdate");
+            }
+
+            SqlConnection cnn = conn as SqlConnection;
+            SqlCommand comm = cnn.CreateCommand();
+            comm.CommandTimeout = timeOut;
+            comm.CommandType = CommandType.Text;
+            SqlDataAdapter adapter = new SqlDataAdapter(comm);
+            SqlCommandBuilder commandBulider = new SqlCommandBuilder(adapter);
+            commandBulider.ConflictOption = ConflictOption.OverwriteChanges;
+            try
+            {
+                adapter.UpdateBatchSize = batchSize;
+                adapter.SelectCommand.Transaction = tran as SqlTransaction;
+                adapter.SelectCommand.CommandText = "SELECT TOP 0 " + column + " FROM " + tableName;
+                adapter.Update(dt.GetChanges());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                comm.Dispose();
+                adapter.Dispose();
+            }
+        }
+
+        public static void BulkUpdate<T>(this IDbConnection conn, IDbTransaction tran, DataTable dt, string column = "*", int batchSize = 20000, int timeOut = 100)
+        {
+            var table = SqlServerCache.GetTableEntity<T>();
+            BulkUpdate(conn, tran, dt, table.TableName, column, batchSize, timeOut);
         }
 
         #endregion
@@ -220,7 +247,7 @@ namespace DapperExtensions
         {
             var builder = BuilderFactory.GetBuilder(conn);
             return conn.Execute(builder.DeleteAllSql<T>(), null, tran, commandTimeout, commandType);
-            
+
         }
 
 

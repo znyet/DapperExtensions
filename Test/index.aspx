@@ -26,6 +26,14 @@
             <asp:Button ID="Button4" runat="server" OnClick="Button4_Click" Text="DeleteByIds" />
 
 
+            <br />
+            <br />
+            <asp:Button ID="Button5" runat="server" OnClick="Button5_Click" Text="BulkCopy" />
+            <br />
+            <br />
+            <asp:Button ID="Button6" runat="server" OnClick="Button6_Click" Text="BulkUpdate" />
+
+
         </div>
 
         <div style="float: left">

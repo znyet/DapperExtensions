@@ -197,9 +197,9 @@ namespace DapperExtensions
             table.AllFieldsAtEqExceptKey = FieldsEqExtKey;
 
             table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, Fields, FieldsAt);
-            if (!string.IsNullOrEmpty(table.KeyName)) //有主键
+            if (!string.IsNullOrEmpty(table.KeyName)) //有主键(table has primary key)
             {
-                if (table.IsIdentity) //是自增
+                if (table.IsIdentity) //是自增 (and the parmary is identity)
                 {
                     table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey);
                 }
