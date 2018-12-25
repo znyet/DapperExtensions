@@ -12,7 +12,7 @@ namespace DapperExtensions
 
         string InsertSql<T>();
 
-        string InsertWithKeySql<T>();
+        string InsertIdentitySql<T>();
 
         string UpdateSql<T>(string updateFields);
 

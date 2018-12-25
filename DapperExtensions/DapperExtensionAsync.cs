@@ -67,7 +67,7 @@ namespace DapperExtensions
         public static async Task<int> InsertIdentityAsync<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return await conn.ExecuteAsync(builder.InsertWithKeySql<T>(), model, tran, commandTimeout, commandType);
+            return await conn.ExecuteAsync(builder.InsertIdentitySql<T>(), model, tran, commandTimeout, commandType);
         }
 
         public static async Task<int> UpdateAsync<T>(this IDbConnection conn, T model, string updateFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)

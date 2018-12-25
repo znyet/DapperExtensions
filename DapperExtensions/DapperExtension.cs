@@ -133,7 +133,7 @@ namespace DapperExtensions
         public static int InsertIdentity<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.InsertWithKeySql<T>(), model, tran, commandTimeout, commandType);
+            return conn.Execute(builder.InsertIdentitySql<T>(), model, tran, commandTimeout, commandType);
         }
 
         public static int Update<T>(this IDbConnection conn, T model, string updateFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)

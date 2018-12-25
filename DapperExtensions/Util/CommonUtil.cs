@@ -165,7 +165,7 @@ namespace DapperExtensions
                     table.InsertSql = string.Format("INSERT INTO {3}{0}{4}({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey, leftChar, rightChar);
                 }
 
-                table.InsertIdentityKeySql = string.Format("INSERT INTO {3}{0}{4}({1})VALUES({2})", table.TableName, Fields, FieldsAt, leftChar, rightChar);
+                table.InsertIdentitySql = string.Format("INSERT INTO {3}{0}{4}({1})VALUES({2})", table.TableName, Fields, FieldsAt, leftChar, rightChar);
 
                 table.DeleteByIdSql = string.Format("DELETE FROM {2}{0}{3} WHERE {2}{1}{3}=@id", table.TableName, table.KeyName, leftChar, rightChar);
                 table.DeleteByIdsSql = string.Format("DELETE FROM {2}{0}{3} WHERE {2}{1}{3} IN @ids", table.TableName, table.KeyName, leftChar, rightChar);
@@ -203,7 +203,7 @@ namespace DapperExtensions
                 {
                     table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey);
                 }
-                table.InsertIdentityKeySql = string.Format("SET IDENTITY_INSERT [{0}] ON;INSERT INTO [{0}]({1})VALUES({2});SET IDENTITY_INSERT [{0}] OFF", table.TableName, Fields, FieldsAt);
+                table.InsertIdentitySql = string.Format("SET IDENTITY_INSERT [{0}] ON;INSERT INTO [{0}]({1})VALUES({2});SET IDENTITY_INSERT [{0}] OFF", table.TableName, Fields, FieldsAt);
                 table.DeleteByIdSql = string.Format("DELETE FROM [{0}] WHERE [{1}]=@id", table.TableName, table.KeyName);
                 table.DeleteByIdsSql = string.Format("DELETE FROM [{0}] WHERE [{1}] IN @ids", table.TableName, table.KeyName);
                 table.GetByIdSql = string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) WHERE [{2}]=@id", Fields, table.TableName, table.KeyName);

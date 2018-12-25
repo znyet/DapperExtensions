@@ -29,11 +29,11 @@ namespace DapperExtensions
             return SqlServerCache.GetTableEntity<T>().InsertSql;
         }
 
-        public string InsertWithKeySql<T>()
+        public string InsertIdentitySql<T>()
         {
             var table = SqlServerCache.GetTableEntity<T>();
             CommonUtil.CheckTableKey(table);
-            return table.InsertIdentityKeySql;
+            return table.InsertIdentitySql;
         }
 
         public string UpdateSql<T>(string updateFields)
