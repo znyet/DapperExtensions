@@ -13,7 +13,7 @@ namespace DapperExtensions
         {
             var table = SqlServerCache.GetTableEntity<T>();
             string sql;
-            if (returnFields == "*" || string.IsNullOrEmpty(returnFields))
+            if (returnFields == null)
             {
                 sql = string.Format("SELECT TOP 0 {0} FROM [{1}]", table.AllFields, table.TableName);
             }
