@@ -44,23 +44,22 @@ namespace CodeGenerator
         //开始
         private void button2_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(textBox1.Text.Trim()))
-            {
-                MessageBox.Show("please select 模板template");
-                return;
-            }
-            if (string.IsNullOrEmpty(textBox2.Text.Trim()))
-            {
-                MessageBox.Show("please fill in 命名空间namespace");
-                return;
-            }
+            //if (string.IsNullOrEmpty(textBox1.Text.Trim()))
+            //{
+            //    MessageBox.Show("please select 模板template");
+            //    return;
+            //}
+            //if (string.IsNullOrEmpty(textBox2.Text.Trim()))
+            //{
+            //    MessageBox.Show("please fill in 命名空间namespace");
+            //    return;
+            //}
 
-            if (string.IsNullOrEmpty(textBox4.Text.Trim()))
-            {
-                MessageBox.Show("please select 输出路径(output dir)");
-                return;
-            }
-
+            //if (string.IsNullOrEmpty(textBox4.Text.Trim()))
+            //{
+            //    MessageBox.Show("please select 输出路径(output dir)");
+            //    return;
+            //}
             frmDatabase win = new frmDatabase();
             win.ShowDialog();
 
