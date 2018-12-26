@@ -1,3 +1,3 @@
 # DapperExtensions
-![Image text](https://github.com/znyet/img/wx.png)
-![Image text](https://github.com/znyet/img/zfb.png)
+![Image](https://github.com/znyet/img/wx.jpg)
+![Image](https://github.com/znyet/img/zfb.jpg)
