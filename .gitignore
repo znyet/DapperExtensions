@@ -2,5 +2,7 @@ DapperExtensions/bin
 DapperExtensions/obj
 Test/bin
 Test/obj
+CodeGenerator/bin
+CodeGenerator/obj
 *.suo
 *.user
