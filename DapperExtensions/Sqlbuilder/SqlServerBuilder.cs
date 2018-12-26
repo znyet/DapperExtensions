@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DapperExtensions
 {
-    public class SqlServerBuilder : ISqlBuilder
+    internal class SqlServerBuilder : ISqlBuilder
     {
 
         public string SchemaTable<T>(string returnFields)

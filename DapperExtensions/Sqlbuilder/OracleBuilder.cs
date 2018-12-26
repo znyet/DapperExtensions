@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DapperExtensions
 {
-    class OracleBuilder
+    internal class OracleBuilder
     {
     }
 }

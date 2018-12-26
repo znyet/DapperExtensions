@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DapperExtensions
 {
-    class SqliteBuilder
+    internal class SqliteBuilder
     {
     }
 }

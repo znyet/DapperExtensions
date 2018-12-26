@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DapperExtensions
 {
-    public class MySqlBuilder
+    internal class MySqlBuilder
     {
 
     }
