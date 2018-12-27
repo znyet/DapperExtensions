@@ -34,7 +34,8 @@ namespace CodeGenerator
                     try
                     {
                         table.Comment = descript.Value.ToString();
-                    }catch { }
+                    }
+                    catch { }
                     table.NameUpper = MyUtils.ToUpper(table.Name);
                     table.NameLower = MyUtils.ToLower(table.Name);
                     if (string.IsNullOrEmpty(table.IsIdentity))
@@ -117,13 +118,20 @@ namespace CodeGenerator
                 dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
             }
 
-            List<TableEntity> tableList;
-            using (var conn = DbHelper.GetConn())
+            try
             {
-                tableList = BuilderFactory.GetBuilder(conn).GetTableList();
-            }
+                List<TableEntity> tableList;
+                using (var conn = DbHelper.GetConn())
+                {
+                    tableList = BuilderFactory.GetBuilder(conn).GetTableList();
+                }
 
-            InitTableList(tableList);
+                InitTableList(tableList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
         }
 
@@ -205,12 +213,12 @@ namespace CodeGenerator
                     string className = table.NameUpper + Config.ClassSuffix;
                     string fileName = Config.OutPutDir + "\\" + className + Config.FileType;
                     string content = className + "\n";
-                    
+
                     List<ColumnEntity> columnList;
                     using (var conn = DbHelper.GetConn())
                     {
                         columnList = BuilderFactory.GetBuilder(conn).GetColumnList(table);
-                    
+
                     }
 
                     foreach (var item in columnList)
@@ -232,7 +240,7 @@ namespace CodeGenerator
 
             }) { IsBackground = true }.Start();
 
-            
+
 
         }
 
