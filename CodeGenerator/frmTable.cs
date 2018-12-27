@@ -15,21 +15,6 @@ namespace CodeGenerator
 
         #region Method
 
-        public void AddCheckBox()
-        {
-
-            DataGridViewCheckBoxColumn columncb = new DataGridViewCheckBoxColumn();
-            columncb.HeaderText = "选择";
-            columncb.Name = "cb_check";
-            columncb.TrueValue = true;
-            columncb.FalseValue = false;
-            columncb.DataPropertyName = "IsChecked";
-            dataGridView1.Columns.Insert(0, columncb);    //添加的checkbox在第一列
-            //UserGridView.Columns.Add(columncb);     //添加的checkbox在最后一列
-
-        }
-
-
         private void GetSelectRows()
         {
             // DataGridCell cel=(sender as DataGridCell).
@@ -116,6 +101,7 @@ namespace CodeGenerator
         private void button1_Click(object sender, EventArgs e)
         {
             //System.Diagnostics.Process.Start(@"");
+            UTF8Encoding utf8 = new UTF8Encoding(false); //no bom
             GetSelectRows();
 
         }

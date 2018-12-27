@@ -29,42 +29,46 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtTemplate = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.txtNameSpace = new System.Windows.Forms.TextBox();
+            this.txtClassSuffix = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.txtOutPutDir = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtFileType = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cbxEncoding = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(42, 33);
+            this.label1.Location = new System.Drawing.Point(42, 28);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 12);
             this.label1.TabIndex = 0;
             this.label1.Text = "模板(template)";
             // 
-            // textBox1
+            // txtTemplate
             // 
-            this.textBox1.Location = new System.Drawing.Point(137, 29);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(597, 21);
-            this.textBox1.TabIndex = 1;
+            this.txtTemplate.Location = new System.Drawing.Point(137, 24);
+            this.txtTemplate.Name = "txtTemplate";
+            this.txtTemplate.ReadOnly = true;
+            this.txtTemplate.Size = new System.Drawing.Size(597, 21);
+            this.txtTemplate.TabIndex = 1;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(740, 28);
+            this.button1.Location = new System.Drawing.Point(740, 23);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(113, 23);
             this.button1.TabIndex = 2;
@@ -75,7 +79,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 77);
+            this.label2.Location = new System.Drawing.Point(12, 110);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(119, 12);
             this.label2.TabIndex = 3;
@@ -84,31 +88,31 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(327, 77);
+            this.label3.Location = new System.Drawing.Point(378, 110);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(125, 12);
             this.label3.TabIndex = 4;
             this.label3.Text = "类后缀(class suffix)";
             // 
-            // textBox2
+            // txtNameSpace
             // 
-            this.textBox2.Location = new System.Drawing.Point(137, 73);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(175, 21);
-            this.textBox2.TabIndex = 5;
-            this.textBox2.Text = "Model";
+            this.txtNameSpace.Location = new System.Drawing.Point(137, 106);
+            this.txtNameSpace.Name = "txtNameSpace";
+            this.txtNameSpace.Size = new System.Drawing.Size(221, 21);
+            this.txtNameSpace.TabIndex = 5;
+            this.txtNameSpace.Text = "Model";
             // 
-            // textBox3
+            // txtClassSuffix
             // 
-            this.textBox3.Location = new System.Drawing.Point(469, 73);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(157, 21);
-            this.textBox3.TabIndex = 6;
-            this.textBox3.Text = "T";
+            this.txtClassSuffix.Location = new System.Drawing.Point(509, 106);
+            this.txtClassSuffix.Name = "txtClassSuffix";
+            this.txtClassSuffix.Size = new System.Drawing.Size(225, 21);
+            this.txtClassSuffix.TabIndex = 6;
+            this.txtClassSuffix.Text = "T";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(329, 161);
+            this.button2.Location = new System.Drawing.Point(331, 191);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(201, 33);
             this.button2.TabIndex = 7;
@@ -125,7 +129,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(636, 75);
+            this.checkBox1.Location = new System.Drawing.Point(743, 109);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(102, 16);
             this.checkBox1.TabIndex = 8;
@@ -135,23 +139,23 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 117);
+            this.label4.Location = new System.Drawing.Point(6, 68);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(125, 12);
             this.label4.TabIndex = 9;
             this.label4.Text = "输出路径(output dir)";
             // 
-            // textBox4
+            // txtOutPutDir
             // 
-            this.textBox4.Location = new System.Drawing.Point(137, 113);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(597, 21);
-            this.textBox4.TabIndex = 10;
+            this.txtOutPutDir.Location = new System.Drawing.Point(137, 64);
+            this.txtOutPutDir.Name = "txtOutPutDir";
+            this.txtOutPutDir.ReadOnly = true;
+            this.txtOutPutDir.Size = new System.Drawing.Size(597, 21);
+            this.txtOutPutDir.TabIndex = 10;
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(740, 112);
+            this.button3.Location = new System.Drawing.Point(740, 63);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(113, 23);
             this.button3.TabIndex = 2;
@@ -164,30 +168,72 @@
             this.checkBox2.AutoSize = true;
             this.checkBox2.Checked = true;
             this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Location = new System.Drawing.Point(745, 75);
+            this.checkBox2.Location = new System.Drawing.Point(744, 151);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(108, 16);
             this.checkBox2.TabIndex = 11;
             this.checkBox2.Text = "column comment";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(18, 153);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(113, 12);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "文件类型(filetype)";
+            // 
+            // txtFileType
+            // 
+            this.txtFileType.Location = new System.Drawing.Point(137, 149);
+            this.txtFileType.Name = "txtFileType";
+            this.txtFileType.Size = new System.Drawing.Size(221, 21);
+            this.txtFileType.TabIndex = 13;
+            this.txtFileType.Text = ".cs";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(366, 153);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(137, 12);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "文件编码(fileencoding)";
+            // 
+            // cbxEncoding
+            // 
+            this.cbxEncoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxEncoding.FormattingEnabled = true;
+            this.cbxEncoding.Items.AddRange(new object[] {
+            "utf8 with bom",
+            "utf8 no bom"});
+            this.cbxEncoding.Location = new System.Drawing.Point(509, 149);
+            this.cbxEncoding.Name = "cbxEncoding";
+            this.cbxEncoding.Size = new System.Drawing.Size(225, 20);
+            this.cbxEncoding.TabIndex = 15;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(865, 224);
+            this.ClientSize = new System.Drawing.Size(865, 244);
+            this.Controls.Add(this.cbxEncoding);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.txtFileType);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.txtOutPutDir);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.txtClassSuffix);
+            this.Controls.Add(this.txtNameSpace);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtTemplate);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -203,20 +249,24 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtTemplate;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox txtNameSpace;
+        private System.Windows.Forms.TextBox txtClassSuffix;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox txtOutPutDir;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txtFileType;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cbxEncoding;
     }
 }
 

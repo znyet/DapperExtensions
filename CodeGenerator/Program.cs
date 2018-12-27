@@ -16,6 +16,7 @@ namespace CodeGenerator
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            ConfigHelper.ReadConfigFile();
             Application.Run(new frmMain());
         }
     }

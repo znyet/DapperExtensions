@@ -17,51 +17,82 @@ namespace CodeGenerator
             InitializeComponent();
         }
 
-        //ConnectionString Helper
-        private void button6_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        //SqlServer
-        private void button1_Click(object sender, EventArgs e)
-        {
-            ShowSelectTable("sqlserver", textBox1.Text.Trim());
-        }
-
-        //MySql
-        private void button2_Click(object sender, EventArgs e)
-        {
-            ShowSelectTable("mysql", textBox2.Text.Trim());
-        }
-
-        //Sqlite
-        private void button3_Click(object sender, EventArgs e)
-        {
-            ShowSelectTable("sqlite", textBox3.Text.Trim());
-        }
-
-        //Postgresql
-        private void button4_Click(object sender, EventArgs e)
-        {
-            ShowSelectTable("postgresql", textBox4.Text.Trim());
-        }
-
-        //Oracle
-        private void button5_Click(object sender, EventArgs e)
-        {
-            ShowSelectTable("oracle", textBox5.Text.Trim());
-        }
 
         #region Method
 
-        private void ShowSelectTable(string dbType, string connectionString)
+        private void ShowSelectTable()
         {
             frmTable win = new frmTable();
             win.ShowDialog();
         }
 
+        //加载配置文件
+        private void LoadConfig()
+        {
+            txtSqlserver.Text = Config.SqlserverConnectionString;
+            txtMysql.Text = Config.MysqlConnectionString;
+            txtSqlite.Text = Config.SqliteConnectionString;
+            txtPostgresql.Text = Config.PostgresqlConnectionString;
+            txtOracle.Text = Config.OracleConnectionString;
+        }
+
+        //保存配置文件
+        private void SaveConfig(string dbType, string connectionString)
+        {
+            Config.SqlserverConnectionString = txtSqlserver.Text;
+            Config.MysqlConnectionString = txtMysql.Text;
+            Config.SqliteConnectionString = txtSqlite.Text;
+            Config.PostgresqlConnectionString = txtPostgresql.Text;
+            Config.OracleConnectionString = txtOracle.Text;
+
+            Config.DbType = dbType;
+            Config.ConnectionString = connectionString;
+
+            ConfigHelper.SaveConfigFile();
+        }
+
         #endregion
+
+        private void frmDatabase_Load(object sender, EventArgs e)
+        {
+            LoadConfig();
+        }
+
+        //SqlServer
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SaveConfig("sqlserver", txtSqlserver.Text.Trim());
+            ShowSelectTable();
+        }
+
+        //MySql
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SaveConfig("mysql", txtMysql.Text.Trim());
+            ShowSelectTable();
+        }
+
+        //Sqlite
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SaveConfig("sqlite", txtSqlite.Text.Trim());
+            ShowSelectTable();
+        }
+
+        //Postgresql
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SaveConfig("postgresql", txtPostgresql.Text.Trim());
+            ShowSelectTable();
+        }
+
+        //Oracle
+        private void button5_Click(object sender, EventArgs e)
+        {
+            SaveConfig("oracle", txtOracle.Text.Trim());
+            ShowSelectTable();
+        }
+
 
     }
 }
