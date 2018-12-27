@@ -22,11 +22,11 @@ namespace DapperExtensions
             //{
             //    this.sqlBuilder = null;
             //}
-            //else if(dbType=="Oracle.ManagedDataAccess.Client.OracleConnection" || dbType=="System.Data.OracleClient.OracleConnection")
+            //else if(dbType=="Npgsql.NpgsqlConnection")
             //{
             //    
             //}
-            //else if(dbType=="Npgsql.NpgsqlConnection")
+            //else if(dbType=="Oracle.ManagedDataAccess.Client.OracleConnection" || dbType=="System.Data.OracleClient.OracleConnection")
             //{
             //    
             //}

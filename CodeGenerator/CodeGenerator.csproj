@@ -48,11 +48,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\Lib\Dapper.1.50.2\net45\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="EasyConfig">
       <HintPath>..\Lib\EasyConfig\EasyConfig.dll</HintPath>
     </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>..\Lib\MySql\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql">
+      <HintPath>..\Lib\Npgsql\Npgsql.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\SQLite\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -63,8 +77,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppCode\Config.cs" />
-    <Compile Include="AppCode\ConfigHelper.cs" />
+    <Compile Include="AppCode\Builder\BuilderFactory.cs" />
+    <Compile Include="AppCode\Builder\IBuilder.cs" />
+    <Compile Include="AppCode\Builder\MySqlBuilder.cs" />
+    <Compile Include="AppCode\Builder\PostgresqlBuilder.cs" />
+    <Compile Include="AppCode\Builder\SqliteBuilder.cs" />
+    <Compile Include="AppCode\Builder\SqlServerBuilder.cs" />
+    <Compile Include="AppCode\Config\Config.cs" />
+    <Compile Include="AppCode\Config\ConfigHelper.cs" />
+    <Compile Include="AppCode\DbHelper.cs" />
+    <Compile Include="AppCode\Entity\ColumnEntity.cs" />
+    <Compile Include="AppCode\Entity\TableEntity.cs" />
+    <Compile Include="AppCode\Utils\MyUtils.cs" />
     <Compile Include="frmDatabase.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -20,6 +20,7 @@ namespace CodeGenerator
 
         #region Method
 
+        //打开选择表窗体
         private void ShowSelectTable()
         {
             frmTable win = new frmTable();
@@ -51,8 +52,30 @@ namespace CodeGenerator
             ConfigHelper.SaveConfigFile();
         }
 
+        //检查数据库连接是否正常
+        private bool CheckConn()
+        {
+            bool ok = true;
+            try
+            {
+                using (var conn = DbHelper.GetConn())
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ok = false;
+                MessageBox.Show(ex.Message);
+            }
+
+            return ok;
+
+        }
+
         #endregion
 
+        //窗体加载事件
         private void frmDatabase_Load(object sender, EventArgs e)
         {
             LoadConfig();
@@ -62,6 +85,8 @@ namespace CodeGenerator
         private void button1_Click(object sender, EventArgs e)
         {
             SaveConfig("sqlserver", txtSqlserver.Text.Trim());
+            if (!CheckConn())
+                return;
             ShowSelectTable();
         }
 
@@ -69,6 +94,8 @@ namespace CodeGenerator
         private void button2_Click(object sender, EventArgs e)
         {
             SaveConfig("mysql", txtMysql.Text.Trim());
+            if (!CheckConn())
+                return;
             ShowSelectTable();
         }
 
@@ -76,6 +103,8 @@ namespace CodeGenerator
         private void button3_Click(object sender, EventArgs e)
         {
             SaveConfig("sqlite", txtSqlite.Text.Trim());
+            if (!CheckConn())
+                return;
             ShowSelectTable();
         }
 
@@ -83,6 +112,8 @@ namespace CodeGenerator
         private void button4_Click(object sender, EventArgs e)
         {
             SaveConfig("postgresql", txtPostgresql.Text.Trim());
+            if (!CheckConn())
+                return;
             ShowSelectTable();
         }
 
@@ -90,6 +121,8 @@ namespace CodeGenerator
         private void button5_Click(object sender, EventArgs e)
         {
             SaveConfig("oracle", txtOracle.Text.Trim());
+            if (!CheckConn())
+                return;
             ShowSelectTable();
         }
 
