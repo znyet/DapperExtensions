@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using DapperExtensions;
+
+namespace @Model.NameSpace
+{
+	/// <summary>
+    /// @Model.Table.Comment
+    /// </summary>
+    [Table(TableName = "@Model.Table.Name", KeyName = "@Model.Table.KeyName", IsIdentity = @Model.Table.IsIdentity)]
+    public class @Model.ClassName
+    {	@foreach(var item in Model.ColumnList){<text>
+		/// <summary>
+		/// Descript: @item.Comment
+		/// DbType: @item.DbType
+		/// AllowNull: @item.AllowNull
+		/// Defaultval: @item.DefaultValue
+		/// </summary></text>
+		<text>public @item.CsType @item.NameUpper { get; set; }</text>
+
+		}
+       
+    }
+}

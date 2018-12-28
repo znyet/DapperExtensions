@@ -125,6 +125,52 @@ order by a.id,a.colorder";
                         break;
                 }
 
+                switch (columnType.ToLower())
+                {
+                    case "text": model.JavaType = "String"; break;
+                    case "ntext": model.JavaType = "String"; break;
+                    case "varchar": model.JavaType = "String"; break;
+                    case "nvarchar": model.JavaType = "String"; break;
+                    case "varchar2": model.JavaType = "String"; break;
+                    case "nvarchar2": model.JavaType = "String"; break;
+                    case "xml": model.JavaType = "String"; break;
+                    case "uniqueidentifier": model.JavaType = "UUID"; break;
+                    case "date": model.JavaType = "Date"; break;
+                    case "smalldatetime": model.JavaType = "Timestamp"; break;
+                    case "datetime": model.JavaType = "Timestamp"; break;
+                    case "datetime2": model.JavaType = "Timestamp"; break;
+                    case "time": model.JavaType = "Timestamp"; break;
+                    case "datetimeoffset": model.JavaType = "Timestamp"; break;
+                    case "tinyint": model.JavaType = "byte"; break;
+                    case "smallint": model.JavaType = "short"; break;
+                    case "int": model.JavaType = "int"; break;
+                    case "bigint": model.JavaType = "long"; break;
+                    case "bit": model.JavaType = "boolean"; break;
+                    case "char": model.JavaType = "String"; break;
+                    case "nchar": model.JavaType = "String"; break;
+                    case "uniqueide": model.JavaType = "UUID"; break;
+                    case "numeric": model.JavaType = "BigDecimal"; break;
+                    case "integer": model.JavaType = "int"; break;
+                    case "money": model.JavaType = "BigDecimal"; break;
+                    case "real": model.JavaType = "BigDecimal"; break;
+                    case "blob": model.JavaType = "byte[]"; break;
+                    case "single": model.JavaType = "float"; break;
+                    case "smallmoney": model.JavaType = "BigDecimal"; break;
+                    case "decimal": model.JavaType = "BigDecimal"; break;
+                    case "bfile": model.JavaType = "byte[]"; break;
+                    case "float": model.JavaType = "float"; break;
+                    case "binary": model.JavaType = "byte[]"; break;
+                    case "number": model.JavaType = "BigDecimal"; break;
+                    case "varbinary": model.JavaType = "byte[]"; break;
+                    case "boolean": model.JavaType = "bool"; break;
+                    case "long": model.JavaType = "byte[]"; break;
+                    case "longtext": model.JavaType = "String"; break;
+                    case "timestamp": model.JavaType = "Timestamp"; break;
+                    default:
+                        model.JavaType = Config.UnKnowDbType;
+                        break;
+                }
+
                 model.DbType = item.ColumnType + "," + item.ColumnLength + "," + item.DecimalDigit;
                 if (Config.ColumnComment)
                 {

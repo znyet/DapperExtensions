@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using RazorEngine;
 
 namespace CodeGenerator
 {
@@ -15,6 +16,8 @@ namespace CodeGenerator
     {
 
         #region Method
+
+        List<TableEntity> tableList;
 
         private List<TableEntity> GetSelectTableList()
         {
@@ -29,8 +32,7 @@ namespace CodeGenerator
                 {
                     DataGridViewTextBoxCell name = (DataGridViewTextBoxCell)dataGridView1.Rows[i].Cells["TableName"];
                     DataGridViewTextBoxCell descript = (DataGridViewTextBoxCell)dataGridView1.Rows[i].Cells["TableDescript"];
-                    TableEntity table = new TableEntity();
-                    table.Name = name.Value.ToString();
+                    TableEntity table = tableList.FirstOrDefault(f => f.Name == name.Value.ToString());
                     try
                     {
                         table.Comment = descript.Value.ToString();
@@ -120,7 +122,7 @@ namespace CodeGenerator
 
             try
             {
-                List<TableEntity> tableList;
+
                 using (var conn = DbHelper.GetConn())
                 {
                     tableList = DbHelper.GetBuilder().GetTableList();
@@ -183,7 +185,7 @@ namespace CodeGenerator
         private void button1_Click(object sender, EventArgs e)
         {
 
-
+            string content = System.IO.File.ReadAllText(Config.Template);
             List<TableEntity> tables = GetSelectTableList();
             if (tables.Count == 0)
             {
@@ -198,11 +200,11 @@ namespace CodeGenerator
             UTF8Encoding utf8;
             if (Config.FileEncoding == "utf8 with bom")
             {
-                utf8 = new UTF8Encoding(false);
+                utf8 = new UTF8Encoding(true);
             }
             else
             {
-                utf8 = new UTF8Encoding(true);
+                utf8 = new UTF8Encoding(false);
             }
 
             //开启一个线程来生成代码
@@ -212,32 +214,24 @@ namespace CodeGenerator
                 {
                     string className = table.NameUpper + Config.ClassSuffix;
                     string fileName = Config.OutPutDir + "\\" + className + Config.FileType;
-                    string content = className + "\n";
-
+                    
                     List<ColumnEntity> columnList;
                     using (var conn = DbHelper.GetConn())
                     {
                         columnList = DbHelper.GetBuilder().GetColumnList(table);
-
                     }
-
-                    foreach (var item in columnList)
+                    try
                     {
-                        content += item.Name + "\n";
-                        content += item.NameUpper + "\n";
-                        content += item.NameLower + "\n";
-                        content += item.CsType + "\n";
-                        content += item.JavaType + "\n";
-                        content += item.Comment + "\n";
-                        content += item.DbType + "\n";
-                        content += item.AllowNull + "\n";
-                        content += item.DefaultValue + "\n";
-                       
+                        string result = Razor.Parse(content, new { Table = table, ColumnList = columnList, ClassName = className, NameSpace = Config.NameSpace });
+                        System.IO.File.WriteAllText(fileName, result, utf8);
                     }
-                    content += table.Comment + table.KeyName + table.IsIdentity + "\n";
-
-                    System.IO.File.WriteAllText(fileName, content, utf8);
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
+
+                MessageBox.Show("ok");
 
             }) { IsBackground = true }.Start();
 

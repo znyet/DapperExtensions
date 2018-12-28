@@ -16,7 +16,7 @@ namespace Test
         JavaScriptSerializer js = new JavaScriptSerializer();
 
         int second = DateTime.Now.Second;
-        int roweffect;
+        int roweffect; 
 
         string txt = null;
 
@@ -55,10 +55,7 @@ namespace Test
                 Student ss = new Student();
                 ss.Id = second;
                 ss.Name = "马六" + second;
-                roweffect += conn.Insert(ss);
-
-
-                ShowEffect();
+                roweffect += conn.Insert(ss);                
             }
         }
 

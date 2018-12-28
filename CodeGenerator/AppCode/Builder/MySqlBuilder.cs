@@ -46,7 +46,7 @@ namespace CodeGenerator
             IEnumerable<dynamic> data;
             using (var conn = DbHelper.GetConn())
             {
-               data = conn.Query(sql);
+                data = conn.Query(sql);
             }
 
             List<ColumnEntity> columnList = new List<ColumnEntity>();
@@ -66,6 +66,7 @@ namespace CodeGenerator
 
                 model.NameUpper = MyUtils.ToUpper(model.Name); //首字母大写
                 model.NameLower = MyUtils.ToLower(model.Name); //首字母小写
+
                 string columnType = item.Type;//数据类型
                 string t = columnType.Split('(')[0].ToLower();
                 switch (t)
@@ -115,6 +116,33 @@ namespace CodeGenerator
                         model.CsType = Config.UnKnowDbType;
                         break;
                 }
+
+                switch (t)
+                {
+                    case "text": model.JavaType = "String"; break;
+                    case "varchar": model.JavaType = "String"; break;
+                    case "nvarchar": model.CsType = "String"; break;
+                    case "varchar2": model.CsType = "String"; break;
+                    case "nvarchar2": model.CsType = "String"; break;
+                    case "enum": model.CsType = "String"; break;
+                    case "date": model.JavaType = "Date"; break;
+                    case "datetime": model.JavaType = "Timestamp"; break;
+                    case "time": model.JavaType = "Time"; break;
+                    case "tinyint": model.JavaType = "int"; break;
+                    case "smallint": model.JavaType = "int"; break;
+                    case "int": model.JavaType = "int"; break;
+                    case "bigint": model.JavaType = "BigInteger"; break;
+                    case "bit": model.JavaType = "boolean"; break;
+                    case "char": model.JavaType = "String"; break;
+                    case "integer": model.JavaType = "long"; break;
+                    case "decimal": model.JavaType = "BigDecimal"; break;
+                    case "float": model.JavaType = "float"; break;
+                    case "timestamp": model.JavaType = "Timestamp"; break;
+                    default:
+                        model.JavaType = Config.UnKnowDbType;
+                        break;
+                }
+
                 model.DbType = item.Type;
                 if (Config.ColumnComment)
                 {

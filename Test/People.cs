@@ -7,6 +7,9 @@ using DapperExtensions;
 
 namespace Test
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Table(TableName = "People", KeyName = "Id", IsIdentity = true)]
     public class People
     {
@@ -20,6 +23,15 @@ namespace Test
 
         [Igore]
         public dynamic OtherData { get; set; }
+
+        /// <summary>
+        ///Descript:
+        ///DbType:
+        ///AllowNull:
+        ///Defaultval:
+        /// </summary>
+        public string Ok { get; set; }
+
        
     }
 }

@@ -1,0 +1,19 @@
+﻿package @Model.NameSpace;
+
+public class @Model.ClassName {
+
+	@foreach(var item in Model.ColumnList)
+	{<text>
+	private @item.JavaType @item.NameLower;</text>
+	} 
+	@foreach(var item in Model.ColumnList)
+	{
+	<text>
+    public @item.JavaType @("get"+item.NameUpper+"()") {
+        return @item.NameLower;
+    }
+    public void @("set"+item.NameUpper+"("+item.JavaType +" val)") {
+        this.@item.NameLower = val;
+    }</text>
+	}
+}
