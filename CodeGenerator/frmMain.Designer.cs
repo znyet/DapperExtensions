@@ -111,7 +111,7 @@
             this.txtClassSuffix.Name = "txtClassSuffix";
             this.txtClassSuffix.Size = new System.Drawing.Size(225, 21);
             this.txtClassSuffix.TabIndex = 6;
-            this.txtClassSuffix.Text = "T";
+            this.txtClassSuffix.Text = "Table";
             // 
             // button2
             // 

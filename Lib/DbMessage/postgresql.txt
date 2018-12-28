@@ -1,0 +1,53 @@
+https://www.cnblogs.com/lztkdr/p/PostgreSQL_Table_Column_Info.html
+---------------------------------------------------------------------
+
+//获取所有表和描述
+
+select a.relname as name , b.description as value from pg_class a 
+left join (select * from pg_description where objsubid =0 ) b on a.oid = b.objoid
+where a.relname in (select tablename from pg_tables where schemaname = 'public')
+order by a.relname asc
+
+
+---------------------------------------------------------
+
+//获取表字段信息
+
+1、
+set session "myapp.name" = 'Student';
+SELECT 
+a.attname,
+col_description(a.attrelid,a.attnum) as comment,
+concat_ws('',t.typname,SUBSTRING(format_type(a.atttypid,a.atttypmod) from '\(.*\)')) as type,
+format_type(a.atttypid,a.atttypmod) as type2
+FROM pg_class as c,pg_attribute as a, pg_type t
+where c.relname=current_setting('myapp.name') and a.attrelid =c.oid and a.attnum>0 and a.atttypid=t.oid
+
+
+2、
+set session "myapp.name" = 'Student';
+select ordinal_position as Colorder,column_name as ColumnName,data_type as TypeName,
+coalesce(character_maximum_length,numeric_precision,-1) as Length,numeric_scale as Scale,
+case is_nullable when 'NO' then 0 else 1 end as CanNull,column_default as DefaultVal,
+case  when position('nextval' in column_default)>0 then 1 else 0 end as IsIdentity, 
+case when b.pk_name is null then 0 else 1 end as IsPK,c.DeText
+from information_schema.columns 
+left join (
+    select pg_attr.attname as colname,pg_constraint.conname as pk_name from pg_constraint  
+    inner join pg_class on pg_constraint.conrelid = pg_class.oid 
+    inner join pg_attribute pg_attr on pg_attr.attrelid = pg_class.oid and  pg_attr.attnum = pg_constraint.conkey[1] 
+    inner join pg_type on pg_type.oid = pg_attr.atttypid
+    where pg_class.relname = current_setting('myapp.name') and pg_constraint.contype='p' 
+) b on b.colname = information_schema.columns.column_name
+left join (
+    select attname,description as DeText from pg_class
+    left join pg_attribute pg_attr on pg_attr.attrelid= pg_class.oid
+    left join pg_description pg_desc on pg_desc.objoid = pg_attr.attrelid and pg_desc.objsubid=pg_attr.attnum
+    where pg_attr.attnum>0 and pg_attr.attrelid=pg_class.oid and pg_class.relname=current_setting('myapp.name')
+)c on c.attname = information_schema.columns.column_name
+where table_schema='public' and table_name=current_setting('myapp.name') order by ordinal_position asc
+
+
+--------------------------------------------
+
+https://blog.csdn.net/zw3413/article/details/83592413

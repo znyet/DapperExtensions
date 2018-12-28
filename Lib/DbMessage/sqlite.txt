@@ -1,0 +1,24 @@
+//查询所有表
+select * from sqlite_master where type='table' and name!='sqlite_sequence' //AUTOINCREMENT
+
+//查询表字段信息
+pragma table_info ('People')
+
+
+
+
+-----------------------------------------------------------------------------------------------------
+
+sqlite>.tables                                                --查看当前数据库所有表  
+sqlite>.tables table_name                                     --查看当前数据库指定表
+sqlite>.schema                                                --查看当前数据库所有表的建表(CREATE)语句 
+sqlite>.schema table_name                                     --查看指定数据表的建表语句 
+sqlite>select * from sqlite_master from;                      --查看所有表结构及索引信息 
+sqlite>select * from sqlite_master where type='table';        --查看所有表结构信息 
+sqlite>select name from sqlite_master where type='table';     --对于表来说，name字段指表名，查询所有表
+sqlite>select * from sqlite_master where type='table' and name='table_name';     --查看指定表结构信息 
+sqlite>select * from sqlite_master where type='index';        --查看所有表索引信息，查询所有索引 
+sqlite>select name from sqlite_master where type='table';     --对于索引来说，name字段指索引名
+sqlite>select * from sqlite_master where type='index' and name='table_name'; --查看指定表索引信息
+sqlite>pragma table_info ('table_name')                       --查看指定表所有字段信息，类似于msyql：desc table_name
+sqlite>select typeof('column') from table_name;               --查看指定表字段【column】类型，括号内可不输引号 
