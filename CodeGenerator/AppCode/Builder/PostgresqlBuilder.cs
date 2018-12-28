@@ -11,10 +11,10 @@ namespace CodeGenerator
 {
     internal class PostgresqlBuilder : IBuilder
     {
-        IDbConnection conn;
-        public PostgresqlBuilder(IDbConnection conn)
+
+        public PostgresqlBuilder()
         {
-            this.conn = conn;
+
         }
 
         public List<TableEntity> GetTableList()
@@ -23,7 +23,13 @@ namespace CodeGenerator
 left join (select * from pg_description where objsubid =0 ) b on a.oid = b.objoid
 where a.relname in (select tablename from pg_tables where schemaname = 'public')
 order by a.relname asc";
-            IEnumerable<dynamic> data = conn.Query(sql);
+
+            IEnumerable<dynamic> data;
+            using (var conn = DbHelper.GetConn())
+            {
+                data = conn.Query(sql);
+            }
+
             List<TableEntity> tableList = new List<TableEntity>();
             foreach (var item in data)
             {
@@ -40,7 +46,9 @@ order by a.relname asc";
 
         public List<ColumnEntity> GetColumnList(TableEntity tableEntity)
         {
-            throw new NotImplementedException();
+            List<ColumnEntity> columnList = new List<ColumnEntity>();
+            string sql = @"";
+            return columnList;
         }
     }
 }

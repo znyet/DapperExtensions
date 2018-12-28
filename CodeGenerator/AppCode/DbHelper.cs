@@ -9,11 +9,11 @@ using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using System.Data.SQLite;
 using Npgsql;
-using System.Data.OracleClient;
+using Oracle.ManagedDataAccess.Client;
 
 namespace CodeGenerator
 {
-    public class DbHelper
+    internal class DbHelper
     {
         //获取数据库连接
         public static IDbConnection GetConn()
@@ -50,5 +50,31 @@ namespace CodeGenerator
             }
 
         }
+
+        public static IBuilder GetBuilder()
+        {
+            if (Config.DbType == "sqlserver")
+            {
+                return new SqlServerBuilder();
+            }
+            else if (Config.DbType == "mysql")
+            {
+                return new MySqlBuilder();
+            }
+            else if (Config.DbType == "sqlite")
+            {
+                return new SqliteBuilder();
+            }
+            else if (Config.DbType == "postgresql")
+            {
+                return new PostgresqlBuilder();
+            }
+            else
+            {
+                return new OracleBuilder();
+            }
+
+        }
+
     }
 }

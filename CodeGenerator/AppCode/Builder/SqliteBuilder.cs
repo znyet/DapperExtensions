@@ -11,17 +11,22 @@ namespace CodeGenerator
 {
     internal class SqliteBuilder : IBuilder
     {
-        private IDbConnection conn;
 
-        public SqliteBuilder(IDbConnection conn)
+        public SqliteBuilder()
         {
-            this.conn = conn;
+
         }
 
         public List<TableEntity> GetTableList()
         {
             string sql = "select * from sqlite_master where type='table' and name!='sqlite_sequence'";
-            IEnumerable<dynamic> data = conn.Query(sql);
+            IEnumerable<dynamic> data;
+
+            using (var conn = DbHelper.GetConn())
+            {
+                data = conn.Query(sql);
+            }
+            
             List<TableEntity> tableList = new List<TableEntity>();
             foreach (var item in data)
             {
@@ -42,10 +47,14 @@ namespace CodeGenerator
         public List<ColumnEntity> GetColumnList(TableEntity tableEntity)
         {
             string sql = "pragma table_info('" + tableEntity.Name + "')";
+ 
+            IEnumerable<dynamic> data;
+            using (var conn = DbHelper.GetConn())
+            {
+                data = conn.Query(sql);
+            }
 
             List<ColumnEntity> columnList = new List<ColumnEntity>();
-
-            IEnumerable<dynamic> data = conn.Query(sql);
             foreach (var item in data)
             {
                 ColumnEntity model = new ColumnEntity();
@@ -138,7 +147,11 @@ namespace CodeGenerator
                         model.CsType = "dynamic";
                         break;
                 }
-                
+
+                if (Config.FileType == ".java")
+                {
+                    model.JavaType = model.CsType;
+                }
 
                 model.DbType = item.type;
                 model.AllowNull = Convert.ToString(item.notnull); //是否允许空

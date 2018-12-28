@@ -11,17 +11,22 @@ namespace CodeGenerator
 {
     internal class MySqlBuilder : IBuilder
     {
-        private IDbConnection conn;
 
-        public MySqlBuilder(IDbConnection conn)
+        public MySqlBuilder()
         {
-            this.conn = conn;
+
         }
 
         public List<TableEntity> GetTableList()
         {
+
             string sql = "SHOW TABLE STATUS";
-            IEnumerable<dynamic> data = conn.Query(sql);
+            IEnumerable<dynamic> data;
+            using (var conn = DbHelper.GetConn())
+            {
+                data = conn.Query(sql);
+            }
+
             List<TableEntity> tableList = new List<TableEntity>();
             foreach (var item in data)
             {
@@ -39,8 +44,13 @@ namespace CodeGenerator
         public List<ColumnEntity> GetColumnList(TableEntity tableEntity)
         {
             string sql = "SHOW FULL COLUMNS FROM " + tableEntity.Name;
+            IEnumerable<dynamic> data;
+            using (var conn = DbHelper.GetConn())
+            {
+               data = conn.Query(sql);
+            }
+
             List<ColumnEntity> columnList = new List<ColumnEntity>();
-            IEnumerable<dynamic> data = conn.Query(sql);
             foreach (var item in data)
             {
                 ColumnEntity model = new ColumnEntity();

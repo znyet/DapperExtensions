@@ -123,7 +123,7 @@ namespace CodeGenerator
                 List<TableEntity> tableList;
                 using (var conn = DbHelper.GetConn())
                 {
-                    tableList = BuilderFactory.GetBuilder(conn).GetTableList();
+                    tableList = DbHelper.GetBuilder().GetTableList();
                 }
 
                 InitTableList(tableList);
@@ -217,7 +217,7 @@ namespace CodeGenerator
                     List<ColumnEntity> columnList;
                     using (var conn = DbHelper.GetConn())
                     {
-                        columnList = BuilderFactory.GetBuilder(conn).GetColumnList(table);
+                        columnList = DbHelper.GetBuilder().GetColumnList(table);
 
                     }
 

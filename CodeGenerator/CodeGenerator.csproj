@@ -60,9 +60,11 @@
     <Reference Include="Npgsql">
       <HintPath>..\Lib\Npgsql\Npgsql.dll</HintPath>
     </Reference>
+    <Reference Include="Oracle.ManagedDataAccess">
+      <HintPath>..\Lib\Oracle\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.OracleClient" />
     <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\SQLite\System.Data.SQLite.dll</HintPath>
@@ -77,9 +79,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppCode\Builder\BuilderFactory.cs" />
     <Compile Include="AppCode\Builder\IBuilder.cs" />
     <Compile Include="AppCode\Builder\MySqlBuilder.cs" />
+    <Compile Include="AppCode\Builder\OracleBuilder.cs" />
     <Compile Include="AppCode\Builder\PostgresqlBuilder.cs" />
     <Compile Include="AppCode\Builder\SqliteBuilder.cs" />
     <Compile Include="AppCode\Builder\SqlServerBuilder.cs" />

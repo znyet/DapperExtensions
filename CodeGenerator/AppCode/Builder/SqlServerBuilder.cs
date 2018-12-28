@@ -11,10 +11,9 @@ namespace CodeGenerator
 {
     internal class SqlServerBuilder : IBuilder
     {
-        private IDbConnection conn;
-        public SqlServerBuilder(IDbConnection conn)
+        public SqlServerBuilder()
         {
-            this.conn = conn;
+
         }
 
         public List<TableEntity> GetTableList()
@@ -25,8 +24,10 @@ CONVERT(NVARCHAR(100),isnull(g.[value],'')) AS Comment
 from
 sys.tables a left join sys.extended_properties g
 on (a.object_id = g.major_id AND g.minor_id = 0)";
-
-            return conn.Query<TableEntity>(sql).ToList();
+            using (var conn = DbHelper.GetConn())
+            {
+                return conn.Query<TableEntity>(sql).ToList();
+            }
 
         }
 
@@ -54,7 +55,12 @@ left join sys.extended_properties f on d.id=f.major_id and f.minor_id =0
 where d.name=@name
 order by a.id,a.colorder";
 
-            IEnumerable<dynamic> data = conn.Query(sql, new { name = tableEntity.Name });
+            IEnumerable<dynamic> data;
+            using (var conn = DbHelper.GetConn())
+            {
+                data = conn.Query(sql, new { name = tableEntity.Name });
+            }
+
             List<ColumnEntity> columnList = new List<ColumnEntity>();
             foreach (var item in data)
             {
@@ -118,6 +124,7 @@ order by a.id,a.colorder";
                         model.CsType = "dynamic";
                         break;
                 }
+
                 model.DbType = item.ColumnType + "," + item.ColumnLength + "," + item.DecimalDigit;
                 if (Config.ColumnComment)
                 {
