@@ -29,7 +29,10 @@ order by a.relname asc";
             {
                 TableEntity model = new TableEntity();
                 model.Name = item.name;
-                model.Comment = item.value;
+                if (Config.TableComment)
+                {
+                    model.Comment = item.value;
+                }
                 tableList.Add(model);
             }
             return tableList;

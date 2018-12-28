@@ -119,7 +119,10 @@ order by a.id,a.colorder";
                         break;
                 }
                 model.DbType = item.ColumnType + "," + item.ColumnLength + "," + item.DecimalDigit;
-                model.Comment = item.ColumnCommnent; //说明
+                if (Config.ColumnComment)
+                {
+                    model.Comment = item.ColumnCommnent; //说明
+                }
                 model.AllowNull = item.AllowNull.ToString(); //是否允许空
                 model.DefaultValue = item.DefaultValue; //默认值
 

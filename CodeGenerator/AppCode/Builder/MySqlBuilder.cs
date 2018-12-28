@@ -27,7 +27,10 @@ namespace CodeGenerator
             {
                 TableEntity model = new TableEntity();
                 model.Name = item.Name;
-                model.Comment = item.Comment;
+                if (Config.TableComment)
+                {
+                    model.Comment = item.Comment;
+                }
                 tableList.Add(model);
             }
             return tableList;
@@ -106,7 +109,10 @@ namespace CodeGenerator
 
 
                 model.DbType = item.Type;
-                model.Comment = item.Comment; //说明
+                if (Config.ColumnComment)
+                {
+                    model.Comment = item.Comment; //说明
+                }
                 model.AllowNull = item.Null; //是否允许空
                 model.DefaultValue = item.Default; //默认值
 
