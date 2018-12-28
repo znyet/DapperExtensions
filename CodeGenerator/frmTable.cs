@@ -227,11 +227,12 @@ namespace CodeGenerator
                         content += item.NameUpper + "\n";
                         content += item.NameLower + "\n";
                         content += item.CsType + "\n";
+                        content += item.JavaType + "\n";
                         content += item.Comment + "\n";
                         content += item.DbType + "\n";
                         content += item.AllowNull + "\n";
                         content += item.DefaultValue + "\n";
-                        content += item.JavaType + "\n";
+                       
                     }
                     content += table.Comment + table.KeyName + table.IsIdentity + "\n";
 

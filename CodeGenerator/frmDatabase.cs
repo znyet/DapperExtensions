@@ -72,16 +72,6 @@ namespace CodeGenerator
             return ok;
 
         }
-
-        private void ShowWarning()
-        {
-            if (Config.FileType == ".java")
-            {
-                string warning = "Warning columns cannot be converted to [JavaType],It will be use [CsType] Replace";
-                MessageBox.Show(warning);
-            }
-
-        }
         
 
         #endregion
@@ -116,7 +106,6 @@ namespace CodeGenerator
             SaveConfig("sqlite", txtSqlite.Text.Trim());
             if (!CheckConn())
                 return;
-            ShowWarning();
             ShowSelectTable();
         }
 
@@ -135,8 +124,6 @@ namespace CodeGenerator
             SaveConfig("oracle", txtOracle.Text.Trim());
             if (!CheckConn())
                 return;
-
-            ShowWarning();
             ShowSelectTable();
         }
 

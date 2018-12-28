@@ -121,7 +121,7 @@ order by a.id,a.colorder";
                     case "longtext": model.CsType = "string"; break;
                     case "timestamp": model.CsType = "DateTime"; break;
                     default:
-                        model.CsType = "dynamic";
+                        model.CsType = Config.UnKnowDbType;
                         break;
                 }
 

@@ -144,14 +144,11 @@ namespace CodeGenerator
                     case "varchar2": model.CsType = "ansistring"; break;
                     case "yesno": model.CsType = "boolean"; break;
                     default:
-                        model.CsType = "dynamic";
+                        model.CsType = Config.UnKnowDbType;
                         break;
                 }
 
-                if (Config.FileType == ".java")
-                {
-                    model.JavaType = model.CsType;
-                }
+                model.JavaType = model.CsType;
 
                 model.DbType = item.type;
                 model.AllowNull = Convert.ToString(item.notnull); //是否允许空

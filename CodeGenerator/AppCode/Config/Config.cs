@@ -26,6 +26,9 @@ namespace CodeGenerator
         //文件类型
         public static string FileEncoding = "";
 
+        //未知类型
+        public static string UnKnowDbType = "";
+
         //是否开启表注释
         public static bool TableComment = true;
 

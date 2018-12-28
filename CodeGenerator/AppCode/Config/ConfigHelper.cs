@@ -25,6 +25,7 @@ namespace CodeGenerator
             Config.ClassSuffix = group.Settings["ClassSuffix"].GetValueAsString();
             Config.FileType = group.Settings["FileType"].GetValueAsString();
             Config.FileEncoding = group.Settings["FileEncoding"].GetValueAsString();
+            Config.UnKnowDbType = group.Settings["UnKnowDbType"].GetValueAsString();
             Config.TableComment = group.Settings["TableComment"].GetValueAsBool();
             Config.ColumnComment = group.Settings["ColumnComment"].GetValueAsBool();
             Config.SqlserverConnectionString = group.Settings["SqlserverConnectionString"].GetValueAsString();
@@ -46,6 +47,7 @@ namespace CodeGenerator
             group.Settings["ClassSuffix"].SetValue(Config.ClassSuffix);
             group.Settings["FileType"].SetValue(Config.FileType);
             group.Settings["FileEncoding"].SetValue(Config.FileEncoding);
+            group.Settings["UnKnowDbType"].SetValue(Config.UnKnowDbType);
             group.Settings["TableComment"].SetValue(Config.TableComment);
             group.Settings["ColumnComment"].SetValue(Config.ColumnComment);
             group.Settings["SqlserverConnectionString"].SetValue(Config.SqlserverConnectionString);

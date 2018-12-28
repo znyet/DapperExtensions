@@ -19,7 +19,6 @@ namespace CodeGenerator
 
         public List<TableEntity> GetTableList()
         {
-
             string sql = "SHOW TABLE STATUS";
             IEnumerable<dynamic> data;
             using (var conn = DbHelper.GetConn())
@@ -113,11 +112,9 @@ namespace CodeGenerator
                     case "timestamp": model.CsType = "DateTime"; break;
                     case "enum": model.CsType = "string"; break;
                     default:
-                        model.CsType = "dynamic";
+                        model.CsType = Config.UnKnowDbType;
                         break;
                 }
-
-
                 model.DbType = item.Type;
                 if (Config.ColumnComment)
                 {

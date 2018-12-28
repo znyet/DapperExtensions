@@ -40,6 +40,7 @@ namespace CodeGenerator
             txtNameSpace.Text = Config.NameSpace;
             txtClassSuffix.Text = Config.ClassSuffix;
             txtFileType.Text = Config.FileType;
+            txtUnknowDbType.Text = Config.UnKnowDbType;
             cbxEncoding.SelectedIndex = cbxEncoding.Items.IndexOf(Config.FileEncoding);
             checkBox1.Checked = Config.TableComment;
             checkBox2.Checked = Config.ColumnComment;
@@ -56,6 +57,7 @@ namespace CodeGenerator
             Config.FileEncoding = cbxEncoding.Text;
             Config.TableComment = checkBox1.Checked;
             Config.ColumnComment = checkBox2.Checked;
+            Config.UnKnowDbType =txtUnknowDbType.Text;
 
             ConfigHelper.SaveConfigFile();
 

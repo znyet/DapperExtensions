@@ -18,6 +18,8 @@ namespace Test
         [Igore]
         public int Sex { get; set; }
 
+        [Igore]
+        public dynamic OtherData { get; set; }
        
     }
 }
