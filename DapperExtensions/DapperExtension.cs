@@ -47,7 +47,7 @@ namespace DapperExtensions
         public static DataTable GetSchemaTable<T>(this IDbConnection conn, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return GetDataTable(conn, builder.SchemaTable<T>(returnFields), null, tran, commandTimeout, commandType);
+            return GetDataTable(conn, builder.SchemaTableSql<T>(returnFields), null, tran, commandTimeout, commandType);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace DapperExtensions
         /// <param name="tran"></param>
         /// <param name="batchSize">default 20000</param>
         /// <param name="timeOut">second default 100s</param>
-        /// <returns>true means ok,if false you must rollback tran</returns>
+        /// <returns></returns>
         public static void BulkCopy(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeOut = 100)
         {
             if (conn.ToString() != "System.Data.SqlClient.SqlConnection")
@@ -172,7 +172,7 @@ namespace DapperExtensions
         public static int UpdateByWhere<T>(this IDbConnection conn, string where, string updateFields, T model, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.UpdateByWhere<T>(where, updateFields), model, tran, commandTimeout, commandType);
+            return conn.Execute(builder.UpdateByWhereSql<T>(where, updateFields), model, tran, commandTimeout, commandType);
         }
 
         public static int InsertOrUpdate<T>(this IDbConnection conn, T model, string updateFields = null, bool update = true, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
@@ -226,7 +226,7 @@ namespace DapperExtensions
         public static int Delete<T>(this IDbConnection conn, object id, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.DeleteById<T>(), new { id = id }, tran, commandTimeout, commandType);
+            return conn.Execute(builder.DeleteByIdSql<T>(), new { id = id }, tran, commandTimeout, commandType);
         }
 
         public static int DeleteByIds<T>(this IDbConnection conn, object ids, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
@@ -234,13 +234,13 @@ namespace DapperExtensions
             var builder = BuilderFactory.GetBuilder(conn);
             DynamicParameters dpar = new DynamicParameters();
             dpar.Add("@ids", ids);
-            return conn.Execute(builder.DeleteByIds<T>(), dpar, tran, commandTimeout, commandType);
+            return conn.Execute(builder.DeleteByIdsSql<T>(), dpar, tran, commandTimeout, commandType);
         }
 
         public static int DeleteByWhere<T>(this IDbConnection conn, string where, object param, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.DeleteAllSql<T>() + where, param, tran, commandTimeout, commandType);
+            return conn.Execute(builder.DeleteByWhereSql<T>(where), param, tran, commandTimeout, commandType);
         }
 
         public static int DeleteAll<T>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)

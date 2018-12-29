@@ -138,7 +138,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="Config.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

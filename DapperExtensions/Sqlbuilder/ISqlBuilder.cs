@@ -8,7 +8,7 @@ namespace DapperExtensions
 {
     internal interface ISqlBuilder
     {
-        string SchemaTable<T>(string returnFields);
+        string SchemaTableSql<T>(string returnFields);
 
         string InsertSql<T>();
 
@@ -16,13 +16,15 @@ namespace DapperExtensions
 
         string UpdateSql<T>(string updateFields);
 
-        string UpdateByWhere<T>(string where, string updateFields);
+        string UpdateByWhereSql<T>(string where, string updateFields);
 
         string ExistsKeySql<T>();
 
-        string DeleteById<T>();
+        string DeleteByIdSql<T>();
 
-        string DeleteByIds<T>();
+        string DeleteByIdsSql<T>();
+
+        string DeleteByWhereSql<T>(string where);
 
         string DeleteAllSql<T>();
 

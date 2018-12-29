@@ -9,7 +9,7 @@ namespace DapperExtensions
     internal class SqlServerBuilder : ISqlBuilder
     {
 
-        public string SchemaTable<T>(string returnFields)
+        public string SchemaTableSql<T>(string returnFields)
         {
             var table = SqlServerCache.GetTableEntity<T>();
             string sql;
@@ -47,7 +47,7 @@ namespace DapperExtensions
             return CommonUtil.CreateUpdateSql(table, updateFields, "[", "]");
         }
 
-        public string UpdateByWhere<T>(string where, string updateFields)
+        public string UpdateByWhereSql<T>(string where, string updateFields)
         {
             var table = SqlServerCache.GetTableEntity<T>();
             return CommonUtil.CreateUpdateByWhereSql(table, where, updateFields, "[", "]");
@@ -60,14 +60,19 @@ namespace DapperExtensions
             return string.Format("SELECT COUNT(1) FROM [{0}] WITH(NOLOCK) WHERE [{1}]=@{1}", table.TableName, table.KeyName);
         }
 
-        public string DeleteById<T>()
+        public string DeleteByIdSql<T>()
         {
             return SqlServerCache.GetTableEntity<T>().DeleteByIdSql;
         }
 
-        public string DeleteByIds<T>()
+        public string DeleteByIdsSql<T>()
         {
             return SqlServerCache.GetTableEntity<T>().DeleteByIdsSql;
+        }
+
+        public string DeleteByWhereSql<T>(string where)
+        {
+            return DeleteAllSql<T>() + where;
         }
 
         public string DeleteAllSql<T>()
