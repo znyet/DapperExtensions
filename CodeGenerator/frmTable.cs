@@ -210,28 +210,42 @@ namespace CodeGenerator
             //开启一个线程来生成代码
             new Thread(() =>
             {
+                string error = null;
+                string errorFile = Config.ApplicationPath + "\\error.txt";
+                int i = 0;
                 foreach (var table in tables)
                 {
-                    string className = table.NameUpper + Config.ClassSuffix;
-                    string fileName = Config.OutPutDir + "\\" + className + Config.FileType;
-                    
-                    List<ColumnEntity> columnList;
-                    using (var conn = DbHelper.GetConn())
-                    {
-                        columnList = DbHelper.GetBuilder().GetColumnList(table);
-                    }
                     try
                     {
+                        string className = table.NameUpper + Config.ClassSuffix;
+                        string fileName = Config.OutPutDir + "\\" + className + Config.FileType;
+                        List<ColumnEntity> columnList;
+                        using (var conn = DbHelper.GetConn())
+                        {
+                            columnList = DbHelper.GetBuilder().GetColumnList(table);
+                        }
                         string result = Razor.Parse(content, new { Table = table, ColumnList = columnList, ClassName = className, NameSpace = Config.NameSpace });
                         System.IO.File.WriteAllText(fileName, result, utf8);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message);
+                        i++;
+                        error += "===================================" + (i) + "========================================\r\n";
+                        error += table.Name + "\r\n";
+                        error += ex.Message + "\r\n\r\n";
                     }
                 }
 
-                MessageBox.Show("ok");
+                if (!string.IsNullOrEmpty(error))
+                {
+                    System.IO.File.WriteAllText(errorFile, error, utf8);
+                    MessageBox.Show(i + " error,please see error.txt");
+                }
+                else
+                {
+
+                    MessageBox.Show("ok");
+                }
 
             }) { IsBackground = true }.Start();
 
