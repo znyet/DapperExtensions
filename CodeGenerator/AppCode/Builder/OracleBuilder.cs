@@ -95,7 +95,11 @@ namespace CodeGenerator
                 else
                     model.CsType = Config.UnKnowDbType;
 
-                model.JavaType = model.CsType;
+                var java = Config.DbTypeDictionary[Config.OracleJava].FirstOrDefault(f => f.Name == t);
+                if (java != null)
+                    model.JavaType = java.To;
+                else
+                    model.JavaType = Config.UnKnowDbType;
 
                 model.DbType = item.DbType + "," + item.DataLength;
                 if (Config.ColumnComment)

@@ -231,8 +231,8 @@
     <DbType Name="binary" To="binary" />
     <DbType Name="bit" To="boolean" />
     <DbType Name="blob" To="binary" />
-    <DbType Name="bool" To="boolean" />
-    <DbType Name="boolean" To="boolean" />
+    <DbType Name="bool" To="bool" />
+    <DbType Name="boolean" To="bool" />
     <DbType Name="char" To="ansistringfixedlength" />
     <DbType Name="clob" To="string" />
     <DbType Name="counter" To="long" />
@@ -451,5 +451,127 @@
     <DbType Name="longtext" To="String" />
     <DbType Name="timestamp" To="Timestamp" />
   </Database>
+
+  <Database DbProvider="Oracle"  Language="Java">
+    <DbType Name="IMAGE" To="byte[]"/>
+    <DbType Name="TEXT" To="String"/>
+    <DbType Name="NTEXT" To="String"/>
+    <DbType Name="VARCHAR" To="String"/>
+    <DbType Name="NVARCHAR" To="String" />
+    <DbType Name="VARCHAR2" To="String" />
+    <DbType Name="NVARCHAR2" To="String" />
+    <DbType Name="CLOB" To="String" />
+    <DbType Name="XML" To="String"/>
+    <DbType Name="UNIQUEIDENTIFIER" To="UUID"/>
+    <DbType Name="DATE" To="DateTime"/>
+    <DbType Name="SMALLDATETIME" To="DateTime"/>
+    <DbType Name="DATETIME" To="DateTime" />
+    <DbType Name="DATETIME2" To="DateTime"/>
+    <DbType Name="TIME" To="TimeSpan"/>
+    <DbType Name="DATETIMEOFFSET" To="DateTimeOffset"/>
+    <DbType Name="TINYINT" To="byte"/>
+    <DbType Name="SMALLINT" To="short"/>
+    <DbType Name="INT" To="int"/>
+    <DbType Name="BIGINT" To="long"/>
+    <DbType Name="BIT" To="boolean" />
+    <DbType Name="CHAR" To="String" />
+    <DbType Name="NCHAR" To="String" />
+    <DbType Name="UNIQUEIDE" To="UUID" />
+    <DbType Name="NUMERIC" To="BigDecimal" />
+    <DbType Name="INTEGER" To="int" />
+    <DbType Name="MONEY" To="BigDecimal" />
+    <DbType Name="REAL" To="BigDecimal" />
+    <DbType Name="BLOB" To="byte[]" />
+    <DbType Name="NTEXT" To="string" />
+    <DbType Name="SINGLE" To="float" />
+    <DbType Name="SMALLMONEY" To="decimal" />
+    <DbType Name="DECIMAL" To="decimal" />
+    <DbType Name="BFILE" To="byte[]" />
+    <DbType Name="FLOAT" To="float" />
+    <DbType Name="UNIQUEIDENTIFIER" To="UUID" />
+    <DbType Name="TEXT" To="string" />
+    <DbType Name="BINARY" To="byte[]" />
+    <DbType Name="NUMBER" To="BigDecimal" />
+    <DbType Name="VARBINARY" To="byte[]" />
+    <DbType Name="LONG" To="byte[]" />
+    <DbType Name="LONGTEXT" To="String" />
+    <DbType Name="TIMESTAMP" To="DateTime" />
+    <DbType Name="SDO_GEOMETRY" To="String" />
+  </Database>
+  <Database DbProvider="SQLite"  Language="Java">
+    <DbType Name="bigint" To="long" />
+    <DbType Name="biguint" To="ulong" />
+    <DbType Name="binary" To="binary" />
+    <DbType Name="bit" To="boolean" />
+    <DbType Name="blob" To="binary" />
+    <DbType Name="bool" To="boolean" />
+    <DbType Name="boolean" To="boolean" />
+    <DbType Name="char" To="ansistringfixedlength" />
+    <DbType Name="clob" To="string" />
+    <DbType Name="counter" To="long" />
+    <DbType Name="currency" To="BigDecimal" />
+    <DbType Name="date" To="datetime" />
+    <DbType Name="datetime" To="datetime" />
+    <DbType Name="decimal" To="decimal" />
+    <DbType Name="double" To="double" />
+    <DbType Name="float" To="double" />
+    <DbType Name="general" To="binary" />
+    <DbType Name="guid" To="guid" />
+    <DbType Name="identity" To="long" />
+    <DbType Name="image" To="binary" />
+    <DbType Name="int" To="int" />
+    <DbType Name="int8" To="sbyte" />
+    <DbType Name="int16" To="short" />
+    <DbType Name="int32" To="int" />
+    <DbType Name="int64" To="long" />
+    <DbType Name="integer" To="long" />
+    <DbType Name="integer8" To="sbyte" />
+    <DbType Name="integer16" To="short" />
+    <DbType Name="integer32" To="int" />
+    <DbType Name="integer64" To="long" />
+    <DbType Name="logical" To="boolean" />
+    <DbType Name="long" To="long" />
+    <DbType Name="longchar" To="String" />
+    <DbType Name="longtext" To="String" />
+    <DbType Name="longvarchar" To="String" />
+    <DbType Name="memo" To="String" />
+    <DbType Name="money" To="decimal" />
+    <DbType Name="nchar" To="stringfixedlength" />
+    <DbType Name="note" To="String" />
+    <DbType Name="ntext" To="String" />
+    <DbType Name="number" To="BigDecimal" />
+    <DbType Name="numeric" To="BigDecimal" />
+    <DbType Name="nvarchar" To="String" />
+    <DbType Name="oleobject" To="binary" />
+    <DbType Name="raw" To="binary" />
+    <DbType Name="real" To="double" />
+    <DbType Name="single" To="single" />
+    <DbType Name="smalldate" To="datetime" />
+    <DbType Name="smallint" To="short" />
+    <DbType Name="smalluint" To="ushort" />
+    <DbType Name="string" To="String" />
+    <DbType Name="text" To="String" />
+    <DbType Name="time" To="datetime" />
+    <DbType Name="timestamp" To="datetime" />
+    <DbType Name="tinyint" To="byte" />
+    <DbType Name="tinysint" To="sbyte" />
+    <DbType Name="uint" To="uint" />
+    <DbType Name="uint8" To="byte" />
+    <DbType Name="uint16" To="ushort" />
+    <DbType Name="uint32" To="uint" />
+    <DbType Name="uint64" To="ulong" />
+    <DbType Name="ulong" To="ulong" />
+    <DbType Name="uniqueidentifier" To="guid" />
+    <DbType Name="unsignedinteger" To="ulong" />
+    <DbType Name="unsignedinteger8" To="byte" />
+    <DbType Name="unsignedinteger16" To="ushort" />
+    <DbType Name="unsignedinteger32" To="uint" />
+    <DbType Name="unsignedinteger64" To="ulong" />
+    <DbType Name="varbinary" To="binary" />
+    <DbType Name="varchar" To="ansistring" />
+    <DbType Name="varchar2" To="ansistring" />
+    <DbType Name="yesno" To="boolean" />
+  </Database>
+  
   <!-- Java-Language End-->
 </DbTypeMap>

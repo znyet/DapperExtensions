@@ -68,9 +68,12 @@ namespace CodeGenerator
         public static readonly string PostgreSqlCSharp = "PostgreSqlCSharp";
         public static readonly string OracleCSharp = "OracleCSharp";
         public static readonly string SQLiteCSharp = "SQLiteCSharp";
+
         public static readonly string MySqlJava = "MySqlJava";
         public static readonly string PostgreSqlJava = "PostgreSqlJava";
         public static readonly string SqlServerJava = "SqlServerJava";
+        public static readonly string OracleJava = "OracleJava";
+        public static readonly string SQLiteJava = "SQLiteJava";
 
     }
 }
