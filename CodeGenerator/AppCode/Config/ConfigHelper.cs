@@ -20,10 +20,15 @@ namespace CodeGenerator
         {
             ConfigFile cfg = GetConfigFile();
             var group = cfg.SettingGroups["config"];
+
             Config.Template = group.Settings["Template"].GetValueAsString();
             Config.OutPutDir = group.Settings["OutPutDir"].GetValueAsString();
             Config.NameSpace = group.Settings["NameSpace"].GetValueAsString();
             Config.ClassSuffix = group.Settings["ClassSuffix"].GetValueAsString();
+            if (Config.ClassSuffix == "@")
+            {
+                Config.ClassSuffix = "";
+            }
             Config.FileType = group.Settings["FileType"].GetValueAsString();
             Config.FileEncoding = group.Settings["FileEncoding"].GetValueAsString();
             Config.UnKnowDbType = group.Settings["UnKnowDbType"].GetValueAsString();
@@ -78,7 +83,14 @@ namespace CodeGenerator
             group.Settings["Template"].SetValue(Config.Template);
             group.Settings["OutPutDir"].SetValue(Config.OutPutDir);
             group.Settings["NameSpace"].SetValue(Config.NameSpace);
-            group.Settings["ClassSuffix"].SetValue(Config.ClassSuffix);
+            if (string.IsNullOrEmpty(Config.ClassSuffix))
+            {
+                group.Settings["ClassSuffix"].SetValue("@");
+            }
+            else
+            {
+                group.Settings["ClassSuffix"].SetValue(Config.ClassSuffix);
+            }
             group.Settings["FileType"].SetValue(Config.FileType);
             group.Settings["FileEncoding"].SetValue(Config.FileEncoding);
             group.Settings["UnKnowDbType"].SetValue(Config.UnKnowDbType);

@@ -85,6 +85,8 @@ namespace CodeGenerator
         //SqlServer
         private void button1_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtSqlserver.Text.Trim()))
+                return;
             SaveConfig("sqlserver", txtSqlserver.Text.Trim());
             if (!CheckConn())
                 return;
@@ -94,6 +96,8 @@ namespace CodeGenerator
         //MySql
         private void button2_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtMysql.Text.Trim()))
+                return;
             SaveConfig("mysql", txtMysql.Text.Trim());
             if (!CheckConn())
                 return;
@@ -103,6 +107,8 @@ namespace CodeGenerator
         //Sqlite
         private void button3_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtSqlite.Text.Trim()))
+                return;
             SaveConfig("sqlite", txtSqlite.Text.Trim());
             if (!CheckConn())
                 return;
@@ -112,6 +118,8 @@ namespace CodeGenerator
         //Postgresql
         private void button4_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtPostgresql.Text.Trim()))
+                return;
             SaveConfig("postgresql", txtPostgresql.Text.Trim());
             if (!CheckConn())
                 return;
@@ -121,6 +129,8 @@ namespace CodeGenerator
         //Oracle
         private void button5_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtOracle.Text.Trim()))
+                return;
             SaveConfig("oracle", txtOracle.Text.Trim());
             if (!CheckConn())
                 return;

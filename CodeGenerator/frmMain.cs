@@ -110,6 +110,16 @@ namespace CodeGenerator
                 MessageBox.Show("please select 输出路径(output dir)");
                 return;
             }
+            if (string.IsNullOrEmpty(txtFileType.Text.Trim()))
+            {
+                MessageBox.Show("please fill in 文件类型(filetype)");
+                return;
+            }
+            if (string.IsNullOrEmpty(txtUnknowDbType.Text.Trim()))
+            {
+                MessageBox.Show("please fill in unknow type");
+                return;
+            }
             SaveConfig();
             frmDatabase win = new frmDatabase();
             win.ShowDialog();
