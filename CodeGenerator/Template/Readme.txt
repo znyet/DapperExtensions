@@ -2,7 +2,7 @@
 2、@Model.NameSpace     -----------> c# namespace or java package
 3、@Model.Table         -----------> TableEntity
 4、@Model.ColumnList    -----------> List<ColumnEntity>
-5、@Raw                 -----------> special tag like <  > you must use @Raw  
+5、@Raw                 -----------> special tag like <  > you must use @Raw
 
 public class TableEntity
 {
@@ -31,3 +31,8 @@ public class ColumnEntity
 
 DbTypeMap.xml
 you can config DbType change to c# or java type
+
+
+=========================================================================================
+see more razor grammar,you can go to
+https://github.com/Antaris/RazorEngine
