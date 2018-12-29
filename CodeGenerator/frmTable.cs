@@ -132,7 +132,7 @@ namespace CodeGenerator
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(this, ex.Message);
             }
 
         }
@@ -234,18 +234,22 @@ namespace CodeGenerator
                         error += table.Name + "\r\n";
                         error += ex.Message + "\r\n\r\n";
                     }
+
+                    Thread.Sleep(1);
                 }
 
                 if (!string.IsNullOrEmpty(error))
                 {
                     System.IO.File.WriteAllText(errorFile, error, utf8);
-                    MessageBox.Show(i + " error,please see error.txt");
+                    MessageBox.Show(this, i + " error,please see error.txt");
+                    System.Diagnostics.Process.Start(Config.ApplicationPath);
                 }
                 else
                 {
 
-                    MessageBox.Show("ok");
+                    MessageBox.Show(this, "ok");
                 }
+                
 
             }) { IsBackground = true }.Start();
 

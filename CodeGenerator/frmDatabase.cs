@@ -66,13 +66,13 @@ namespace CodeGenerator
             catch (Exception ex)
             {
                 ok = false;
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(this, ex.Message);
             }
 
             return ok;
 
         }
-        
+
 
         #endregion
 
