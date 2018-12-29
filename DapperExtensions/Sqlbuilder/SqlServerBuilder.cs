@@ -40,7 +40,7 @@ namespace DapperExtensions
         {
             var table = SqlServerCache.GetTableEntity<T>();
             CommonUtil.CheckTableKey(table);
-            if (string.IsNullOrEmpty(updateFields) || updateFields == "*")
+            if (string.IsNullOrEmpty(updateFields))
             {
                 return table.UpdateSql;
             }
@@ -62,12 +62,16 @@ namespace DapperExtensions
 
         public string DeleteByIdSql<T>()
         {
-            return SqlServerCache.GetTableEntity<T>().DeleteByIdSql;
+            var table = SqlServerCache.GetTableEntity<T>();
+            CommonUtil.CheckTableKey(table);
+            return table.DeleteByIdSql;
         }
 
         public string DeleteByIdsSql<T>()
         {
-            return SqlServerCache.GetTableEntity<T>().DeleteByIdsSql;
+            var table = SqlServerCache.GetTableEntity<T>();
+            CommonUtil.CheckTableKey(table);
+            return table.DeleteByIdsSql;
         }
 
         public string DeleteByWhereSql<T>(string where)
@@ -78,6 +82,45 @@ namespace DapperExtensions
         public string DeleteAllSql<T>()
         {
             return SqlServerCache.GetTableEntity<T>().DeleteAllSql;
+        }
+
+        public string GetInsertIdSql()
+        {
+            return "SELECT @@IDENTITY";
+        }
+
+        public string GetAllSql<T>(string returnFields, string orderBy)
+        {
+            var table = SqlServerCache.GetTableEntity<T>();
+            if (string.IsNullOrEmpty(returnFields))
+            {
+                return table.GetAllSql + orderBy;
+            }
+            else
+            {
+                return string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) {3}" + returnFields, table.TableName, orderBy);
+            }
+        }
+
+        public string GetByIdSql<T>(string returnFields)
+        {
+            var table = SqlServerCache.GetTableEntity<T>();
+            CommonUtil.CheckTableKey(table);
+            if (string.IsNullOrEmpty(returnFields))
+                return table.GetByIdSql;
+            else
+                return string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) WHERE [{2}]=@id", returnFields, table.TableName, table.KeyName);
+        }
+
+        public string GetByIdsSql<T>(string returnFields)
+        {
+            var table = SqlServerCache.GetTableEntity<T>();
+            CommonUtil.CheckTableKey(table);
+            if (string.IsNullOrEmpty(returnFields))
+                return table.GetByIdsSql;
+            else
+                return string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) WHERE [{2}] IN @ids", returnFields, table.TableName, table.KeyName);
+
         }
     }
 }

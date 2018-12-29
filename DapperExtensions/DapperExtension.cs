@@ -250,45 +250,59 @@ namespace DapperExtensions
 
         }
 
-
-
         #endregion
 
         #region method (Query)
 
-        public static IdType GetInsertId<IdType>()
+        public static IdType GetInsertId<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
-            return default(IdType);
+            var builder = BuilderFactory.GetBuilder(conn);
+            return conn.ExecuteScalar<IdType>(builder.GetInsertIdSql(), null, tran, commandTimeout, commandType);
         }
 
-        public static IEnumerable<T> GetAll<T>(string returnFields = null, string orderBy = null)
+        public static dynamic GetTotal<T>(string where = null, object param = null)
         {
             return null;
         }
 
-        public static IEnumerable<dynamic> GetAllDynamic<T>(string returnFields = null, string orderBy = null)
+        public static IEnumerable<T> GetAll<T>(this IDbConnection conn, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
-            return null;
+            var builder = BuilderFactory.GetBuilder(conn);
+            return conn.Query<T>(builder.GetAllSql<T>(returnFields, orderBy), null, tran, true, commandTimeout, commandType);
         }
 
-        public static T GetById<T>(object id, string returnFields = null)
+        public static IEnumerable<dynamic> GetAllDynamic<T>(this IDbConnection conn, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
-            return default(T);
+            var builder = BuilderFactory.GetBuilder(conn);
+            return conn.Query<dynamic>(builder.GetAllSql<T>(returnFields, orderBy), null, tran, true, commandTimeout, commandType);
         }
 
-        public static dynamic GetByIdDynamic<T>(object id, string returnFields = null)
+        public static T GetById<T>(this IDbConnection conn, object id, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
-            return null;
+            var builder = BuilderFactory.GetBuilder(conn);
+            return conn.QueryFirstOrDefault<T>(builder.GetByIdSql<T>(returnFields), new { id = id }, tran, commandTimeout, commandType);
         }
 
-        public static IEnumerable<T> GetByIds<T>(object ids, string returnFields = null)
+        public static dynamic GetByIdDynamic<T>(this IDbConnection conn, object id, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
-            return null;
+            var builder = BuilderFactory.GetBuilder(conn);
+            return conn.QueryFirstOrDefault<dynamic>(builder.GetByIdSql<T>(returnFields), new { id = id }, tran, commandTimeout, commandType);
         }
 
-        public static IEnumerable<dynamic> GetByIdsDynamic<T>(object ids, string returnFields = null)
+        public static IEnumerable<T> GetByIds<T>(this IDbConnection conn, object ids, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
-            return null;
+            var builder = BuilderFactory.GetBuilder(conn);
+            DynamicParameters dpar = new DynamicParameters();
+            dpar.Add("@ids", ids);
+            return conn.Query<T>(builder.GetByIdSql<T>(returnFields), dpar, tran, true, commandTimeout, commandType);
+        }
+
+        public static IEnumerable<dynamic> GetByIdsDynamic<T>(this IDbConnection conn, object ids, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            DynamicParameters dpar = new DynamicParameters();
+            dpar.Add("@ids", ids);
+            return conn.Query<dynamic>(builder.GetByIdSql<T>(returnFields), dpar, tran, true, commandTimeout, commandType);
         }
 
         public static IEnumerable<T> GetByWhere<T>(string where, object param = null, string returnFields = null)
@@ -307,11 +321,6 @@ namespace DapperExtensions
         }
 
         public static dynamic GetByWhereFirstDynamic<T>(string where, object param = null, string returnFields = null)
-        {
-            return null;
-        }
-
-        public static dynamic GetTotal<T>(string where = null, object param = null)
         {
             return null;
         }

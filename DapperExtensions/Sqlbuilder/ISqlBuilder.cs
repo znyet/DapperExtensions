@@ -8,6 +8,9 @@ namespace DapperExtensions
 {
     internal interface ISqlBuilder
     {
+
+        #region method (Insert Update Delete)
+
         string SchemaTableSql<T>(string returnFields);
 
         string InsertSql<T>();
@@ -27,6 +30,21 @@ namespace DapperExtensions
         string DeleteByWhereSql<T>(string where);
 
         string DeleteAllSql<T>();
+
+        #endregion
+
+
+        #region method (Query)
+
+        string GetInsertIdSql();
+
+        string GetAllSql<T>(string returnFields, string orderBy);
+
+        string GetByIdSql<T>(string returnFields);
+
+        string GetByIdsSql<T>(string returnFields);
+
+        #endregion
 
 
     }

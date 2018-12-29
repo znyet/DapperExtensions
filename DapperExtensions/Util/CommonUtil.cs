@@ -175,7 +175,7 @@ namespace DapperExtensions
             }
 
             table.DeleteAllSql = string.Format("DELETE FROM {1}{0}{2} ", table.TableName, leftChar, rightChar);
-            table.GetAllSql = string.Format("SELECT {0} FROM {2}{1}{3}", Fields, table.TableName, leftChar, rightChar);
+            table.GetAllSql = string.Format("SELECT {0} FROM {2}{1}{3} ", Fields, table.TableName, leftChar, rightChar);
         }
 
         public static void InitTableForSqlServer(TableEntity table) //初始化增删改等语句sqlserver专用
@@ -212,7 +212,7 @@ namespace DapperExtensions
             }
 
             table.DeleteAllSql = string.Format("DELETE FROM [{0}] ", table.TableName);
-            table.GetAllSql = string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK)", Fields, table.TableName);
+            table.GetAllSql = string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) ", Fields, table.TableName);
         }
 
         public static void CheckTableKey(TableEntity table)

@@ -131,7 +131,7 @@ namespace DapperExtensions
         public static async Task<int> DeleteByWhereAsync<T>(this IDbConnection conn, string where, object param, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return await conn.ExecuteAsync(builder.DeleteAllSql<T>() + where, param, tran, commandTimeout, commandType);
+            return await conn.ExecuteAsync(builder.DeleteByWhereSql<T>(where), param, tran, commandTimeout, commandType);
         }
 
         public static async Task<int> DeleteAllAsync<T>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
@@ -141,6 +141,56 @@ namespace DapperExtensions
 
         }
 
+
+        #endregion
+
+        #region method (Query)
+
+        public static async Task<IdType> GetInsertIdAsync<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteScalarAsync<IdType>(builder.GetInsertIdSql(), null, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<IEnumerable<T>> GetAllAsync<T>(this IDbConnection conn, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.QueryAsync<T>(builder.GetAllSql<T>(returnFields, orderBy), null, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<IEnumerable<dynamic>> GetAllDynamicAsync<T>(this IDbConnection conn, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.QueryAsync<dynamic>(builder.GetAllSql<T>(returnFields, orderBy), null, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<T> GetByIdAsync<T>(this IDbConnection conn, object id, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.QueryFirstOrDefaultAsync<T>(builder.GetByIdSql<T>(returnFields), new { id = id }, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<dynamic> GetByIdDynamicAsync<T>(this IDbConnection conn, object id, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.QueryFirstOrDefaultAsync<dynamic>(builder.GetByIdSql<T>(returnFields), new { id = id }, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<IEnumerable<T>> GetByIdsAsync<T>(this IDbConnection conn, object ids, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            DynamicParameters dpar = new DynamicParameters();
+            dpar.Add("@ids", ids);
+            return await conn.QueryAsync<T>(builder.GetByIdSql<T>(returnFields), dpar, tran, commandTimeout, commandType);
+        }
+
+        public static async Task<IEnumerable<dynamic>> GetByIdsDynamicAsync<T>(this IDbConnection conn, object ids, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            DynamicParameters dpar = new DynamicParameters();
+            dpar.Add("@ids", ids);
+            return await conn.QueryAsync<dynamic>(builder.GetByIdSql<T>(returnFields), dpar, tran, commandTimeout, commandType);
+        }
 
         #endregion
 

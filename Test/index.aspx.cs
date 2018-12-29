@@ -55,7 +55,7 @@ namespace Test
                 Student ss = new Student();
                 ss.Id = second;
                 ss.Name = "马六" + second;
-                roweffect += conn.Insert(ss);                
+                roweffect += conn.Insert(ss);  
             }
         }
 
