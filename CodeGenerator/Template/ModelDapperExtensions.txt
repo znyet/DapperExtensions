@@ -1,5 +1,6 @@
 ﻿using System;
 using DapperExtensions;
+//using System.Dynamic;
 
 namespace @Model.NameSpace
 {
@@ -21,7 +22,7 @@ namespace @Model.NameSpace
 			@Raw("        public " + item.CsType + " " + item.NameUpper + " { get; set; }\r\n\r\n")
 		}
         //[Igore]
-        //public dynamic OtherData { get; set; }
+        //public dynamic OtherData = new ExpandoObject();
 
     }
 
