@@ -9,7 +9,7 @@ namespace CodeGenerator
     public class Config
     {
         //模板
-        public static string Template="";
+        public static string Template = "";
 
         //文件输出路径
         public static string OutPutDir = "";
@@ -60,7 +60,17 @@ namespace CodeGenerator
         //当前数据库连接
         public static string ConnectionString;
 
+        //数据类型转换
+        public static readonly Dictionary<string, List<DbTypeEntity>> DbTypeDictionary = new Dictionary<string, List<DbTypeEntity>>();
 
+        public static readonly string SqlServerCSharp = "SqlServerCSharp";
+        public static readonly string MySqlCSharp = "MySqlCSharp";
+        public static readonly string PostgreSqlCSharp = "PostgreSqlCSharp";
+        public static readonly string OracleCSharp = "OracleCSharp";
+        public static readonly string SQLiteCSharp = "SQLiteCSharp";
+        public static readonly string MySqlJava = "MySqlJava";
+        public static readonly string PostgreSqlJava = "PostgreSqlJava";
+        public static readonly string SqlServerJava = "SqlServerJava";
 
     }
 }

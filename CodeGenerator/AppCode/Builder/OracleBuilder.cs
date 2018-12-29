@@ -82,54 +82,18 @@ namespace CodeGenerator
                         tableEntity.IsIdentity = "true";
                     }
                 }
-                string columnType = item.DbType;//数据类型
-                switch (columnType)
+                string t = item.DbType;//数据类型
+
+                if (string.IsNullOrEmpty(t))
                 {
-                    case "IMAGE": model.CsType = "byte[]"; break;
-                    case "TEXT": model.CsType = "string"; break;
-                    case "NTEXT": model.CsType = "string"; break;
-                    case "VARCHAR": model.CsType = "string"; break;
-                    case "NVARCHAR": model.CsType = "string"; break;
-                    case "VARCHAR2": model.CsType = "string"; break;
-                    case "NVARCHAR2": model.CsType = "string"; break;
-                    case "CLOB": model.CsType = "string"; break;
-                    case "XML": model.CsType = "string"; break;
-                    case "UNIQUEIDENTIFIER": model.CsType = "Guid"; break;
-                    case "DATE": model.CsType = "DateTime"; break;
-                    case "SMALLDATETIME": model.CsType = "DateTime"; break;
-                    case "DATETIME": model.CsType = "DateTime"; break;
-                    case "DATETIME2": model.CsType = "DateTime"; break;
-                    case "TIME": model.CsType = "TimeSpan"; break;
-                    case "DATETIMEOFFSET": model.CsType = "DateTimeOffset"; break;
-                    case "TINYINT": model.CsType = "byte"; break;
-                    case "SMALLINT": model.CsType = "short"; break;
-                    case "INT": model.CsType = "int"; break;
-                    case "BIGINT": model.CsType = "long"; break;
-                    case "BIT": model.CsType = "bool"; break;
-                    case "CHAR": model.CsType = "string"; break;
-                    case "NCHAR": model.CsType = "string"; break;
-                    case "UNIQUEIDE": model.CsType = "Guid"; break;
-                    case "NUMERIC": model.CsType = "decimal"; break;
-                    case "INTEGER": model.CsType = "int"; break;
-                    case "MONEY": model.CsType = "decimal"; break;
-                    case "REAL": model.CsType = "decimal"; break;
-                    case "BLOB": model.CsType = "byte[]"; break;
-                    case "SINGLE": model.CsType = "float"; break;
-                    case "SMALLMONEY": model.CsType = "decimal"; break;
-                    case "DECIMAL": model.CsType = "decimal"; break;
-                    case "BFILE": model.CsType = "byte[]"; break;
-                    case "FLOAT": model.CsType = "float"; break;
-                    case "BINARY": model.CsType = "byte[]"; break;
-                    case "NUMBER": model.CsType = "decimal"; break;
-                    case "VARBINARY": model.CsType = "byte[]"; break;
-                    case "LONG": model.CsType = "byte[]"; break;
-                    case "LONGTEXT": model.CsType = "string"; break;
-                    case "TIMESTAMP": model.CsType = "DateTime"; break;
-                    case "SDO_GEOMETRY": model.CsType = "string"; break;
-                    default:
-                        model.CsType = Config.UnKnowDbType;
-                        break;
+                    t = "";
                 }
+
+                var cs = Config.DbTypeDictionary[Config.OracleCSharp].FirstOrDefault(f => f.Name == t);
+                if (cs != null)
+                    model.CsType = cs.To;
+                else
+                    model.CsType = Config.UnKnowDbType;
 
                 model.JavaType = model.CsType;
 

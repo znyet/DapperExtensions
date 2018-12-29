@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CodeGenerator
 {
@@ -35,6 +36,39 @@ namespace CodeGenerator
             Config.OracleConnectionString = group.Settings["OracleConnectionString"].GetValueAsString();
 
             Config.ApplicationPath = System.AppDomain.CurrentDomain.BaseDirectory;
+
+            XDocument doc = XDocument.Load(Config.ApplicationPath + "Template\\DbTypeMap.xml");
+            XElement DbTypeMapElement = doc.Element("DbTypeMap");
+
+            foreach (XElement element in DbTypeMapElement.Elements("Database")) //遍历数据库
+            {
+                string dbProvider = element.Attribute("DbProvider").Value;
+                string language = element.Attribute("Language").Value;
+                string key = dbProvider + language;
+
+                List<DbTypeEntity> list;
+                if (!Config.DbTypeDictionary.ContainsKey(key))
+                {
+                    list = new List<DbTypeEntity>();
+                    Config.DbTypeDictionary[key] = list;
+                }
+                else
+                {
+                    list = Config.DbTypeDictionary[key];
+                }
+
+                foreach (XElement el in element.Elements("DbType")) //遍历语言转换
+                {
+                    string Name = el.Attribute("Name").Value;
+                    string To = el.Attribute("To").Value.Replace("&lt;", "<").Replace("&gt;", ">");
+                    DbTypeEntity model = new DbTypeEntity();
+                    model.Name = Name;
+                    model.To = To;
+                    list.Add(model);
+                }
+
+            }
+
         }
 
         public static void SaveConfigFile()
@@ -57,7 +91,7 @@ namespace CodeGenerator
             group.Settings["OracleConnectionString"].SetValue(Config.OracleConnectionString);
             cfg.Save(Config.ApplicationPath + "Config.ini");
 
-            
+
         }
 
 
