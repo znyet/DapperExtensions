@@ -27,3 +27,8 @@ public class ColumnEntity
     public string AllowNull { get; set; }
     public string DefaultValue { get; set; }
 }
+
+=========================================================================================
+
+DbTypeMap.xml
+you can config DbType change to c# or java type
