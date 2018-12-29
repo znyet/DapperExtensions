@@ -102,22 +102,7 @@ namespace DapperExtensions
         {
             return await Task.Run(() =>
             {
-                var builder = BuilderFactory.GetBuilder(conn);
-                int effectRow = 0;
-                dynamic total = conn.ExecuteScalar<dynamic>(builder.ExistsKeySql<T>(), model, tran, commandTimeout, commandType);
-                if (total > 0)
-                {
-                    if (update)
-                    {
-                        effectRow += Update(conn, model, updateFields, tran, commandTimeout, commandType);
-                    }
-                }
-                else
-                {
-                    effectRow += Insert(conn, model, tran, commandTimeout, commandType);
-                }
-
-                return effectRow;
+                return InsertOrUpdate<T>(conn, model, updateFields, update, tran, commandTimeout, commandType);
             });
         }
 
@@ -125,22 +110,7 @@ namespace DapperExtensions
         {
             return await Task.Run(() =>
             {
-                var builder = BuilderFactory.GetBuilder(conn);
-                int effectRow = 0;
-                dynamic total = conn.ExecuteScalar<dynamic>(builder.ExistsKeySql<T>(), model, tran, commandTimeout, commandType);
-                if (total > 0)
-                {
-                    if (update)
-                    {
-                        effectRow += Update(conn, model, updateFields, tran, commandTimeout, commandType);
-                    }
-                }
-                else
-                {
-                    effectRow += InsertIdentity(conn, model, tran, commandTimeout, commandType);
-                }
-
-                return effectRow;
+                return InsertIdentityOrUpdate<T>(conn, model, updateFields, update, tran, commandTimeout, commandType);
             });
         }
 
