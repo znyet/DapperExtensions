@@ -75,6 +75,7 @@ namespace CodeGenerator
         //选择模板
         private void button1_Click(object sender, EventArgs e)
         {
+            openFileDialog1.InitialDirectory = Config.ApplicationPath + "Template";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 txtTemplate.Text = openFileDialog1.FileName;
