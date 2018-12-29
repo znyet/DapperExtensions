@@ -25,7 +25,7 @@ namespace CodeGenerator
             //模板路径
             if (string.IsNullOrEmpty(Config.Template))
             {
-                Config.Template = Config.ApplicationPath + "Template\\ModelCsharp.txt";
+                Config.Template = Config.ApplicationPath + "Template\\ModelDapperExtensions.txt";
             }
             txtTemplate.Text = Config.Template;
 
