@@ -1,19 +1,24 @@
 ﻿package @Model.NameSpace;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.UUID;
+
 public class @Model.ClassName {
 
-	@foreach(var item in Model.ColumnList)
-	{<text>
-	private @item.JavaType @item.NameLower;</text>
-	} 
-	@foreach(var item in Model.ColumnList)
-	{
-	<text>
-    public @item.JavaType @("get"+item.NameUpper+"()") {
-        return @item.NameLower;
-    }
-    public void @("set"+item.NameUpper+"("+item.JavaType +" val)") {
-        this.@item.NameLower = val;
-    }</text>
-	}
+@foreach (var item in Model.ColumnList)
+{
+	@("	private " + item.JavaType + " " + item.NameLower + ";\n")
+}
+
+@foreach (var item in Model.ColumnList)
+{
+	@("	public " + item.JavaType + " get" + item.NameUpper + "()" + " {\n")
+	@("		return " + item.NameLower + ";\n")
+	@("	}\n\n")
+
+	@("	public void set" + item.NameUpper + "(" + item.JavaType + " val) {\n")
+	@("		this." + @item.NameLower + " = val;\n")
+	@("	}\n\n")
+}
 }

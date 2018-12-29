@@ -185,7 +185,7 @@ namespace CodeGenerator
         private void button1_Click(object sender, EventArgs e)
         {
 
-            string content = System.IO.File.ReadAllText(Config.Template);
+            string content = System.IO.File.ReadAllText(Config.Template, System.Text.Encoding.UTF8);
             List<TableEntity> tables = GetSelectTableList();
             if (tables.Count == 0)
             {
@@ -197,10 +197,10 @@ namespace CodeGenerator
                 System.IO.Directory.CreateDirectory(Config.OutPutDir);
 
             System.Diagnostics.Process.Start(Config.OutPutDir);
-            UTF8Encoding utf8;
+            System.Text.Encoding utf8;
             if (Config.FileEncoding == "utf8 with bom")
             {
-                utf8 = new UTF8Encoding(true);
+                utf8 = System.Text.Encoding.UTF8;
             }
             else
             {
@@ -249,7 +249,7 @@ namespace CodeGenerator
 
                     MessageBox.Show(this, "ok");
                 }
-                
+
 
             }) { IsBackground = true }.Start();
 

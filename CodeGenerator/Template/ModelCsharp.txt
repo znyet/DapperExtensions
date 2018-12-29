@@ -4,20 +4,25 @@ using DapperExtensions;
 namespace @Model.NameSpace
 {
 	/// <summary>
-    /// @Model.Table.Comment
+    /// @Raw(Model.Table.Comment)
     /// </summary>
     [Table(TableName = "@Model.Table.Name", KeyName = "@Model.Table.KeyName", IsIdentity = @Model.Table.IsIdentity)]
     public class @Model.ClassName
-    {	@foreach(var item in Model.ColumnList){<text>
-		/// <summary>
-		/// Descript: @item.Comment
-		/// DbType: @item.DbType
-		/// AllowNull: @item.AllowNull
-		/// Defaultval: @item.DefaultValue
-		/// </summary></text>
-		<text>public @item.CsType @item.NameUpper { get; set; }</text>
+    {
 
+		@foreach (var item in Model.ColumnList)
+		{
+			@Raw("        /// <summary>\r\n")
+			@Raw("        /// Descript: " + item.Comment + "\r\n")
+			@Raw("        /// DbType: " + item.DbType + "\r\n")
+			@Raw("        /// AllowNull: " + @item.AllowNull + "\r\n")
+			@Raw("        /// Defaultval: " + @item.DefaultValue + "\r\n")
+			@Raw("        /// </summary>\r\n")
+			@Raw("        public " + item.CsType + " " + item.NameUpper + " { get; set; }\r\n\r\n")
 		}
-       
+        //[Igore]
+        //public dynamic OtherData { get; set; }
+
     }
+
 }

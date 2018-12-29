@@ -16,5 +16,7 @@ namespace Test
 
         [Igore]
         public string Address { get; set; }
+
+
     }
 }
