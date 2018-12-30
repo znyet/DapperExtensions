@@ -16,8 +16,8 @@ namespace @Model.NameSpace
 			@Raw("        /// <summary>\r\n")
 			@Raw("        /// Descript: " + item.Comment + "\r\n")
 			@Raw("        /// DbType: " + item.DbType + "\r\n")
-			@Raw("        /// AllowNull: " + @item.AllowNull + "\r\n")
-			@Raw("        /// Defaultval: " + @item.DefaultValue + "\r\n")
+			@Raw("        /// AllowNull: " + item.AllowNull + "\r\n")
+			@Raw("        /// Defaultval: " + item.DefaultValue + "\r\n")
 			@Raw("        /// </summary>\r\n")
 			@Raw("        public " + item.CsType + " " + item.NameUpper + " { get; set; }\r\n\r\n")
 		}
