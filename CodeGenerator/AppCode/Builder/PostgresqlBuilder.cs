@@ -35,7 +35,7 @@ order by a.relname asc";
             {
                 TableEntity model = new TableEntity();
                 model.Name = item.name;
-                if (Config.TableComment)
+                if (ConfigHelper.TableComment)
                 {
                     model.Comment = item.value;
                 }
@@ -116,21 +116,21 @@ where table_schema='public' and table_name=current_setting('myapp.name') order b
 
                 string t = columnType.Split('(')[0].ToLower();
 
-                var cs = Config.DbTypeDictionary[Config.PostgreSqlCSharp].FirstOrDefault(f => f.Name == t);
+                var cs = ConfigHelper.DbTypeDictionary[ConfigHelper.PostgreSqlCSharp].FirstOrDefault(f => f.Name == t);
                 if (cs != null)
                     model.CsType = cs.To;
                 else
-                    model.CsType = Config.UnKnowDbType;
+                    model.CsType = ConfigHelper.UnKnowDbType;
 
 
-                var java = Config.DbTypeDictionary[Config.PostgreSqlJava].FirstOrDefault(f => f.Name == t);
+                var java = ConfigHelper.DbTypeDictionary[ConfigHelper.PostgreSqlJava].FirstOrDefault(f => f.Name == t);
                 if (java != null)
                     model.JavaType = java.To;
                 else
-                    model.JavaType = Config.UnKnowDbType;
+                    model.JavaType = ConfigHelper.UnKnowDbType;
 
                 model.DbType = item.type;
-                if (Config.ColumnComment)
+                if (ConfigHelper.ColumnComment)
                 {
                     model.Comment = ddd.detext; //说明
                 }

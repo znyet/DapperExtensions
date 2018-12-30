@@ -30,24 +30,24 @@ namespace CodeGenerator
         //加载配置文件
         private void LoadConfig()
         {
-            txtSqlserver.Text = Config.SqlserverConnectionString;
-            txtMysql.Text = Config.MysqlConnectionString;
-            txtSqlite.Text = Config.SqliteConnectionString;
-            txtPostgresql.Text = Config.PostgresqlConnectionString;
-            txtOracle.Text = Config.OracleConnectionString;
+            txtSqlserver.Text = ConfigHelper.SqlserverConnectionString;
+            txtMysql.Text = ConfigHelper.MysqlConnectionString;
+            txtSqlite.Text = ConfigHelper.SqliteConnectionString;
+            txtPostgresql.Text = ConfigHelper.PostgresqlConnectionString;
+            txtOracle.Text = ConfigHelper.OracleConnectionString;
         }
 
         //保存配置文件
         private void SaveConfig(string dbType, string connectionString)
         {
-            Config.SqlserverConnectionString = txtSqlserver.Text;
-            Config.MysqlConnectionString = txtMysql.Text;
-            Config.SqliteConnectionString = txtSqlite.Text;
-            Config.PostgresqlConnectionString = txtPostgresql.Text;
-            Config.OracleConnectionString = txtOracle.Text;
+            ConfigHelper.SqlserverConnectionString = txtSqlserver.Text;
+            ConfigHelper.MysqlConnectionString = txtMysql.Text;
+            ConfigHelper.SqliteConnectionString = txtSqlite.Text;
+            ConfigHelper.PostgresqlConnectionString = txtPostgresql.Text;
+            ConfigHelper.OracleConnectionString = txtOracle.Text;
 
-            Config.DbType = dbType;
-            Config.ConnectionString = connectionString;
+            ConfigHelper.DbType = dbType;
+            ConfigHelper.ConnectionString = connectionString;
 
             ConfigHelper.SaveConfigFile();
         }

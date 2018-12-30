@@ -84,22 +84,22 @@ order by a.id,a.colorder";
                 }
                 string t = columnType.ToLower();
 
-                var cs = Config.DbTypeDictionary[Config.SqlServerCSharp].FirstOrDefault(f => f.Name == t);
+                var cs = ConfigHelper.DbTypeDictionary[ConfigHelper.SqlServerCSharp].FirstOrDefault(f => f.Name == t);
                 if (cs != null)
                     model.CsType = cs.To;
                 else
-                    model.CsType = Config.UnKnowDbType;
+                    model.CsType = ConfigHelper.UnKnowDbType;
 
 
-                var java = Config.DbTypeDictionary[Config.SqlServerJava].FirstOrDefault(f => f.Name == t);
+                var java = ConfigHelper.DbTypeDictionary[ConfigHelper.SqlServerJava].FirstOrDefault(f => f.Name == t);
                 if (java != null)
                     model.JavaType = java.To;
                 else
-                    model.JavaType = Config.UnKnowDbType;
+                    model.JavaType = ConfigHelper.UnKnowDbType;
 
 
                 model.DbType = item.ColumnType + "," + item.ColumnLength + "," + item.DecimalDigit;
-                if (Config.ColumnComment)
+                if (ConfigHelper.ColumnComment)
                 {
                     model.Comment = item.ColumnCommnent; //说明
                 }

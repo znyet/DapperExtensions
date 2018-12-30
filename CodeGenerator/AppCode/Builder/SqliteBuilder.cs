@@ -74,17 +74,17 @@ namespace CodeGenerator
                 }
                 string t = columnType.ToLower();
 
-                var cs = Config.DbTypeDictionary[Config.SQLiteCSharp].FirstOrDefault(f => f.Name == t);
+                var cs = ConfigHelper.DbTypeDictionary[ConfigHelper.SQLiteCSharp].FirstOrDefault(f => f.Name == t);
                 if (cs != null)
                     model.CsType = cs.To;
                 else
-                    model.CsType = Config.UnKnowDbType;
+                    model.CsType = ConfigHelper.UnKnowDbType;
 
-                var java = Config.DbTypeDictionary[Config.SQLiteJava].FirstOrDefault(f => f.Name == t);
+                var java = ConfigHelper.DbTypeDictionary[ConfigHelper.SQLiteJava].FirstOrDefault(f => f.Name == t);
                 if (java != null)
                     model.JavaType = java.To;
                 else
-                    model.JavaType = Config.UnKnowDbType;
+                    model.JavaType = ConfigHelper.UnKnowDbType;
 
 
                 model.DbType = item.type;

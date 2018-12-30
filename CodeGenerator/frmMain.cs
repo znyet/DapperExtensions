@@ -23,41 +23,41 @@ namespace CodeGenerator
         private void LoadConfig()
         {
             //模板路径
-            if (string.IsNullOrEmpty(Config.Template))
+            if (string.IsNullOrEmpty(ConfigHelper.Template))
             {
-                Config.Template = Config.ApplicationPath + "Template\\ModelDapperExtensions.txt";
+                ConfigHelper.Template = ConfigHelper.ApplicationPath + "Template\\ModelDapperExtensions.txt";
             }
-            txtTemplate.Text = Config.Template;
+            txtTemplate.Text = ConfigHelper.Template;
 
             //文件输出路径
-            if (string.IsNullOrEmpty(Config.OutPutDir))
+            if (string.IsNullOrEmpty(ConfigHelper.OutPutDir))
             {
-                Config.OutPutDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\Entity";
+                ConfigHelper.OutPutDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\Entity";
 
             }
-            txtOutPutDir.Text = Config.OutPutDir;
+            txtOutPutDir.Text = ConfigHelper.OutPutDir;
 
-            txtNameSpace.Text = Config.NameSpace;
-            txtClassSuffix.Text = Config.ClassSuffix;
-            txtFileType.Text = Config.FileType;
-            txtUnknowDbType.Text = Config.UnKnowDbType;
-            cbxEncoding.SelectedIndex = cbxEncoding.Items.IndexOf(Config.FileEncoding);
-            checkBox1.Checked = Config.TableComment;
-            checkBox2.Checked = Config.ColumnComment;
+            txtNameSpace.Text = ConfigHelper.NameSpace;
+            txtClassSuffix.Text = ConfigHelper.ClassSuffix;
+            txtFileType.Text = ConfigHelper.FileType;
+            txtUnknowDbType.Text = ConfigHelper.UnKnowDbType;
+            cbxEncoding.SelectedIndex = cbxEncoding.Items.IndexOf(ConfigHelper.FileEncoding);
+            checkBox1.Checked = ConfigHelper.TableComment;
+            checkBox2.Checked = ConfigHelper.ColumnComment;
         }
 
         //保存配置文件
         private void SaveConfig()
         {
-            Config.Template = txtTemplate.Text;
-            Config.OutPutDir = txtOutPutDir.Text;
-            Config.NameSpace = txtNameSpace.Text;
-            Config.ClassSuffix = txtClassSuffix.Text;
-            Config.FileType = txtFileType.Text;
-            Config.FileEncoding = cbxEncoding.Text;
-            Config.TableComment = checkBox1.Checked;
-            Config.ColumnComment = checkBox2.Checked;
-            Config.UnKnowDbType =txtUnknowDbType.Text;
+            ConfigHelper.Template = txtTemplate.Text;
+            ConfigHelper.OutPutDir = txtOutPutDir.Text;
+            ConfigHelper.NameSpace = txtNameSpace.Text;
+            ConfigHelper.ClassSuffix = txtClassSuffix.Text;
+            ConfigHelper.FileType = txtFileType.Text;
+            ConfigHelper.FileEncoding = cbxEncoding.Text;
+            ConfigHelper.TableComment = checkBox1.Checked;
+            ConfigHelper.ColumnComment = checkBox2.Checked;
+            ConfigHelper.UnKnowDbType = txtUnknowDbType.Text;
 
             ConfigHelper.SaveConfigFile();
 
@@ -75,7 +75,7 @@ namespace CodeGenerator
         //选择模板
         private void button1_Click(object sender, EventArgs e)
         {
-            openFileDialog1.InitialDirectory = Config.ApplicationPath + "Template";
+            openFileDialog1.InitialDirectory = ConfigHelper.ApplicationPath + "Template";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 txtTemplate.Text = openFileDialog1.FileName;

@@ -31,7 +31,7 @@ namespace CodeGenerator
             {
                 TableEntity model = new TableEntity();
                 model.Name = item.Name;
-                if (Config.TableComment)
+                if (ConfigHelper.TableComment)
                 {
                     model.Comment = item.Comment;
                 }
@@ -76,22 +76,22 @@ namespace CodeGenerator
 
                 string t = columnType.Split('(')[0].ToLower();
 
-                var cs = Config.DbTypeDictionary[Config.MySqlCSharp].FirstOrDefault(f => f.Name == t);
+                var cs = ConfigHelper.DbTypeDictionary[ConfigHelper.MySqlCSharp].FirstOrDefault(f => f.Name == t);
                 if (cs != null)
                     model.CsType = cs.To;
                 else
-                    model.CsType = Config.UnKnowDbType;
+                    model.CsType = ConfigHelper.UnKnowDbType;
 
 
-                var java = Config.DbTypeDictionary[Config.MySqlJava].FirstOrDefault(f => f.Name == t);
+                var java = ConfigHelper.DbTypeDictionary[ConfigHelper.MySqlJava].FirstOrDefault(f => f.Name == t);
                 if (java != null)
                     model.JavaType = java.To;
                 else
-                    model.JavaType = Config.UnKnowDbType;
+                    model.JavaType = ConfigHelper.UnKnowDbType;
 
 
                 model.DbType = item.Type;
-                if (Config.ColumnComment)
+                if (ConfigHelper.ColumnComment)
                 {
                     model.Comment = item.Comment; //说明
                 }

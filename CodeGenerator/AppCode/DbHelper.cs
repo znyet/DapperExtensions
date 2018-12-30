@@ -18,33 +18,33 @@ namespace CodeGenerator
         //获取数据库连接
         public static IDbConnection GetConn()
         {
-            if (Config.DbType == "sqlserver")
+            if (ConfigHelper.DbType == "sqlserver")
             {
-                SqlConnection conn = new SqlConnection(Config.SqlserverConnectionString);
+                SqlConnection conn = new SqlConnection(ConfigHelper.SqlserverConnectionString);
                 conn.Open();
                 return conn;
             }
-            else if (Config.DbType == "mysql")
+            else if (ConfigHelper.DbType == "mysql")
             {
-                MySqlConnection conn = new MySqlConnection(Config.MysqlConnectionString);
+                MySqlConnection conn = new MySqlConnection(ConfigHelper.MysqlConnectionString);
                 conn.Open();
                 return conn;
             }
-            else if (Config.DbType == "sqlite")
+            else if (ConfigHelper.DbType == "sqlite")
             {
-                SQLiteConnection conn = new SQLiteConnection(Config.SqliteConnectionString);
+                SQLiteConnection conn = new SQLiteConnection(ConfigHelper.SqliteConnectionString);
                 conn.Open();
                 return conn;
             }
-            else if (Config.DbType == "postgresql")
+            else if (ConfigHelper.DbType == "postgresql")
             {
-                NpgsqlConnection conn = new NpgsqlConnection(Config.PostgresqlConnectionString);
+                NpgsqlConnection conn = new NpgsqlConnection(ConfigHelper.PostgresqlConnectionString);
                 conn.Open();
                 return conn;
             }
             else
             {
-                OracleConnection conn = new OracleConnection(Config.OracleConnectionString);
+                OracleConnection conn = new OracleConnection(ConfigHelper.OracleConnectionString);
                 conn.Open();
                 return conn;
             }
@@ -53,19 +53,19 @@ namespace CodeGenerator
 
         public static IBuilder GetBuilder()
         {
-            if (Config.DbType == "sqlserver")
+            if (ConfigHelper.DbType == "sqlserver")
             {
                 return new SqlServerBuilder();
             }
-            else if (Config.DbType == "mysql")
+            else if (ConfigHelper.DbType == "mysql")
             {
                 return new MySqlBuilder();
             }
-            else if (Config.DbType == "sqlite")
+            else if (ConfigHelper.DbType == "sqlite")
             {
                 return new SqliteBuilder();
             }
-            else if (Config.DbType == "postgresql")
+            else if (ConfigHelper.DbType == "postgresql")
             {
                 return new PostgresqlBuilder();
             }

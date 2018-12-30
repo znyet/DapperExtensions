@@ -185,7 +185,7 @@ namespace CodeGenerator
         private void button1_Click(object sender, EventArgs e)
         {
 
-            string content = System.IO.File.ReadAllText(Config.Template, System.Text.Encoding.UTF8);
+            string content = System.IO.File.ReadAllText(ConfigHelper.Template, System.Text.Encoding.UTF8);
             List<TableEntity> tables = GetSelectTableList();
             if (tables.Count == 0)
             {
@@ -193,12 +193,12 @@ namespace CodeGenerator
                 return;
             }
 
-            if (!System.IO.Directory.Exists(Config.OutPutDir))
-                System.IO.Directory.CreateDirectory(Config.OutPutDir);
+            if (!System.IO.Directory.Exists(ConfigHelper.OutPutDir))
+                System.IO.Directory.CreateDirectory(ConfigHelper.OutPutDir);
 
-            System.Diagnostics.Process.Start(Config.OutPutDir);
+            System.Diagnostics.Process.Start(ConfigHelper.OutPutDir);
             System.Text.Encoding utf8;
-            if (Config.FileEncoding == "utf8 with bom")
+            if (ConfigHelper.FileEncoding == "utf8 with bom")
             {
                 utf8 = System.Text.Encoding.UTF8;
             }
@@ -211,20 +211,20 @@ namespace CodeGenerator
             new Thread(() =>
             {
                 string error = null;
-                string errorFile = Config.ApplicationPath + "\\error.txt";
+                string errorFile = ConfigHelper.ApplicationPath + "\\error.txt";
                 int i = 0;
                 foreach (var table in tables)
                 {
                     try
                     {
-                        string className = table.NameUpper + Config.ClassSuffix;
-                        string fileName = Config.OutPutDir + "\\" + className + Config.FileType;
+                        string className = table.NameUpper + ConfigHelper.ClassSuffix;
+                        string fileName = ConfigHelper.OutPutDir + "\\" + className + ConfigHelper.FileType;
                         List<ColumnEntity> columnList;
                         using (var conn = DbHelper.GetConn())
                         {
                             columnList = DbHelper.GetBuilder().GetColumnList(table);
                         }
-                        string result = Razor.Parse(content, new { Table = table, ColumnList = columnList, ClassName = className, NameSpace = Config.NameSpace });
+                        string result = Razor.Parse(content, new { Table = table, ColumnList = columnList, ClassName = className, NameSpace = ConfigHelper.NameSpace });
                         System.IO.File.WriteAllText(fileName, result, utf8);
                     }
                     catch (Exception ex)
@@ -242,7 +242,7 @@ namespace CodeGenerator
                 {
                     System.IO.File.WriteAllText(errorFile, error, utf8);
                     MessageBox.Show(this, i + " error,please see error.txt");
-                    System.Diagnostics.Process.Start(Config.ApplicationPath);
+                    System.Diagnostics.Process.Start(ConfigHelper.ApplicationPath);
                 }
                 else
                 {

@@ -1,5 +1,4 @@
-﻿using EasyConfig;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,39 +9,98 @@ namespace CodeGenerator
 {
     public class ConfigHelper
     {
-        private static ConfigFile GetConfigFile()
-        {
-            ConfigFile cfg = new ConfigFile(Config.ApplicationPath + "Config.ini");
-            return cfg;
-        }
+        //模板
+        public static string Template;
+
+        //文件输出路径
+        public static string OutPutDir;
+
+        //命名空间
+        public static string NameSpace;
+
+        //类后缀
+        public static string ClassSuffix;
+
+        //文件类型
+        public static string FileType;
+
+        //文件类型
+        public static string FileEncoding;
+
+        //未知类型
+        public static string UnKnowDbType;
+
+        //是否开启表注释
+        public static bool TableComment = true;
+
+        //是否开启列注释
+        public static bool ColumnComment = true;
+
+        //sqlserver连接串
+        public static string SqlserverConnectionString;
+
+        //mysql连接串
+        public static string MysqlConnectionString;
+
+        //sqlite连接串
+        public static string SqliteConnectionString;
+
+        //postgresql连接串
+        public static string PostgresqlConnectionString;
+
+        //oracle连接串
+        public static string OracleConnectionString;
+
+        //********************Other*************************//
+
+        public static string ApplicationPath = System.AppDomain.CurrentDomain.BaseDirectory;
+
+        //数据库类型
+        public static string DbType;
+
+        //当前数据库连接
+        public static string ConnectionString;
+
+        //数据类型转换
+        public static readonly Dictionary<string, List<DbTypeEntity>> DbTypeDictionary = new Dictionary<string, List<DbTypeEntity>>();
+
+        public static readonly string SqlServerCSharp = "SqlServerCSharp";
+        public static readonly string MySqlCSharp = "MySqlCSharp";
+        public static readonly string PostgreSqlCSharp = "PostgreSqlCSharp";
+        public static readonly string OracleCSharp = "OracleCSharp";
+        public static readonly string SQLiteCSharp = "SQLiteCSharp";
+
+        public static readonly string MySqlJava = "MySqlJava";
+        public static readonly string PostgreSqlJava = "PostgreSqlJava";
+        public static readonly string SqlServerJava = "SqlServerJava";
+        public static readonly string OracleJava = "OracleJava";
+        public static readonly string SQLiteJava = "SQLiteJava";
+
+        private static readonly string configFile = ApplicationPath + "Config.ini";
+        private static SharpConfig.Configuration config;
+        private static SharpConfig.Section section;
 
         public static void ReadConfigFile()
         {
-            ConfigFile cfg = GetConfigFile();
-            var group = cfg.SettingGroups["config"];
+            config = SharpConfig.Configuration.LoadFromFile(configFile);
+            section = config["config"];
 
-            Config.Template = group.Settings["Template"].GetValueAsString();
-            Config.OutPutDir = group.Settings["OutPutDir"].GetValueAsString();
-            Config.NameSpace = group.Settings["NameSpace"].GetValueAsString();
-            Config.ClassSuffix = group.Settings["ClassSuffix"].GetValueAsString();
-            if (Config.ClassSuffix == "@")
-            {
-                Config.ClassSuffix = "";
-            }
-            Config.FileType = group.Settings["FileType"].GetValueAsString();
-            Config.FileEncoding = group.Settings["FileEncoding"].GetValueAsString();
-            Config.UnKnowDbType = group.Settings["UnKnowDbType"].GetValueAsString();
-            Config.TableComment = group.Settings["TableComment"].GetValueAsBool();
-            Config.ColumnComment = group.Settings["ColumnComment"].GetValueAsBool();
-            Config.SqlserverConnectionString = group.Settings["SqlserverConnectionString"].GetValueAsString();
-            Config.MysqlConnectionString = group.Settings["MysqlConnectionString"].GetValueAsString();
-            Config.SqliteConnectionString = group.Settings["SqliteConnectionString"].GetValueAsString();
-            Config.PostgresqlConnectionString = group.Settings["PostgresqlConnectionString"].GetValueAsString();
-            Config.OracleConnectionString = group.Settings["OracleConnectionString"].GetValueAsString();
+            Template = section["Template"].StringValue;
+            OutPutDir = section["OutPutDir"].StringValue;
+            NameSpace = section["NameSpace"].StringValue;
+            ClassSuffix = section["ClassSuffix"].StringValue;
+            FileType = section["FileType"].StringValue;
+            FileEncoding = section["FileEncoding"].StringValue;
+            UnKnowDbType = section["UnKnowDbType"].StringValue;
+            TableComment = section["TableComment"].BoolValue;
+            ColumnComment = section["ColumnComment"].BoolValue;
+            SqlserverConnectionString = section["SqlserverConnectionString"].StringValue;
+            MysqlConnectionString = section["MysqlConnectionString"].StringValue;
+            SqliteConnectionString = section["SqliteConnectionString"].StringValue;
+            PostgresqlConnectionString = section["PostgresqlConnectionString"].StringValue;
+            OracleConnectionString = section["OracleConnectionString"].StringValue;
 
-            Config.ApplicationPath = System.AppDomain.CurrentDomain.BaseDirectory;
-
-            XDocument doc = XDocument.Load(Config.ApplicationPath + "Template\\DbTypeMap.xml");
+            XDocument doc = XDocument.Load(ApplicationPath + "Template\\DbTypeMap.xml");
             XElement DbTypeMapElement = doc.Element("DbTypeMap");
 
             foreach (XElement element in DbTypeMapElement.Elements("Database")) //遍历数据库
@@ -52,14 +110,14 @@ namespace CodeGenerator
                 string key = dbProvider + language;
 
                 List<DbTypeEntity> list;
-                if (!Config.DbTypeDictionary.ContainsKey(key))
+                if (!DbTypeDictionary.ContainsKey(key))
                 {
                     list = new List<DbTypeEntity>();
-                    Config.DbTypeDictionary[key] = list;
+                    DbTypeDictionary[key] = list;
                 }
                 else
                 {
-                    list = Config.DbTypeDictionary[key];
+                    list = DbTypeDictionary[key];
                 }
 
                 foreach (XElement el in element.Elements("DbType")) //遍历语言转换
@@ -78,35 +136,24 @@ namespace CodeGenerator
 
         public static void SaveConfigFile()
         {
-            ConfigFile cfg = GetConfigFile();
-            var group = cfg.SettingGroups["config"];
-            group.Settings["Template"].SetValue(Config.Template);
-            group.Settings["OutPutDir"].SetValue(Config.OutPutDir);
-            group.Settings["NameSpace"].SetValue(Config.NameSpace);
-            if (string.IsNullOrEmpty(Config.ClassSuffix))
-            {
-                group.Settings["ClassSuffix"].SetValue("@");
-            }
-            else
-            {
-                group.Settings["ClassSuffix"].SetValue(Config.ClassSuffix);
-            }
-            group.Settings["FileType"].SetValue(Config.FileType);
-            group.Settings["FileEncoding"].SetValue(Config.FileEncoding);
-            group.Settings["UnKnowDbType"].SetValue(Config.UnKnowDbType);
-            group.Settings["TableComment"].SetValue(Config.TableComment);
-            group.Settings["ColumnComment"].SetValue(Config.ColumnComment);
-            group.Settings["SqlserverConnectionString"].SetValue(Config.SqlserverConnectionString);
-            group.Settings["MysqlConnectionString"].SetValue(Config.MysqlConnectionString);
-            group.Settings["SqliteConnectionString"].SetValue(Config.SqliteConnectionString);
-            group.Settings["PostgresqlConnectionString"].SetValue(Config.PostgresqlConnectionString);
-            group.Settings["OracleConnectionString"].SetValue(Config.OracleConnectionString);
-            cfg.Save(Config.ApplicationPath + "Config.ini");
 
+            section["Template"].SetValue(Template);
+            section["OutPutDir"].SetValue(OutPutDir);
+            section["NameSpace"].SetValue(NameSpace);
+            section["ClassSuffix"].SetValue(ClassSuffix);
+            section["FileType"].SetValue(FileType);
+            section["FileEncoding"].SetValue(FileEncoding);
+            section["UnKnowDbType"].SetValue(UnKnowDbType);
+            section["TableComment"].SetValue(TableComment);
+            section["ColumnComment"].SetValue(ColumnComment);
+            section["SqlserverConnectionString"].SetValue(SqlserverConnectionString);
+            section["MysqlConnectionString"].SetValue(MysqlConnectionString);
+            section["SqliteConnectionString"].SetValue(SqliteConnectionString);
+            section["PostgresqlConnectionString"].SetValue(PostgresqlConnectionString);
+            section["OracleConnectionString"].SetValue(OracleConnectionString);
 
+            config.SaveToFile(configFile);
         }
-
-
 
 
     }

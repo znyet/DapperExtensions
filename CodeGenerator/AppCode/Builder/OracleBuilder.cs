@@ -36,7 +36,7 @@ namespace CodeGenerator
             {
                 TableEntity model = new TableEntity();
                 model.Name = item.Name;
-                if (Config.TableComment)
+                if (ConfigHelper.TableComment)
                 {
                     model.Comment = item.Description;
                 }
@@ -89,20 +89,20 @@ namespace CodeGenerator
                     t = "";
                 }
 
-                var cs = Config.DbTypeDictionary[Config.OracleCSharp].FirstOrDefault(f => f.Name == t);
+                var cs = ConfigHelper.DbTypeDictionary[ConfigHelper.OracleCSharp].FirstOrDefault(f => f.Name == t);
                 if (cs != null)
                     model.CsType = cs.To;
                 else
-                    model.CsType = Config.UnKnowDbType;
+                    model.CsType = ConfigHelper.UnKnowDbType;
 
-                var java = Config.DbTypeDictionary[Config.OracleJava].FirstOrDefault(f => f.Name == t);
+                var java = ConfigHelper.DbTypeDictionary[ConfigHelper.OracleJava].FirstOrDefault(f => f.Name == t);
                 if (java != null)
                     model.JavaType = java.To;
                 else
-                    model.JavaType = Config.UnKnowDbType;
+                    model.JavaType = ConfigHelper.UnKnowDbType;
 
                 model.DbType = item.DbType + "," + item.DataLength;
-                if (Config.ColumnComment)
+                if (ConfigHelper.ColumnComment)
                 {
                     model.Comment = item.Description; //说明
                 }
