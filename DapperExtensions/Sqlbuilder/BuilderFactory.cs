@@ -5,10 +5,10 @@ namespace DapperExtensions
     internal class BuilderFactory
     {
         private static readonly ISqlBuilder Sqlserver = new SqlServerBuilder();
-        //public static IBuilder MySql = new MySqlBuilder();
-        //public static IBuilder Sqlite = new SqliteBuilder();
-        //public static IBuilder Postgre = new PostgreBuilder();
-        //public static IBuilder Oracle = new OracleBuilder();
+        //private static readonly ISqlBuilder MySql = new MySqlBuilder();
+        //private static readonly ISqlBuilder Sqlite = new SqliteBuilder();
+        //private static readonly ISqlBuilder Postgre = new PostgreBuilder();
+        //private static readonly ISqlBuilder Oracle = new OracleBuilder();
 
         public static ISqlBuilder GetBuilder(IDbConnection conn)
         {
@@ -17,27 +17,27 @@ namespace DapperExtensions
             {
                 return Sqlserver;
             }
-            return null;
             //else if (dbType == "MySql.Data.MySqlClient.MySqlConnection")
             //{
-            //    this.sqlBuilder = null;
+            //    return MySql;
             //}
             //else if(dbType=="Npgsql.NpgsqlConnection")
             //{
-            //    
+            //    return Postgre;
             //}
             //else if(dbType=="Oracle.ManagedDataAccess.Client.OracleConnection" || dbType=="System.Data.OracleClient.OracleConnection")
             //{
-            //    
+            //    return Oracle;
             //}
             //else if(dbType=="System.Data.SQLite.SQLiteConnection")
             //{
-            //    
+            //    return Sqlite;
             //}
             //else
             //{
             //    throw new Exception("Unknown DbType:" + dbType);
             //}
+            return null;
         }
 
     }

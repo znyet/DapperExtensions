@@ -11,25 +11,25 @@ namespace DapperExtensions
 
         #region method (Insert Update Delete)
 
-        string SchemaTableSql<T>(string returnFields);
+        string GetSchemaTableSql<T>(string returnFields);
 
-        string InsertSql<T>();
+        string GetInsertSql<T>();
 
-        string InsertIdentitySql<T>();
+        string GetInsertIdentitySql<T>();
 
-        string UpdateSql<T>(string updateFields);
+        string GetUpdateSql<T>(string updateFields);
 
-        string UpdateByWhereSql<T>(string where, string updateFields);
+        string GetUpdateByWhereSql<T>(string where, string updateFields);
 
-        string ExistsKeySql<T>();
+        string GetExistsKeySql<T>();
 
-        string DeleteByIdSql<T>();
+        string GetDeleteByIdSql<T>();
 
-        string DeleteByIdsSql<T>();
+        string GetDeleteByIdsSql<T>();
 
-        string DeleteByWhereSql<T>(string where);
+        string GetDeleteByWhereSql<T>(string where);
 
-        string DeleteAllSql<T>();
+        string GetDeleteAllSql<T>();
 
         #endregion
 
@@ -38,11 +38,25 @@ namespace DapperExtensions
 
         string GetInsertIdSql();
 
+        string GetTotalSql<T>(string where);
+
         string GetAllSql<T>(string returnFields, string orderBy);
 
         string GetByIdSql<T>(string returnFields);
 
         string GetByIdsSql<T>(string returnFields);
+
+        string GetByIdsWithFieldSql<T>(string field, string returnFields);
+
+        string GetByWhereSql<T>(string where, string returnFields, string orderBy);
+
+        string GetByWhereFirstSql<T>(string where, string returnFields);
+
+        string GetBySkipTakeSql<T>(int skip, int take, string where, string returnFields, string orderBy);
+
+        string GetByPageIndexSql<T>(int pageIndex, int pageSize, string where, string returnFields, string orderBy);
+
+        string GetPageSql<T>(int pageIndex, int pageSize, string where, string returnFields, string orderBy);
 
         #endregion
 
