@@ -2,7 +2,7 @@
 
 namespace @Model.NameSpace
 {
-	/// <summary>
+    /// <summary>
     /// @Raw(Model.Table.Comment)
     /// </summary>
     public class @Model.ClassName

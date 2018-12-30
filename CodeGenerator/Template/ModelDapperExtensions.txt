@@ -4,7 +4,7 @@ using DapperExtensions;
 
 namespace @Model.NameSpace
 {
-	/// <summary>
+    /// <summary>
     /// @Raw(Model.Table.Comment)
     /// </summary>
     [Table(TableName = "@Model.Table.Name", KeyName = "@Model.Table.KeyName", IsIdentity = @Model.Table.IsIdentity)]
