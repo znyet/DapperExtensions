@@ -44,10 +44,10 @@ namespace DapperExtensions
             }
         }
 
-        public static DataTable GetSchemaTable<T>(this IDbConnection conn, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static DataTable GetSchemaTable<T>(this IDbConnection conn, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return GetDataTable(conn, builder.SchemaTableSql<T>(returnFields), null, tran, commandTimeout, commandType);
+            return GetDataTable(conn, builder.SchemaTableSql<T>(returnFields), null, tran, commandTimeout);
         }
 
         /// <summary>
@@ -145,10 +145,10 @@ namespace DapperExtensions
 
         #region method (Insert Update Delete)
 
-        public static int Insert<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static int Insert<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.InsertSql<T>(), model, tran, commandTimeout, commandType);
+            return conn.Execute(builder.InsertSql<T>(), model, tran, commandTimeout);
         }
 
         /// <summary>
@@ -157,39 +157,39 @@ namespace DapperExtensions
         /// <typeparam name="T"></typeparam>
         /// <param name="model"></param>
         /// <returns></returns>
-        public static int InsertIdentity<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static int InsertIdentity<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.InsertIdentitySql<T>(), model, tran, commandTimeout, commandType);
+            return conn.Execute(builder.InsertIdentitySql<T>(), model, tran, commandTimeout);
         }
 
-        public static int Update<T>(this IDbConnection conn, T model, string updateFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static int Update<T>(this IDbConnection conn, T model, string updateFields = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.UpdateSql<T>(updateFields), model, tran, commandTimeout, commandType);
+            return conn.Execute(builder.UpdateSql<T>(updateFields), model, tran, commandTimeout);
         }
 
-        public static int UpdateByWhere<T>(this IDbConnection conn, string where, string updateFields, T model, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static int UpdateByWhere<T>(this IDbConnection conn, string where, string updateFields, T model, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.UpdateByWhereSql<T>(where, updateFields), model, tran, commandTimeout, commandType);
+            return conn.Execute(builder.UpdateByWhereSql<T>(where, updateFields), model, tran, commandTimeout);
         }
 
-        public static int InsertOrUpdate<T>(this IDbConnection conn, T model, string updateFields = null, bool update = true, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static int InsertOrUpdate<T>(this IDbConnection conn, T model, string updateFields = null, bool update = true, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
             int effectRow = 0;
-            dynamic total = conn.ExecuteScalar<dynamic>(builder.ExistsKeySql<T>(), model, tran, commandTimeout, commandType);
+            dynamic total = conn.ExecuteScalar<dynamic>(builder.ExistsKeySql<T>(), model, tran, commandTimeout);
             if (total > 0)
             {
                 if (update)
                 {
-                    effectRow += Update(conn, model, updateFields, tran, commandTimeout, commandType);
+                    effectRow += Update(conn, model, updateFields, tran, commandTimeout);
                 }
             }
             else
             {
-                effectRow += Insert(conn, model, tran, commandTimeout, commandType);
+                effectRow += Insert(conn, model, tran, commandTimeout);
             }
 
             return effectRow;
@@ -203,50 +203,50 @@ namespace DapperExtensions
         /// <param name="updateFields"></param>
         /// <param name="update"></param>
         /// <returns></returns>
-        public static int InsertIdentityOrUpdate<T>(this IDbConnection conn, T model, string updateFields = null, bool update = true, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static int InsertIdentityOrUpdate<T>(this IDbConnection conn, T model, string updateFields = null, bool update = true, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
             int effectRow = 0;
-            dynamic total = conn.ExecuteScalar<dynamic>(builder.ExistsKeySql<T>(), model, tran, commandTimeout, commandType);
+            dynamic total = conn.ExecuteScalar<dynamic>(builder.ExistsKeySql<T>(), model, tran, commandTimeout);
             if (total > 0)
             {
                 if (update)
                 {
-                    effectRow += Update(conn, model, updateFields, tran, commandTimeout, commandType);
+                    effectRow += Update(conn, model, updateFields, tran, commandTimeout);
                 }
             }
             else
             {
-                effectRow += InsertIdentity(conn, model, tran, commandTimeout, commandType);
+                effectRow += InsertIdentity(conn, model, tran, commandTimeout);
             }
 
             return effectRow;
         }
 
-        public static int Delete<T>(this IDbConnection conn, object id, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static int Delete<T>(this IDbConnection conn, object id, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.DeleteByIdSql<T>(), new { id = id }, tran, commandTimeout, commandType);
+            return conn.Execute(builder.DeleteByIdSql<T>(), new { id = id }, tran, commandTimeout);
         }
 
-        public static int DeleteByIds<T>(this IDbConnection conn, object ids, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static int DeleteByIds<T>(this IDbConnection conn, object ids, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
             DynamicParameters dpar = new DynamicParameters();
             dpar.Add("@ids", ids);
-            return conn.Execute(builder.DeleteByIdsSql<T>(), dpar, tran, commandTimeout, commandType);
+            return conn.Execute(builder.DeleteByIdsSql<T>(), dpar, tran, commandTimeout);
         }
 
-        public static int DeleteByWhere<T>(this IDbConnection conn, string where, object param, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static int DeleteByWhere<T>(this IDbConnection conn, string where, object param, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.DeleteByWhereSql<T>(where), param, tran, commandTimeout, commandType);
+            return conn.Execute(builder.DeleteByWhereSql<T>(where), param, tran, commandTimeout);
         }
 
-        public static int DeleteAll<T>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static int DeleteAll<T>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Execute(builder.DeleteAllSql<T>(), null, tran, commandTimeout, commandType);
+            return conn.Execute(builder.DeleteAllSql<T>(), null, tran, commandTimeout);
 
         }
 
@@ -254,10 +254,10 @@ namespace DapperExtensions
 
         #region method (Query)
 
-        public static IdType GetInsertId<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static IdType GetInsertId<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.ExecuteScalar<IdType>(builder.GetInsertIdSql(), null, tran, commandTimeout, commandType);
+            return conn.ExecuteScalar<IdType>(builder.GetInsertIdSql(), null, tran, commandTimeout);
         }
 
         public static dynamic GetTotal<T>(string where = null, object param = null)
@@ -265,44 +265,44 @@ namespace DapperExtensions
             return null;
         }
 
-        public static IEnumerable<T> GetAll<T>(this IDbConnection conn, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static IEnumerable<T> GetAll<T>(this IDbConnection conn, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Query<T>(builder.GetAllSql<T>(returnFields, orderBy), null, tran, true, commandTimeout, commandType);
+            return conn.Query<T>(builder.GetAllSql<T>(returnFields, orderBy), null, tran, true, commandTimeout);
         }
 
-        public static IEnumerable<dynamic> GetAllDynamic<T>(this IDbConnection conn, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static IEnumerable<dynamic> GetAllDynamic<T>(this IDbConnection conn, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.Query<dynamic>(builder.GetAllSql<T>(returnFields, orderBy), null, tran, true, commandTimeout, commandType);
+            return conn.Query<dynamic>(builder.GetAllSql<T>(returnFields, orderBy), null, tran, true, commandTimeout);
         }
 
-        public static T GetById<T>(this IDbConnection conn, object id, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static T GetById<T>(this IDbConnection conn, object id, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.QueryFirstOrDefault<T>(builder.GetByIdSql<T>(returnFields), new { id = id }, tran, commandTimeout, commandType);
+            return conn.QueryFirstOrDefault<T>(builder.GetByIdSql<T>(returnFields), new { id = id }, tran, commandTimeout);
         }
 
-        public static dynamic GetByIdDynamic<T>(this IDbConnection conn, object id, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static dynamic GetByIdDynamic<T>(this IDbConnection conn, object id, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.QueryFirstOrDefault<dynamic>(builder.GetByIdSql<T>(returnFields), new { id = id }, tran, commandTimeout, commandType);
+            return conn.QueryFirstOrDefault<dynamic>(builder.GetByIdSql<T>(returnFields), new { id = id }, tran, commandTimeout);
         }
 
-        public static IEnumerable<T> GetByIds<T>(this IDbConnection conn, object ids, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static IEnumerable<T> GetByIds<T>(this IDbConnection conn, object ids, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
             DynamicParameters dpar = new DynamicParameters();
             dpar.Add("@ids", ids);
-            return conn.Query<T>(builder.GetByIdSql<T>(returnFields), dpar, tran, true, commandTimeout, commandType);
+            return conn.Query<T>(builder.GetByIdSql<T>(returnFields), dpar, tran, true, commandTimeout);
         }
 
-        public static IEnumerable<dynamic> GetByIdsDynamic<T>(this IDbConnection conn, object ids, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
+        public static IEnumerable<dynamic> GetByIdsDynamic<T>(this IDbConnection conn, object ids, string returnFields = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
             DynamicParameters dpar = new DynamicParameters();
             dpar.Add("@ids", ids);
-            return conn.Query<dynamic>(builder.GetByIdSql<T>(returnFields), dpar, tran, true, commandTimeout, commandType);
+            return conn.Query<dynamic>(builder.GetByIdSql<T>(returnFields), dpar, tran, true, commandTimeout);
         }
 
         public static IEnumerable<T> GetByWhere<T>(string where, object param = null, string returnFields = null)
