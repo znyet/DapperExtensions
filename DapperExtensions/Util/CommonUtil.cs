@@ -141,13 +141,13 @@ namespace DapperExtensions
 
         public static void InitTable(TableEntity table, string leftChar, string rightChar) //初始化增删改等语句
         {
-            string Fields = CommonUtil.GetFieldsStr(table.AllFieldList, leftChar, rightChar);
-            string FieldsAt = CommonUtil.GetFieldsAtStr(table.AllFieldList);
-            string FieldsEq = CommonUtil.GetFieldsEqStr(table.AllFieldList, leftChar, rightChar);
+            string Fields = GetFieldsStr(table.AllFieldList, leftChar, rightChar);
+            string FieldsAt = GetFieldsAtStr(table.AllFieldList);
+            string FieldsEq = GetFieldsEqStr(table.AllFieldList, leftChar, rightChar);
 
-            string FieldsExtKey = CommonUtil.GetFieldsStr(table.ExceptKeyFieldList, leftChar, rightChar);
-            string FieldsAtExtKey = CommonUtil.GetFieldsAtStr(table.ExceptKeyFieldList);
-            string FieldsEqExtKey = CommonUtil.GetFieldsEqStr(table.ExceptKeyFieldList, leftChar, rightChar);
+            string FieldsExtKey = GetFieldsStr(table.ExceptKeyFieldList, leftChar, rightChar);
+            string FieldsAtExtKey = GetFieldsAtStr(table.ExceptKeyFieldList);
+            string FieldsEqExtKey = GetFieldsEqStr(table.ExceptKeyFieldList, leftChar, rightChar);
 
             table.AllFields = Fields;
             table.AllFieldsAt = FieldsAt;
