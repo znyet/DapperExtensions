@@ -68,6 +68,8 @@ namespace DapperExtensions
             {
                 throw new Exception("only sqlserver can use BulkCopy");
             }
+            if (conn.State == ConnectionState.Closed)
+                conn.Open();
             SqlBulkCopyOptions option = SqlBulkCopyOptions.Default;
             if (insert_identity)
             {
@@ -109,7 +111,8 @@ namespace DapperExtensions
             {
                 throw new Exception("only sqlserver can use BulkUpdate");
             }
-
+            if (conn.State == ConnectionState.Closed)
+                conn.Open();
             SqlConnection cnn = conn as SqlConnection;
             SqlCommand comm = cnn.CreateCommand();
             comm.CommandTimeout = timeOut;
