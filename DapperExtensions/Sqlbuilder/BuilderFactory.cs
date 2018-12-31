@@ -13,23 +13,23 @@ namespace DapperExtensions
         public static ISqlBuilder GetBuilder(IDbConnection conn)
         {
             string dbType = conn.ToString();
-            if (dbType == "System.Data.SqlClient.SqlConnection")
+            if (dbType.EndsWith("SqlConnection"))
             {
                 return Sqlserver;
             }
-            //else if (dbType == "MySql.Data.MySqlClient.MySqlConnection")
+            //else if (dbType.EndsWith("MySqlConnection"))
             //{
             //    return MySql;
             //}
-            //else if(dbType=="Npgsql.NpgsqlConnection")
+            //else if (dbType.EndsWith("NpgsqlConnection"))
             //{
             //    return Postgre;
             //}
-            //else if (dbType.Contains("OracleConnection"))
+            //else if (dbType.EndsWith("OracleConnection"))
             //{
             //    return Oracle;
             //}
-            //else if(dbType=="System.Data.SQLite.SQLiteConnection")
+            //else if (dbType.EndsWith("SQLiteConnection"))
             //{
             //    return Sqlite;
             //}
