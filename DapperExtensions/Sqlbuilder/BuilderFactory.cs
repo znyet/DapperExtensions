@@ -25,7 +25,7 @@ namespace DapperExtensions
             //{
             //    return Postgre;
             //}
-            //else if(dbType=="Oracle.ManagedDataAccess.Client.OracleConnection" || dbType=="System.Data.OracleClient.OracleConnection")
+            //else if (dbType.Contains("OracleConnection"))
             //{
             //    return Oracle;
             //}
