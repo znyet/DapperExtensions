@@ -386,27 +386,31 @@ namespace DapperExtensions
 
         public static PageEntity<T> GetPage<T>(this IDbConnection conn, int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
-            var builder = BuilderFactory.GetBuilder(conn);
-            var reader = conn.QueryMultiple(builder.GetPageSql<T>(pageIndex, pageSize, where, returnFields, orderBy), param, tran, commandTimeout);
+           var builder = BuilderFactory.GetBuilder(conn);
             PageEntity<T> pageEntity = new PageEntity<T>();
-            pageEntity.Total = reader.ReadFirstOrDefault<int>();
-            if (pageEntity.Total > 0)
-                pageEntity.Data = reader.Read<T>();
-            else
-                pageEntity.Data = Enumerable.Empty<T>();
+            using (var reader = conn.QueryMultiple(builder.GetPageSql<T>(pageIndex, pageSize, where, returnFields, orderBy), param, tran, commandTimeout))
+            {           
+                pageEntity.Total = reader.ReadFirstOrDefault<int>();
+                if (pageEntity.Total > 0)
+                    pageEntity.Data = reader.Read<T>();
+                else
+                    pageEntity.Data = Enumerable.Empty<T>();
+            }
             return pageEntity;
         }
 
         public static PageEntity<dynamic> GetPageDynamic<T>(this IDbConnection conn, int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            var reader = conn.QueryMultiple(builder.GetPageSql<T>(pageIndex, pageSize, where, returnFields, orderBy), param, tran, commandTimeout);
             PageEntity<dynamic> pageEntity = new PageEntity<dynamic>();
-            pageEntity.Total = reader.ReadFirstOrDefault<dynamic>();
-            if (pageEntity.Total > 0)
-                pageEntity.Data = reader.Read<dynamic>();
-            else
-                pageEntity.Data = Enumerable.Empty<dynamic>();
+            using (var reader = conn.QueryMultiple(builder.GetPageSql<T>(pageIndex, pageSize, where, returnFields, orderBy), param, tran, commandTimeout))
+            {
+                pageEntity.Total = reader.ReadFirstOrDefault<dynamic>();
+                if (pageEntity.Total > 0)
+                    pageEntity.Data = reader.Read<dynamic>();
+                else
+                    pageEntity.Data = Enumerable.Empty<dynamic>();
+            }
             return pageEntity;
         }
 
