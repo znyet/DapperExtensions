@@ -389,8 +389,8 @@ namespace DapperExtensions
            var builder = BuilderFactory.GetBuilder(conn);
             PageEntity<T> pageEntity = new PageEntity<T>();
             using (var reader = conn.QueryMultiple(builder.GetPageSql<T>(pageIndex, pageSize, where, returnFields, orderBy), param, tran, commandTimeout))
-            {           
-                pageEntity.Total = reader.ReadFirstOrDefault<int>();
+            {
+                pageEntity.Total = reader.ReadFirstOrDefault<dynamic>();
                 if (pageEntity.Total > 0)
                     pageEntity.Data = reader.Read<T>();
                 else
