@@ -64,7 +64,7 @@ namespace DapperExtensions
         /// <returns></returns>
         public static void BulkCopy(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeout = 100)
         {
-            if (conn.ToString() != "System.Data.SqlClient.SqlConnection")
+            if (!conn.ToString().EndsWith("SqlConnection"))
             {
                 throw new Exception("only sqlserver can use BulkCopy");
             }
@@ -107,7 +107,7 @@ namespace DapperExtensions
 
         public static void BulkUpdate(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string column = "*", int batchSize = 20000, int timeout = 100)
         {
-            if (conn.ToString() != "System.Data.SqlClient.SqlConnection")
+            if (!conn.ToString().EndsWith("SqlConnection"))
             {
                 throw new Exception("only sqlserver can use BulkUpdate");
             }
@@ -386,7 +386,7 @@ namespace DapperExtensions
 
         public static PageEntity<T> GetPage<T>(this IDbConnection conn, int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
-           var builder = BuilderFactory.GetBuilder(conn);
+            var builder = BuilderFactory.GetBuilder(conn);
             PageEntity<T> pageEntity = new PageEntity<T>();
             using (var reader = conn.QueryMultiple(builder.GetPageSql<T>(pageIndex, pageSize, where, returnFields, orderBy), param, tran, commandTimeout))
             {

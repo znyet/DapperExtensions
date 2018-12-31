@@ -5,7 +5,7 @@ namespace DapperExtensions
     internal class BuilderFactory
     {
         private static readonly ISqlBuilder Sqlserver = new SqlServerBuilder();
-        //private static readonly ISqlBuilder MySql = new MySqlBuilder();
+        private static readonly ISqlBuilder MySql = new MySqlBuilder();
         //private static readonly ISqlBuilder Sqlite = new SqliteBuilder();
         //private static readonly ISqlBuilder Postgre = new PostgreBuilder();
         //private static readonly ISqlBuilder Oracle = new OracleBuilder();
@@ -17,10 +17,10 @@ namespace DapperExtensions
             {
                 return Sqlserver;
             }
-            //else if (dbType.EndsWith("MySqlConnection"))
-            //{
-            //    return MySql;
-            //}
+            else if (dbType.EndsWith("MySqlConnection"))
+            {
+                return MySql;
+            }
             //else if (dbType.EndsWith("NpgsqlConnection"))
             //{
             //    return Postgre;
