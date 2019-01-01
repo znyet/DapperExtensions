@@ -29,6 +29,11 @@ namespace DapperExtensions
             return MySqlCache.GetTableEntity<T>().InsertSql;
         }
 
+        public string GetInsertReturnIdSql<T>(string sequence = null)
+        {
+            return MySqlCache.GetTableEntity<T>().InsertSql + ";SELECT @@IDENTITY";
+        }
+
         public string GetInsertIdentitySql<T>()
         {
             var table = MySqlCache.GetTableEntity<T>();
@@ -55,32 +60,48 @@ namespace DapperExtensions
 
         public string GetExistsKeySql<T>()
         {
-            throw new NotImplementedException();
+            var table = MySqlCache.GetTableEntity<T>();
+            CommonUtil.CheckTableKey(table);
+            return string.Format("SELECT COUNT(1) FROM `{0}` WHERE `{1}`=@{1}", table.TableName, table.KeyName);
         }
 
         public string GetDeleteByIdSql<T>()
         {
-            throw new NotImplementedException();
+            var table = MySqlCache.GetTableEntity<T>();
+            CommonUtil.CheckTableKey(table);
+            return table.DeleteByIdSql;
         }
 
         public string GetDeleteByIdsSql<T>()
         {
-            throw new NotImplementedException();
+            var table = MySqlCache.GetTableEntity<T>();
+            CommonUtil.CheckTableKey(table);
+            return table.DeleteByIdsSql;
         }
 
         public string GetDeleteByWhereSql<T>(string where)
         {
-            throw new NotImplementedException();
+            return GetDeleteAllSql<T>() + where;
         }
 
         public string GetDeleteAllSql<T>()
         {
-            throw new NotImplementedException();
+            return MySqlCache.GetTableEntity<T>().DeleteAllSql;
         }
 
-        public string GetInsertIdSql()
+        public string GetIdentitySql()
         {
-            throw new NotImplementedException();
+            return "SELECT @@IDENTITY";
+        }
+
+        public string GetIdentityCurrentSql(string sequence, string dual = "DUAL")
+        {
+            return "SELECT LAST_INSERT_ID()";
+        }
+
+        public string GetIdentityNextSql(string sequence, string dual = "DUAL")
+        {
+            return "SELECT @@IDENTITY";
         }
 
         public string GetTotalSql<T>(string where)
@@ -132,5 +153,6 @@ namespace DapperExtensions
         {
             throw new NotImplementedException();
         }
+
     }
 }

@@ -80,6 +80,12 @@ namespace DapperExtensions
             return await conn.ExecuteAsync(builder.GetInsertSql<T>(), model, tran, commandTimeout);
         }
 
+        public static async Task<dynamic> InsertReturnIdAsync<T>(this IDbConnection conn, T model, string sequence = null, IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteScalarAsync<dynamic>(builder.GetInsertReturnIdSql<T>(sequence), model, tran, commandTimeout);
+        }
+
         public static async Task<int> InsertIdentityAsync<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
@@ -148,10 +154,22 @@ namespace DapperExtensions
 
         #region method (Query)
 
-        public static async Task<IdType> GetInsertIdAsync<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
+        public static async Task<IdType> GetIdentityAsync<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return await conn.ExecuteScalarAsync<IdType>(builder.GetInsertIdSql(), null, tran, commandTimeout);
+            return await conn.ExecuteScalarAsync<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
+        }
+
+        public static async Task<IdType> GetIdentityCurrentAsync<IdType>(this IDbConnection conn, string sequence, string dual = "DUAL", IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteScalarAsync<IdType>(builder.GetIdentityCurrentSql(sequence, dual), null, tran, commandTimeout);
+        }
+
+        public static async Task<IdType> GetIdentityNextAsync<IdType>(this IDbConnection conn, string sequence, string dual = "DUAL", IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteScalarAsync<IdType>(builder.GetIdentityNextSql(sequence, dual), null, tran, commandTimeout);
         }
 
         public static async Task<dynamic> GetTotalAsync<T>(this IDbConnection conn, string where = null, object param = null, IDbTransaction tran = null, int? commandTimeout = null)

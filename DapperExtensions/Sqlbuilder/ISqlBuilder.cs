@@ -10,6 +10,8 @@ namespace DapperExtensions
 
         string GetInsertSql<T>();
 
+        string GetInsertReturnIdSql<T>(string sequence = null);
+
         string GetInsertIdentitySql<T>();
 
         string GetUpdateSql<T>(string updateFields);
@@ -31,7 +33,11 @@ namespace DapperExtensions
 
         #region method (Query)
 
-        string GetInsertIdSql();
+        string GetIdentitySql();
+
+        string GetIdentityCurrentSql(string sequence, string dual = "DUAL");
+
+        string GetIdentityNextSql(string sequence, string dual = "DUAL");
 
         string GetTotalSql<T>(string where);
 

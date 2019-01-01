@@ -66,6 +66,11 @@ namespace DapperExtensions
             return SqlServerCache.GetTableEntity<T>().InsertSql;
         }
 
+        public string GetInsertReturnIdSql<T>(string sequence = null)
+        {
+            return SqlServerCache.GetTableEntity<T>().InsertSql + ";SELECT @@IDENTITY";
+        }
+
         public string GetInsertIdentitySql<T>()
         {
             var table = SqlServerCache.GetTableEntity<T>();
@@ -121,7 +126,18 @@ namespace DapperExtensions
             return SqlServerCache.GetTableEntity<T>().DeleteAllSql;
         }
 
-        public string GetInsertIdSql()
+        public string GetIdentitySql()
+        {
+            return "SELECT @@IDENTITY";
+        }
+
+
+        public string GetIdentityCurrentSql(string sequence, string dual = "DUAL")
+        {
+            return "SELECT @@IDENTITY";
+        }
+
+        public string GetIdentityNextSql(string sequence, string dual = "DUAL")
         {
             return "SELECT @@IDENTITY";
         }
@@ -225,6 +241,6 @@ namespace DapperExtensions
 
             throw new NotImplementedException();
         }
-
+    
     }
 }

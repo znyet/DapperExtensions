@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 namespace DapperExtensions
 {
@@ -6,9 +7,9 @@ namespace DapperExtensions
     {
         private static readonly ISqlBuilder Sqlserver = new SqlServerBuilder();
         private static readonly ISqlBuilder MySql = new MySqlBuilder();
-        //private static readonly ISqlBuilder Sqlite = new SqliteBuilder();
-        //private static readonly ISqlBuilder Postgre = new PostgreBuilder();
-        //private static readonly ISqlBuilder Oracle = new OracleBuilder();
+        private static readonly ISqlBuilder Sqlite = new SqliteBuilder();
+        private static readonly ISqlBuilder Postgre = new PostgreBuilder();
+        private static readonly ISqlBuilder Oracle = new OracleBuilder();
 
         public static ISqlBuilder GetBuilder(IDbConnection conn)
         {
@@ -21,23 +22,22 @@ namespace DapperExtensions
             {
                 return MySql;
             }
-            //else if (dbType.EndsWith("NpgsqlConnection"))
-            //{
-            //    return Postgre;
-            //}
-            //else if (dbType.EndsWith("OracleConnection"))
-            //{
-            //    return Oracle;
-            //}
-            //else if (dbType.EndsWith("SQLiteConnection"))
-            //{
-            //    return Sqlite;
-            //}
-            //else
-            //{
-            //    throw new Exception("Unknown DbType:" + dbType);
-            //}
-            return null;
+            else if (dbType.EndsWith("NpgsqlConnection"))
+            {
+                return Postgre;
+            }
+            else if (dbType.EndsWith("OracleConnection"))
+            {
+                return Oracle;
+            }
+            else if (dbType.EndsWith("SQLiteConnection"))
+            {
+                return Sqlite;
+            }
+            else
+            {
+                throw new Exception("Unknown DbType:" + dbType);
+            }
         }
 
     }

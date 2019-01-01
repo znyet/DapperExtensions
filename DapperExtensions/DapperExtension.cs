@@ -154,6 +154,12 @@ namespace DapperExtensions
             return conn.Execute(builder.GetInsertSql<T>(), model, tran, commandTimeout);
         }
 
+        public static dynamic InsertReturnId<T>(this IDbConnection conn, T model, string sequence = null, IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return conn.ExecuteScalar<dynamic>(builder.GetInsertReturnIdSql<T>(sequence), model, tran, commandTimeout);
+        }
+
         /// <summary>
         /// for sqlserver insert identity
         /// </summary>
@@ -259,10 +265,22 @@ namespace DapperExtensions
 
         #region method (Query)
 
-        public static IdType GetInsertId<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
+        public static IdType GetIdentity<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.ExecuteScalar<IdType>(builder.GetInsertIdSql(), null, tran, commandTimeout);
+            return conn.ExecuteScalar<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
+        }
+
+        public static IdType GetIdentityCurrent<IdType>(this IDbConnection conn, string sequence, string dual = "DUAL", IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return conn.ExecuteScalar<IdType>(builder.GetIdentityCurrentSql(sequence, dual), null, tran, commandTimeout);
+        }
+
+        public static IdType GetIdentityNext<IdType>(this IDbConnection conn, string sequence, string dual = "DUAL", IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return conn.ExecuteScalar<IdType>(builder.GetIdentityNextSql(sequence, dual), null, tran, commandTimeout);
         }
 
         public static dynamic GetTotal<T>(this IDbConnection conn, string where = null, object param = null, IDbTransaction tran = null, int? commandTimeout = null)
