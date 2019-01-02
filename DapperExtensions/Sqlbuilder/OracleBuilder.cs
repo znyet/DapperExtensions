@@ -22,7 +22,7 @@ namespace DapperExtensions
         {
             if (string.IsNullOrEmpty(sequence))
                 throw new Exception("oracle [sequence] can't no be null");
-            return (OracleCache.GetTableEntity<T>().InsertReturnIdSql + null).Replace("```seq```", sequence);
+            return (OracleCache.GetTableEntity<T>().InsertReturnIdSql).Replace("```seq```", sequence);
         }
 
         public string GetInsertIdentitySql<T>()

@@ -144,7 +144,7 @@ namespace Test
                 PeopleTable people = new PeopleTable();
                 people.Name = "李四" + Second;
                 people.Sex = Second;
-                decimal id = conn.InsertReturnId(people);
+                var id = conn.InsertReturnId(people);
                 Assert.Pass(id.ToString());
             }
 
