@@ -31,15 +31,8 @@ namespace DapperExtensions
             }
             else //使用ROW_NUMBER()
             {
-                sb.AppendFormat("WITH cte AS(SELECT ROW_NUMBER() OVER({0}) AS RowNum,{1} FROM [{2}] WITH(NOLOCK) {3})", orderBy, returnFields, table.TableName, where);
-                if (returnFields.Contains(" AS") || returnFields.Contains(" as"))
-                {
-                    sb.AppendFormat("SELECT * FROM cte WHERE cte.RowNum BETWEEN {0} AND {2}", skip + 1, skip + take);
-                }
-                else
-                {
-                    sb.AppendFormat("SELECT {0} FROM cte WHERE cte.RowNum BETWEEN {1} AND {2}", returnFields, skip + 1, skip + take);
-                }
+                sb.AppendFormat("WITH cte AS(SELECT ROW_NUMBER() OVER({0}) AS Row_Number,{1} FROM [{2}] WITH(NOLOCK) {3})", orderBy, returnFields, table.TableName, where);
+                sb.AppendFormat("SELECT * FROM cte WHERE cte.Row_Number BETWEEN {0} AND {2}", skip + 1, skip + take);
             }
 
         }
