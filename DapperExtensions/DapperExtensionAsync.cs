@@ -37,36 +37,36 @@ namespace DapperExtensions
             });
         }
 
-        public static async Task BulkCopyAsync(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeout = 100)
+        public static async Task<string> BulkCopyAsync(this IDbConnection conn, DataTable dt, string tableName, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeout = 100)
         {
-            await Task.Run(() =>
-           {
-               BulkCopy(conn, tran, dt, tableName, copyFields, insert_identity, batchSize, timeout);
-           });
+            return await Task.Run(() =>
+            {
+                return BulkCopy(conn, dt, tableName, copyFields, insert_identity, batchSize, timeout);
+            });
 
         }
 
-        public static async Task BulkCopyAsync<T>(this IDbConnection conn, IDbTransaction tran, DataTable dt, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeout = 100)
+        public static async Task<string> BulkCopyAsync<T>(this IDbConnection conn, DataTable dt, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeout = 100)
         {
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
-                BulkCopy<T>(conn, tran, dt, copyFields, insert_identity, batchSize, timeout);
+                return BulkCopy<T>(conn, dt, copyFields, insert_identity, batchSize, timeout);
             });
         }
 
-        public static async Task BulkUpdateAsync(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string column = "*", int batchSize = 20000, int timeout = 100)
+        public static async Task<string> BulkUpdateAsync(this IDbConnection conn, DataTable dt, string tableName, string column = "*", int batchSize = 20000, int timeout = 100)
         {
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
-                BulkUpdate(conn, tran, dt, tableName, column, batchSize, timeout);
+                return BulkUpdate(conn, dt, tableName, column, batchSize, timeout);
             });
         }
 
-        public static async Task BulkUpdateAsync<T>(this IDbConnection conn, IDbTransaction tran, DataTable dt, string column = "*", int batchSize = 20000, int timeout = 100)
+        public static async Task<string> BulkUpdateAsync<T>(this IDbConnection conn, DataTable dt, string column = "*", int batchSize = 20000, int timeout = 100)
         {
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
-                BulkUpdate<T>(conn, tran, dt, column, batchSize, timeout);
+                return BulkUpdate<T>(conn, dt, column, batchSize, timeout);
             });
         }
 
@@ -98,7 +98,7 @@ namespace DapperExtensions
             return await conn.ExecuteAsync(builder.GetUpdateSql<T>(updateFields), model, tran, commandTimeout);
         }
 
-        public static async Task<int> UpdateByWhereAsync<T>(this IDbConnection conn, string where, string updateFields, T model, IDbTransaction tran = null, int? commandTimeout = null)
+        public static async Task<int> UpdateByWhereAsync<T>(this IDbConnection conn, T model, string where, string updateFields, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
             return await conn.ExecuteAsync(builder.GetUpdateByWhereSql<T>(where, updateFields), model, tran, commandTimeout);
@@ -154,11 +154,11 @@ namespace DapperExtensions
 
         #region method (Query)
 
-        public static async Task<IdType> GetIdentityAsync<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
-        {
-            var builder = BuilderFactory.GetBuilder(conn);
-            return await conn.ExecuteScalarAsync<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
-        }
+        //public static async Task<IdType> GetIdentityAsync<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
+        //{
+        //    var builder = BuilderFactory.GetBuilder(conn);
+        //    return await conn.ExecuteScalarAsync<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
+        //}
 
         public static async Task<IdType> GetSequenceCurrentAsync<IdType>(this IDbConnection conn, string sequence, IDbTransaction tran = null, int? commandTimeout = null)
         {
@@ -172,10 +172,10 @@ namespace DapperExtensions
             return await conn.ExecuteScalarAsync<IdType>(builder.GetSequenceNextSql(sequence), null, tran, commandTimeout);
         }
 
-        public static async Task<dynamic> GetTotalAsync<T>(this IDbConnection conn, string where = null, object param = null, IDbTransaction tran = null, int? commandTimeout = null)
+        public static async Task<long> GetTotalAsync<T>(this IDbConnection conn, string where = null, object param = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return await conn.ExecuteScalarAsync<dynamic>(builder.GetTotalSql<T>(where), param, tran, commandTimeout);
+            return await conn.ExecuteScalarAsync<long>(builder.GetTotalSql<T>(where), param, tran, commandTimeout);
         }
 
         public static async Task<IEnumerable<T>> GetAllAsync<T>(this IDbConnection conn, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)

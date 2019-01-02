@@ -18,6 +18,9 @@ namespace DapperExtensions
 
         public static DataTable GetDataTable(this IDbConnection conn, string sql, object param = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
+            if (conn.State == ConnectionState.Closed)
+                conn.Open();
+
             using (IDataReader reader = conn.ExecuteReader(sql, param, tran, commandTimeout, commandType))
             {
                 DataTable dt = new DataTable();
@@ -28,6 +31,8 @@ namespace DapperExtensions
 
         public static DataSet GetDataSet(this IDbConnection conn, string sql, object param = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
+            if (conn.State == ConnectionState.Closed)
+                conn.Open();
             using (IDataReader reader = conn.ExecuteReader(sql, param, tran, commandTimeout, commandType))
             {
                 DataSet ds = new DataSet();
@@ -62,7 +67,7 @@ namespace DapperExtensions
         /// <param name="batchSize">default 20000</param>
         /// <param name="timeOut">second default 100s</param>
         /// <returns></returns>
-        public static void BulkCopy(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeout = 100)
+        public static string BulkCopy(this IDbConnection conn, DataTable dt, string tableName, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeout = 100)
         {
             if (!conn.ToString().EndsWith("SqlConnection"))
             {
@@ -75,37 +80,55 @@ namespace DapperExtensions
             {
                 option = SqlBulkCopyOptions.KeepIdentity;
             }
-            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn as SqlConnection, option, tran as SqlTransaction)) //SqlBulkCopyOptions.Default
-            {
-                bulkCopy.BatchSize = batchSize;
-                bulkCopy.BulkCopyTimeout = timeout;
-                bulkCopy.DestinationTableName = tableName;
 
-                if (!string.IsNullOrEmpty(copyFields))
+            SqlConnection _conn = conn as SqlConnection;
+
+            using (var tran = conn.BeginTransaction())
+            {
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(_conn, option, tran as SqlTransaction)) //SqlBulkCopyOptions.Default
                 {
-                    foreach (var item in copyFields.Split(','))
+                    try
                     {
-                        bulkCopy.ColumnMappings.Add(item, item);
+                        bulkCopy.BatchSize = batchSize;
+                        bulkCopy.BulkCopyTimeout = timeout;
+                        bulkCopy.DestinationTableName = tableName;
+
+                        if (!string.IsNullOrEmpty(copyFields))
+                        {
+                            foreach (var item in copyFields.Split(','))
+                            {
+                                bulkCopy.ColumnMappings.Add(item, item);
+                            }
+                        }
+                        else
+                        {
+                            foreach (DataColumn col in dt.Columns)
+                            {
+                                bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+                            }
+                        }
+                        bulkCopy.WriteToServer(dt);
+                        tran.Commit();
+                        return "1";
                     }
-                }
-                else
-                {
-                    foreach (DataColumn col in dt.Columns)
+                    catch (Exception ex)
                     {
-                        bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+                        tran.Rollback();
+                        return ex.Message;
                     }
+
                 }
-                bulkCopy.WriteToServer(dt);
             }
+
         }
 
-        public static void BulkCopy<T>(this IDbConnection conn, IDbTransaction tran, DataTable dt, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeout = 100)
+        public static string BulkCopy<T>(this IDbConnection conn, DataTable dt, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeout = 100)
         {
             var table = SqlServerCache.GetTableEntity<T>();
-            BulkCopy(conn, tran, dt, table.TableName, copyFields, insert_identity, batchSize, timeout);
+            return BulkCopy(conn, dt, table.TableName, copyFields, insert_identity, batchSize, timeout);
         }
 
-        public static void BulkUpdate(this IDbConnection conn, IDbTransaction tran, DataTable dt, string tableName, string column = "*", int batchSize = 20000, int timeout = 100)
+        public static string BulkUpdate(this IDbConnection conn, DataTable dt, string tableName, string column = "*", int batchSize = 20000, int timeout = 100)
         {
             if (!conn.ToString().EndsWith("SqlConnection"))
             {
@@ -120,28 +143,35 @@ namespace DapperExtensions
             SqlDataAdapter adapter = new SqlDataAdapter(comm);
             SqlCommandBuilder commandBulider = new SqlCommandBuilder(adapter);
             commandBulider.ConflictOption = ConflictOption.OverwriteChanges;
-            try
+
+            using (var tran = conn.BeginTransaction())
             {
-                adapter.UpdateBatchSize = batchSize;
-                adapter.SelectCommand.Transaction = tran as SqlTransaction;
-                adapter.SelectCommand.CommandText = "SELECT TOP 0 " + column + " FROM " + tableName;
-                adapter.Update(dt.GetChanges());
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                comm.Dispose();
-                adapter.Dispose();
+                try
+                {
+                    adapter.UpdateBatchSize = batchSize;
+                    adapter.SelectCommand.Transaction = tran as SqlTransaction;
+                    adapter.SelectCommand.CommandText = "SELECT TOP 0 " + column + " FROM " + tableName;
+                    adapter.Update(dt.GetChanges());
+                    adapter.SelectCommand.Transaction.Commit();//提交事务
+                    return "1";
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    return ex.Message;
+                }
+                finally
+                {
+                    comm.Dispose();
+                    adapter.Dispose();
+                }
             }
         }
 
-        public static void BulkUpdate<T>(this IDbConnection conn, IDbTransaction tran, DataTable dt, string column = "*", int batchSize = 20000, int timeOut = 100)
+        public static string BulkUpdate<T>(this IDbConnection conn, DataTable dt, string column = "*", int batchSize = 20000, int timeOut = 100)
         {
             var table = SqlServerCache.GetTableEntity<T>();
-            BulkUpdate(conn, tran, dt, table.TableName, column, batchSize, timeOut);
+            return BulkUpdate(conn, dt, table.TableName, column, batchSize, timeOut);
         }
 
         #endregion
@@ -188,7 +218,7 @@ namespace DapperExtensions
             return conn.Execute(builder.GetUpdateSql<T>(updateFields), model, tran, commandTimeout);
         }
 
-        public static int UpdateByWhere<T>(this IDbConnection conn, string where, string updateFields, T model, IDbTransaction tran = null, int? commandTimeout = null)
+        public static int UpdateByWhere<T>(this IDbConnection conn, T model, string where, string updateFields, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
             return conn.Execute(builder.GetUpdateByWhereSql<T>(where, updateFields), model, tran, commandTimeout);
@@ -275,11 +305,11 @@ namespace DapperExtensions
 
         #region method (Query)
 
-        public static IdType GetIdentity<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
-        {
-            var builder = BuilderFactory.GetBuilder(conn);
-            return conn.ExecuteScalar<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
-        }
+        //public static IdType GetIdentity<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
+        //{
+        //    var builder = BuilderFactory.GetBuilder(conn);
+        //    return conn.ExecuteScalar<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
+        //}
 
         public static IdType GetSequenceCurrent<IdType>(this IDbConnection conn, string sequence, IDbTransaction tran = null, int? commandTimeout = null)
         {
@@ -293,10 +323,10 @@ namespace DapperExtensions
             return conn.ExecuteScalar<IdType>(builder.GetSequenceNextSql(sequence), null, tran, commandTimeout);
         }
 
-        public static dynamic GetTotal<T>(this IDbConnection conn, string where = null, object param = null, IDbTransaction tran = null, int? commandTimeout = null)
+        public static long GetTotal<T>(this IDbConnection conn, string where = null, object param = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.ExecuteScalar<dynamic>(builder.GetTotalSql<T>(where), param, tran, commandTimeout);
+            return conn.ExecuteScalar<long>(builder.GetTotalSql<T>(where), param, tran, commandTimeout);
         }
 
         public static IEnumerable<T> GetAll<T>(this IDbConnection conn, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
@@ -363,7 +393,6 @@ namespace DapperExtensions
             return conn.Query(builder.GetByIdsWithFieldSql<T>(field, returnFields), dpar, tran, true, commandTimeout);
         }
 
-
         public static IEnumerable<T> GetByWhere<T>(this IDbConnection conn, string where, object param = null, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
@@ -418,7 +447,7 @@ namespace DapperExtensions
             PageEntity<T> pageEntity = new PageEntity<T>();
             using (var reader = conn.QueryMultiple(builder.GetPageSql<T>(pageIndex, pageSize, where, returnFields, orderBy), param, tran, commandTimeout))
             {
-                pageEntity.Total = reader.ReadFirstOrDefault<dynamic>();
+                pageEntity.Total = reader.ReadFirstOrDefault<long>();
                 if (pageEntity.Total > 0)
                     pageEntity.Data = reader.Read<T>();
                 else
@@ -433,7 +462,7 @@ namespace DapperExtensions
             PageEntity<dynamic> pageEntity = new PageEntity<dynamic>();
             using (var reader = conn.QueryMultiple(builder.GetPageSql<T>(pageIndex, pageSize, where, returnFields, orderBy), param, tran, commandTimeout))
             {
-                pageEntity.Total = reader.ReadFirstOrDefault<dynamic>();
+                pageEntity.Total = reader.ReadFirstOrDefault<long>();
                 if (pageEntity.Total > 0)
                     pageEntity.Data = reader.Read<dynamic>();
                 else

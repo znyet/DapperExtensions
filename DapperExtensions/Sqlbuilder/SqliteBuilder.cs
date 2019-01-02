@@ -63,10 +63,10 @@ namespace DapperExtensions
             throw new NotImplementedException();
         }
 
-        public string GetIdentitySql()
-        {
-            return "SELECT last_insert_rowid()";
-        }
+        //public string GetIdentitySql()
+        //{
+        //    return "SELECT last_insert_rowid()";
+        //}
 
         public string GetSequenceCurrentSql(string sequence)
         {

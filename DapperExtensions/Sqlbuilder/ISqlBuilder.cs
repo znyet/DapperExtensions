@@ -33,7 +33,7 @@ namespace DapperExtensions
 
         #region method (Query)
 
-        string GetIdentitySql();
+        //string GetIdentitySql();
 
         string GetSequenceCurrentSql(string sequence);
 

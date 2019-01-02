@@ -65,10 +65,10 @@ namespace DapperExtensions
             throw new NotImplementedException();
         }
 
-        public string GetIdentitySql()
-        {
-            throw new Exception("for oracle please use [GetSequenceNext] or [GetSequenceCurrent] or use [InsertReturnId]");
-        }
+        //public string GetIdentitySql()
+        //{
+        //    throw new Exception("for oracle please use [GetSequenceNext] or [GetSequenceCurrent] or use [InsertReturnId]");
+        //}
 
         public string GetSequenceCurrentSql(string sequence)
         {

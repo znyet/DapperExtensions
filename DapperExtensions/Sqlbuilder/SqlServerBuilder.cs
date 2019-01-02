@@ -32,7 +32,7 @@ namespace DapperExtensions
             else //使用ROW_NUMBER()
             {
                 sb.AppendFormat("WITH cte AS(SELECT ROW_NUMBER() OVER({0}) AS Row_Number,{1} FROM [{2}] WITH(NOLOCK) {3})", orderBy, returnFields, table.TableName, where);
-                sb.AppendFormat("SELECT * FROM cte WHERE cte.Row_Number BETWEEN {0} AND {2}", skip + 1, skip + take);
+                sb.AppendFormat("SELECT * FROM cte WHERE cte.Row_Number BETWEEN {0} AND {1}", skip + 1, skip + take);
             }
 
         }
@@ -119,10 +119,10 @@ namespace DapperExtensions
             return SqlServerCache.GetTableEntity<T>().DeleteAllSql;
         }
 
-        public string GetIdentitySql()
-        {
-            return "SELECT @@IDENTITY";
-        }
+        //public string GetIdentitySql()
+        //{
+        //    return "SELECT @@IDENTITY";
+        //}
 
 
         public string GetSequenceCurrentSql(string sequence)
@@ -150,7 +150,7 @@ namespace DapperExtensions
             }
             else
             {
-                return string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) {2}" + returnFields, table.TableName, orderBy);
+                return string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) {2}", returnFields, table.TableName, orderBy);
             }
         }
 
@@ -197,7 +197,7 @@ namespace DapperExtensions
             var table = SqlServerCache.GetTableEntity<T>();
             if (string.IsNullOrEmpty(returnFields))
                 returnFields = table.AllFields;
-            return string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) {2}", returnFields, table.TableName, where);
+            return string.Format("SELECT TOP (1) {0} FROM [{1}] WITH(NOLOCK) {2}", returnFields, table.TableName, where);
         }
 
         public string GetBySkipTakeSql<T>(int skip, int take, string where, string returnFields, string orderBy)
@@ -231,9 +231,8 @@ namespace DapperExtensions
             sb.Append("IF(@total>0) BEGIN ");
             InitPage(sb, table, skip, pageSize, where, returnFields, orderBy);
             sb.Append(" END");
-
-            throw new NotImplementedException();
+            return sb.ToString();
         }
-    
+
     }
 }

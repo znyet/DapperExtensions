@@ -8,14 +8,5 @@ using NUnit.Framework;
 
 namespace Test
 {
-    [Ignore("")]
-    [TestFixture]
-    public class MyTestAsync
-    {
-        [Test]
-        public void GetNameAsync()
-        {
-            Assert.IsNotNull("李四");
-        }
-    }
+
 }

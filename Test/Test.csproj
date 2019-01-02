@@ -36,6 +36,10 @@
     <Reference Include="MySql.Data">
       <HintPath>..\Lib\MySql\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Npgsql">
       <HintPath>..\Lib\Npgsql\Npgsql.dll</HintPath>
     </Reference>
@@ -58,6 +62,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbHelper.cs" />
+    <Compile Include="Entity\ObjectId.cs" />
+    <Compile Include="Entity\PeopleTable.cs" />
+    <Compile Include="Entity\SchoolTable.cs" />
+    <Compile Include="Entity\StudentTable.cs" />
     <Compile Include="MyTest.cs" />
     <Compile Include="MyTestAsync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
