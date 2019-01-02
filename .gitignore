@@ -6,3 +6,5 @@ CodeGenerator/bin
 CodeGenerator/obj
 *.suo
 *.user
+packages
+TestResults
