@@ -21,7 +21,7 @@ namespace DapperExtensions
                     if (!tableDict.Keys.Contains(typeHandle))
                     {
                         TableEntity table = CommonUtil.CreateTableEntity(t);
-                        CommonUtil.InitTable(table, "`", "`");
+                        CommonUtil.InitTableForMySql(table);
                         tableDict[typeHandle] = table;
                     }
                 }

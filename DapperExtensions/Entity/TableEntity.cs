@@ -24,14 +24,15 @@ namespace DapperExtensions
         public string AllFieldsAtExceptKey { get; set; } //@name,@sex
         public string AllFieldsAtEqExceptKey { get; set; }//[name]=@name,[sex]=@sex
 
-        public string InsertSql { get; set; }
-        public string InsertIdentitySql { get; set; }
-        public string GetByIdSql { get; set; }
-        public string GetByIdsSql { get; set; }
-        public string GetAllSql { get; set; }
-        public string DeleteByIdSql { get; set; }
-        public string DeleteByIdsSql { get; set; }
-        public string DeleteAllSql { get; set; }
-        public string UpdateSql { get; set; }
+        public string InsertSql { get; set; } //添加记录,返回受影响行数
+        public string InsertIdentitySql { get; set; } //添加有自增id表,返回受影响行数
+        public string InsertReturnIdSql { get; set; } //添加记录返回自增id
+        public string GetByIdSql { get; set; } //根据id获取记录
+        public string GetByIdsSql { get; set; } //根据ids获取记录
+        public string GetAllSql { get; set; } //获取所有记录
+        public string DeleteByIdSql { get; set; } //根据id删除记录
+        public string DeleteByIdsSql { get; set; } //根据ids删除记录
+        public string DeleteAllSql { get; set; } //删除整张表的记录
+        public string UpdateSql { get; set; } //修改记录
     }
 }

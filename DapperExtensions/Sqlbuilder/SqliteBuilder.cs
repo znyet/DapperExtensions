@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DapperExtensions
 {
-    internal class SqliteBuilder:ISqlBuilder
+    internal class SqliteBuilder : ISqlBuilder
     {
         public string GetSchemaTableSql<T>(string returnFields)
         {
@@ -20,7 +20,7 @@ namespace DapperExtensions
 
         public string GetInsertReturnIdSql<T>(string sequence = null)
         {
-            throw new NotImplementedException();
+            return SqliteCache.GetTableEntity<T>().InsertReturnIdSql;
         }
 
         public string GetInsertIdentitySql<T>()
@@ -68,12 +68,12 @@ namespace DapperExtensions
             return "SELECT last_insert_rowid()";
         }
 
-        public string GetIdentityCurrentSql(string sequence, string dual = "DUAL")
+        public string GetSequenceCurrentSql(string sequence)
         {
             return "SELECT last_insert_rowid()";
         }
 
-        public string GetIdentityNextSql(string sequence, string dual = "DUAL")
+        public string GetSequenceNextSql(string sequence)
         {
             return "SELECT last_insert_rowid()";
         }

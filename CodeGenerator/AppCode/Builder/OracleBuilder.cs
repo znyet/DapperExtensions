@@ -48,7 +48,7 @@ namespace CodeGenerator
         public List<ColumnEntity> GetColumnList(TableEntity tableEntity)
         {
             string sql = "SELECT C.COLUMN_ID AS \"Id\",C.TABLE_NAME AS \"TableId\",C.COLUMN_NAME AS \"Name\",C.DATA_TYPE AS \"DbType\",C.DATA_LENGTH AS \"DataLength\",NVL(CC.COMMENTS,C.COLUMN_NAME) AS \"Description\",";
-            sql += "to_number(CASE C.NULLABLE WHEN 'N' THEN '1' ELSE '0' END) AS \"IsNullable\",";
+            sql += "to_number(CASE C.NULLABLE WHEN 'N' THEN '0' ELSE '1' END) AS \"IsNullable\",";
             sql += "to_number('0') AS \"AutoIncrement\",";
             sql += "to_number(CASE WHEN P.COLUMN_NAME = C.COLUMN_NAME THEN '1' ELSE '0' END) AS \"IsPrimaryKey\" ";
             sql += "FROM USER_TAB_COLUMNS C ";

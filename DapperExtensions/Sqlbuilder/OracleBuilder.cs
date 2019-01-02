@@ -20,7 +20,9 @@ namespace DapperExtensions
 
         public string GetInsertReturnIdSql<T>(string sequence = null)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(sequence))
+                throw new Exception("oracle [sequence] can't no be null");
+            return (OracleCache.GetTableEntity<T>().InsertReturnIdSql + null).Replace("```seq```", sequence);
         }
 
         public string GetInsertIdentitySql<T>()
@@ -65,17 +67,17 @@ namespace DapperExtensions
 
         public string GetIdentitySql()
         {
-            throw new Exception("for oracle please use [GetIdentityNext] OR [GetIdentityCurrent]");
+            throw new Exception("for oracle please use [GetSequenceNext] or [GetSequenceCurrent] or use [InsertReturnId]");
         }
 
-        public string GetIdentityCurrentSql(string sequence, string dual = "DUAL")
+        public string GetSequenceCurrentSql(string sequence)
         {
-            return string.Format("SELECT {0}.CURRVAL FROM {1}", sequence, dual);
+            return string.Format("SELECT {0}.CURRVAL FROM DUAL", sequence);
         }
 
-        public string GetIdentityNextSql(string sequence, string dual = "DUAL")
+        public string GetSequenceNextSql(string sequence)
         {
-            return string.Format("SELECT {0}.NEXTVAL FROM {1}", sequence, dual);
+            return string.Format("SELECT {0}.NEXTVAL FROM DUAL", sequence);
         }
 
         public string GetTotalSql<T>(string where)

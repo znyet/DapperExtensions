@@ -20,7 +20,7 @@ namespace DapperExtensions
 
         public string GetInsertReturnIdSql<T>(string sequence = null)
         {
-            throw new NotImplementedException();
+            return PostgreCache.GetTableEntity<T>().InsertReturnIdSql;
         }
 
         public string GetInsertIdentitySql<T>()
@@ -65,15 +65,15 @@ namespace DapperExtensions
 
         public string GetIdentitySql()
         {
-            throw new NotImplementedException();
+            throw new Exception("for postgresql please use [GetSequenceCurrent],when [Insert] you can get the insert id,or use [InsertReturnId]");
         }
 
-        public string GetIdentityCurrentSql(string sequence, string dual = "DUAL")
+        public string GetSequenceCurrentSql(string sequence)
         {
             return string.Format("SELECT currval('{0}')", sequence);
         }
 
-        public string GetIdentityNextSql(string sequence, string dual = "DUAL")
+        public string GetSequenceNextSql(string sequence)
         {
             return string.Format("SELECT nextval('{0}')", sequence);
         }

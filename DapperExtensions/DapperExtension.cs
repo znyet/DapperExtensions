@@ -154,6 +154,16 @@ namespace DapperExtensions
             return conn.Execute(builder.GetInsertSql<T>(), model, tran, commandTimeout);
         }
 
+        /// <summary>
+        /// if conn is oracle the [sequence] can't be null
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="conn"></param>
+        /// <param name="model"></param>
+        /// <param name="sequence"></param>
+        /// <param name="tran"></param>
+        /// <param name="commandTimeout"></param>
+        /// <returns></returns>
         public static dynamic InsertReturnId<T>(this IDbConnection conn, T model, string sequence = null, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
@@ -271,16 +281,16 @@ namespace DapperExtensions
             return conn.ExecuteScalar<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
         }
 
-        public static IdType GetIdentityCurrent<IdType>(this IDbConnection conn, string sequence, string dual = "DUAL", IDbTransaction tran = null, int? commandTimeout = null)
+        public static IdType GetSequenceCurrent<IdType>(this IDbConnection conn, string sequence, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.ExecuteScalar<IdType>(builder.GetIdentityCurrentSql(sequence, dual), null, tran, commandTimeout);
+            return conn.ExecuteScalar<IdType>(builder.GetSequenceCurrentSql(sequence), null, tran, commandTimeout);
         }
 
-        public static IdType GetIdentityNext<IdType>(this IDbConnection conn, string sequence, string dual = "DUAL", IDbTransaction tran = null, int? commandTimeout = null)
+        public static IdType GetSequenceNext<IdType>(this IDbConnection conn, string sequence, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.ExecuteScalar<IdType>(builder.GetIdentityNextSql(sequence, dual), null, tran, commandTimeout);
+            return conn.ExecuteScalar<IdType>(builder.GetSequenceNextSql(sequence), null, tran, commandTimeout);
         }
 
         public static dynamic GetTotal<T>(this IDbConnection conn, string where = null, object param = null, IDbTransaction tran = null, int? commandTimeout = null)

@@ -38,12 +38,12 @@ namespace DapperExtensions
         /// </summary>
         /// <param name="fieldList"></param>
         /// <returns></returns>
-        public static string GetFieldsAtStr(IEnumerable<string> fieldList)
+        public static string GetFieldsAtStr(IEnumerable<string> fieldList, string symbol = "@") //oracle @换成 
         {
             StringBuilder sb = new StringBuilder();
             foreach (var item in fieldList)
             {
-                sb.AppendFormat("@{0}", item);
+                sb.AppendFormat("{0}{1}", symbol, item);
 
                 if (item != fieldList.Last())
                 {
@@ -61,12 +61,12 @@ namespace DapperExtensions
         /// <param name="leftChar">左符号</param>
         /// <param name="rightChar">右符号</param>
         /// <returns></returns>
-        public static string GetFieldsEqStr(IEnumerable<string> fieldList, string leftChar, string rightChar)
+        public static string GetFieldsEqStr(IEnumerable<string> fieldList, string leftChar, string rightChar, string symbol = "@") //oracle @换成 
         {
             StringBuilder sb = new StringBuilder();
             foreach (var item in fieldList)
             {
-                sb.AppendFormat("{0}{1}{2}=@{1}", leftChar, item, rightChar);
+                sb.AppendFormat("{0}{1}{2}={3}{1}", leftChar, item, rightChar, symbol);
 
                 if (item != fieldList.Last())
                 {
@@ -139,6 +139,7 @@ namespace DapperExtensions
 
         }
 
+        [Obsolete]
         public static void InitTable(TableEntity table, string leftChar, string rightChar) //初始化增删改等语句
         {
             string Fields = GetFieldsStr(table.AllFieldList, leftChar, rightChar);
@@ -169,7 +170,7 @@ namespace DapperExtensions
 
                 table.DeleteByIdSql = string.Format("DELETE FROM {2}{0}{3} WHERE {2}{1}{3}=@id", table.TableName, table.KeyName, leftChar, rightChar);
                 table.DeleteByIdsSql = string.Format("DELETE FROM {2}{0}{3} WHERE {2}{1}{3} IN @ids", table.TableName, table.KeyName, leftChar, rightChar);
-                table.GetByIdSql = string.Format("SELECT {0} FROM {3}{1}]{4} WHERE {3}{2}{4}=@id", Fields, table.TableName, table.KeyName, leftChar, rightChar);
+                table.GetByIdSql = string.Format("SELECT {0} FROM {3}{1}{4} WHERE {3}{2}{4}=@id", Fields, table.TableName, table.KeyName, leftChar, rightChar);
                 table.GetByIdsSql = string.Format("SELECT {0} FROM {3}{1}{4} WHERE {3}{2}{4} IN @ids", Fields, table.TableName, table.KeyName, leftChar, rightChar);
                 table.UpdateSql = string.Format("UPDATE {3}{0}{4} SET {1} WHERE {3}{2}{4}=@{2}", table.TableName, FieldsEqExtKey, table.KeyName, leftChar, rightChar);
             }
@@ -202,6 +203,7 @@ namespace DapperExtensions
                 if (table.IsIdentity) //是自增 (and the parmary is identity)
                 {
                     table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey);
+                    table.InsertReturnIdSql = string.Format("INSERT INTO [{0}]({1})VALUES({2});SELECT @@IDENTITY;", table.TableName, FieldsExtKey, FieldsAtExtKey);
                 }
                 table.InsertIdentitySql = string.Format("SET IDENTITY_INSERT [{0}] ON;INSERT INTO [{0}]({1})VALUES({2});SET IDENTITY_INSERT [{0}] OFF", table.TableName, Fields, FieldsAt);
                 table.DeleteByIdSql = string.Format("DELETE FROM [{0}] WHERE [{1}]=@id", table.TableName, table.KeyName);
@@ -215,6 +217,166 @@ namespace DapperExtensions
             table.GetAllSql = string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) ", Fields, table.TableName);
         }
 
+        public static void InitTableForMySql(TableEntity table) //初始化增删改等语句mysql专用
+        {
+            string Fields = GetFieldsStr(table.AllFieldList, "`", "`");
+            string FieldsAt = GetFieldsAtStr(table.AllFieldList);
+            string FieldsEq = GetFieldsEqStr(table.AllFieldList, "`", "`");
+
+            string FieldsExtKey = GetFieldsStr(table.ExceptKeyFieldList, "`", "`");
+            string FieldsAtExtKey = GetFieldsAtStr(table.ExceptKeyFieldList);
+            string FieldsEqExtKey = GetFieldsEqStr(table.ExceptKeyFieldList, "`", "`");
+
+            table.AllFields = Fields;
+            table.AllFieldsAt = FieldsAt;
+            table.AllFieldsAtEq = FieldsEq;
+
+            table.AllFieldsExceptKey = FieldsExtKey;
+            table.AllFieldsAtExceptKey = FieldsAtExtKey;
+            table.AllFieldsAtEqExceptKey = FieldsEqExtKey;
+
+            table.InsertSql = string.Format("INSERT INTO `{0}` ({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+            if (!string.IsNullOrEmpty(table.KeyName)) //有主键
+            {
+                if (table.IsIdentity) //是自增
+                {
+                    table.InsertSql = string.Format("INSERT INTO `{0}`({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey);
+                    table.InsertReturnIdSql = string.Format("INSERT INTO [{0}]({1})VALUES({2});SELECT @@IDENTITY;", table.TableName, FieldsExtKey, FieldsAtExtKey);
+                }
+
+                table.InsertIdentitySql = string.Format("INSERT INTO `{0}`({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+
+                table.DeleteByIdSql = string.Format("DELETE FROM `{0}` WHERE `{1}`=@id", table.TableName, table.KeyName);
+                table.DeleteByIdsSql = string.Format("DELETE FROM `{0}` WHERE `{1}` IN @ids", table.TableName, table.KeyName);
+                table.GetByIdSql = string.Format("SELECT {0} FROM `{1}` WHERE `{2}`=@id", Fields, table.TableName, table.KeyName);
+                table.GetByIdsSql = string.Format("SELECT {0} FROM `{1}` WHERE `{2}` IN @ids", Fields, table.TableName, table.KeyName);
+                table.UpdateSql = string.Format("UPDATE {3}{0}{4} SET {1} WHERE `{2}`=@{2}", table.TableName, FieldsEqExtKey, table.KeyName);
+            }
+
+            table.DeleteAllSql = string.Format("DELETE FROM `{0}` ", table.TableName);
+            table.GetAllSql = string.Format("SELECT {0} FROM `{1}` ", Fields, table.TableName);
+        }
+
+        public static void InitTableForSqlite(TableEntity table) //初始化增删改等语句sqlite专用
+        {
+            string Fields = GetFieldsStr(table.AllFieldList, "[", "]");
+            string FieldsAt = GetFieldsAtStr(table.AllFieldList);
+            string FieldsEq = GetFieldsEqStr(table.AllFieldList, "[", "]");
+
+            string FieldsExtKey = GetFieldsStr(table.ExceptKeyFieldList, "[", "]");
+            string FieldsAtExtKey = GetFieldsAtStr(table.ExceptKeyFieldList);
+            string FieldsEqExtKey = GetFieldsEqStr(table.ExceptKeyFieldList, "[", "]");
+
+            table.AllFields = Fields;
+            table.AllFieldsAt = FieldsAt;
+            table.AllFieldsAtEq = FieldsEq;
+
+            table.AllFieldsExceptKey = FieldsExtKey;
+            table.AllFieldsAtExceptKey = FieldsAtExtKey;
+            table.AllFieldsAtEqExceptKey = FieldsEqExtKey;
+
+            table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+            if (!string.IsNullOrEmpty(table.KeyName)) //有主键
+            {
+                if (table.IsIdentity) //是自增
+                {
+                    table.InsertSql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey);
+                    table.InsertReturnIdSql = string.Format("INSERT INTO [{0}]({1})VALUES({2});SELECT last_insert_rowid();", table.TableName, FieldsExtKey, FieldsAtExtKey);
+                }
+
+                table.InsertIdentitySql = string.Format("INSERT INTO [{0}]({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+
+                table.DeleteByIdSql = string.Format("DELETE FROM [{0}] WHERE [{1}]=@id", table.TableName, table.KeyName);
+                table.DeleteByIdsSql = string.Format("DELETE FROM [{0}] WHERE [{1}] IN @ids", table.TableName, table.KeyName);
+                table.GetByIdSql = string.Format("SELECT {0} FROM [{1}] WHERE [{2}]=@id", Fields, table.TableName, table.KeyName);
+                table.GetByIdsSql = string.Format("SELECT {0} FROM [{1}] WHERE [{2}] IN @ids", Fields, table.TableName, table.KeyName);
+                table.UpdateSql = string.Format("UPDATE [{0}] SET {1} WHERE [{2}]=@{2}", table.TableName, FieldsEqExtKey, table.KeyName);
+            }
+
+            table.DeleteAllSql = string.Format("DELETE FROM [{0}] ", table.TableName);
+            table.GetAllSql = string.Format("SELECT {0} FROM [{1}] ", Fields, table.TableName);
+        }
+
+        public static void InitTableForPostgresql(TableEntity table) //初始化增删改等语句postgresql专用
+        {
+            string Fields = GetFieldsStr(table.AllFieldList, "", "");
+            string FieldsAt = GetFieldsAtStr(table.AllFieldList);
+            string FieldsEq = GetFieldsEqStr(table.AllFieldList, "", "");
+
+            string FieldsExtKey = GetFieldsStr(table.ExceptKeyFieldList, "", "");
+            string FieldsAtExtKey = GetFieldsAtStr(table.ExceptKeyFieldList);
+            string FieldsEqExtKey = GetFieldsEqStr(table.ExceptKeyFieldList, "", "");
+
+            table.AllFields = Fields;
+            table.AllFieldsAt = FieldsAt;
+            table.AllFieldsAtEq = FieldsEq;
+
+            table.AllFieldsExceptKey = FieldsExtKey;
+            table.AllFieldsAtExceptKey = FieldsAtExtKey;
+            table.AllFieldsAtEqExceptKey = FieldsEqExtKey;
+
+            table.InsertSql = string.Format("INSERT INTO {0}({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+            if (!string.IsNullOrEmpty(table.KeyName)) //有主键
+            {
+                if (table.IsIdentity) //是自增
+                {
+                    table.InsertSql = string.Format("INSERT INTO {0}({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey);
+                    table.InsertReturnIdSql = string.Format("INSERT INTO {0}({1})VALUES({2})RETURNING {3}", table.TableName, FieldsExtKey, FieldsAtExtKey, table.KeyName);
+                }
+
+                table.InsertIdentitySql = string.Format("INSERT INTO {0}({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+
+                table.DeleteByIdSql = string.Format("DELETE FROM {0} WHERE {1}=@id", table.TableName, table.KeyName);
+                table.DeleteByIdsSql = string.Format("DELETE FROM {0} WHERE {1} IN @ids", table.TableName, table.KeyName);
+                table.GetByIdSql = string.Format("SELECT {0} FROM {1} WHERE {2}=@id", Fields, table.TableName, table.KeyName);
+                table.GetByIdsSql = string.Format("SELECT {0} FROM {1} WHERE {2} IN @ids", Fields, table.TableName, table.KeyName);
+                table.UpdateSql = string.Format("UPDATE {0} SET {1} WHERE {2}=@{2}", table.TableName, FieldsEqExtKey, table.KeyName);
+            }
+
+            table.DeleteAllSql = string.Format("DELETE FROM {0} ", table.TableName);
+            table.GetAllSql = string.Format("SELECT {0} FROM {1} ", Fields, table.TableName);
+        }
+
+        public static void InitTableForOracle(TableEntity table) //初始化增删改等语句
+        {
+            string Fields = GetFieldsStr(table.AllFieldList, "\"", "\"");
+            string FieldsAt = GetFieldsAtStr(table.AllFieldList, ":");
+            string FieldsEq = GetFieldsEqStr(table.AllFieldList, "\"", "\"", ":");
+
+            string FieldsExtKey = GetFieldsStr(table.ExceptKeyFieldList, "\"", "\"");
+            string FieldsAtExtKey = GetFieldsAtStr(table.ExceptKeyFieldList);
+            string FieldsEqExtKey = GetFieldsEqStr(table.ExceptKeyFieldList, "\"", "\"", ":");
+
+            table.AllFields = Fields;
+            table.AllFieldsAt = FieldsAt;
+            table.AllFieldsAtEq = FieldsEq;
+
+            table.AllFieldsExceptKey = FieldsExtKey;
+            table.AllFieldsAtExceptKey = FieldsAtExtKey;
+            table.AllFieldsAtEqExceptKey = FieldsEqExtKey;
+
+            table.InsertSql = string.Format("INSERT INTO \"{0}\"({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+            if (!string.IsNullOrEmpty(table.KeyName)) //有主键
+            {
+                table.InsertReturnIdSql = string.Format("INSERT INTO \"{0}\"({1})VALUES(```seq```.NEXTVAL,{2});SELECT ```seq```.CURRVAL FROM DUAL", table.TableName, Fields, FieldsAtExtKey);
+                if (table.IsIdentity) //是自增
+                {
+                    table.InsertSql = string.Format("INSERT INTO \"{0}\"({1})VALUES({2})", table.TableName, FieldsExtKey, FieldsAtExtKey);
+                }
+
+                table.InsertIdentitySql = string.Format("INSERT INTO \"{0}\"({1})VALUES({2})", table.TableName, Fields, FieldsAt);
+
+                table.DeleteByIdSql = string.Format("DELETE FROM \"{0}\" WHERE \"{1}\"=@id", table.TableName, table.KeyName);
+                table.DeleteByIdsSql = string.Format("DELETE FROM \"{0}\" WHERE \"{1}\" IN @ids", table.TableName, table.KeyName);
+                table.GetByIdSql = string.Format("SELECT {0} FROM \"{1}\" WHERE \"{2}\"=@id", Fields, table.TableName, table.KeyName);
+                table.GetByIdsSql = string.Format("SELECT {0} FROM \"{1}\" WHERE \"{2}\" IN @ids", Fields, table.TableName, table.KeyName);
+                table.UpdateSql = string.Format("UPDATE \"{0}\" SET {1} WHERE \"{2}\"=@{2}", table.TableName, FieldsEqExtKey, table.KeyName);
+            }
+
+            table.DeleteAllSql = string.Format("DELETE FROM \"{0}\" ", table.TableName);
+            table.GetAllSql = string.Format("SELECT {0} FROM \"{1}\" ", Fields, table.TableName);
+        }
+
         public static void CheckTableKey(TableEntity table)
         {
             if (string.IsNullOrEmpty(table.KeyName))
@@ -225,13 +387,13 @@ namespace DapperExtensions
 
         }
 
-        public static string CreateUpdateSql(TableEntity table, string updateFields, string leftChar, string rightChar)
+        public static string CreateUpdateSql(TableEntity table, string updateFields, string leftChar, string rightChar, string symbol = "@") //oracle @换成 :
         {
             string updateList = GetFieldsEqStr(updateFields.Split(',').ToList(), leftChar, rightChar);
-            return string.Format("UPDATE {0}{1}{2} SET {3} WHERE {0}{4}{2}=@{4}", leftChar, table.TableName, rightChar, updateList, table.KeyName);
+            return string.Format("UPDATE {0}{1}{2} SET {3} WHERE {0}{4}{2}={5}{4}", leftChar, table.TableName, rightChar, updateList, table.KeyName, symbol);
         }
 
-        public static string CreateUpdateByWhereSql(TableEntity table, string where, string updateFields, string leftChar, string rightChar)
+        public static string CreateUpdateByWhereSql(TableEntity table, string where, string updateFields, string leftChar, string rightChar, string symbol = "@") //oracle @换成 
         {
             StringBuilder sb = new StringBuilder();
 
@@ -245,7 +407,7 @@ namespace DapperExtensions
             }
             else
             {
-                string updateList = GetFieldsEqStr(updateFields.Split(',').ToList(), leftChar, rightChar);
+                string updateList = GetFieldsEqStr(updateFields.Split(',').ToList(), leftChar, rightChar, symbol);
                 sb.Append(updateList);
             }
             sb.Append(" ");
@@ -253,5 +415,6 @@ namespace DapperExtensions
 
             return sb.ToString();
         }
+
     }
 }

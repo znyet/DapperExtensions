@@ -31,7 +31,7 @@ namespace DapperExtensions
 
         public string GetInsertReturnIdSql<T>(string sequence = null)
         {
-            return MySqlCache.GetTableEntity<T>().InsertSql + ";SELECT @@IDENTITY";
+            return MySqlCache.GetTableEntity<T>().InsertReturnIdSql;
         }
 
         public string GetInsertIdentitySql<T>()
@@ -94,12 +94,12 @@ namespace DapperExtensions
             return "SELECT @@IDENTITY";
         }
 
-        public string GetIdentityCurrentSql(string sequence, string dual = "DUAL")
+        public string GetSequenceCurrentSql(string sequence)
         {
             return "SELECT LAST_INSERT_ID()";
         }
 
-        public string GetIdentityNextSql(string sequence, string dual = "DUAL")
+        public string GetSequenceNextSql(string sequence)
         {
             return "SELECT @@IDENTITY";
         }

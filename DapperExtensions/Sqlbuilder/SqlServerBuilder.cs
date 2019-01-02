@@ -68,7 +68,7 @@ namespace DapperExtensions
 
         public string GetInsertReturnIdSql<T>(string sequence = null)
         {
-            return SqlServerCache.GetTableEntity<T>().InsertSql + ";SELECT @@IDENTITY";
+            return SqlServerCache.GetTableEntity<T>().InsertReturnIdSql;
         }
 
         public string GetInsertIdentitySql<T>()
@@ -132,12 +132,12 @@ namespace DapperExtensions
         }
 
 
-        public string GetIdentityCurrentSql(string sequence, string dual = "DUAL")
+        public string GetSequenceCurrentSql(string sequence)
         {
             return "SELECT @@IDENTITY";
         }
 
-        public string GetIdentityNextSql(string sequence, string dual = "DUAL")
+        public string GetSequenceNextSql(string sequence)
         {
             return "SELECT @@IDENTITY";
         }

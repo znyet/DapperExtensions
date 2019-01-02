@@ -35,9 +35,9 @@ namespace DapperExtensions
 
         string GetIdentitySql();
 
-        string GetIdentityCurrentSql(string sequence, string dual = "DUAL");
+        string GetSequenceCurrentSql(string sequence);
 
-        string GetIdentityNextSql(string sequence, string dual = "DUAL");
+        string GetSequenceNextSql(string sequence);
 
         string GetTotalSql<T>(string where);
 
