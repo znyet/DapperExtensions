@@ -67,10 +67,12 @@
     <Compile Include="Entity\PeopleTable.cs" />
     <Compile Include="Entity\SchoolTable.cs" />
     <Compile Include="Entity\StudentTable.cs" />
+    <Compile Include="MyTestAsync.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MyTestOracle.cs" />
     <Compile Include="MyTestPostgresql.cs" />
     <Compile Include="MyTest.cs" />
-    <Compile Include="MyTestAsync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

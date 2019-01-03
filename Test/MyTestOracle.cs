@@ -219,10 +219,22 @@ namespace Test
         }
 
         [Test]
-        public void GetSequenceCurrent() { }
+        public void GetSequenceCurrent() 
+        {
+            using (var conn = DbHelper.GetConn())
+            {
+               var seq = conn.GetSequenceCurrent<decimal>("seq_my");
+            }
+        }
 
         [Test]
-        public void GetSequenceNext() { }
+        public void GetSequenceNext() 
+        {
+            using (var conn = DbHelper.GetConn())
+            {
+                var seq = conn.GetSequenceNext<decimal>("seq_my");
+            }
+        }
 
         [Test]
         public void GetTotal()
