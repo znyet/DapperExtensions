@@ -259,7 +259,7 @@ namespace @Model.NameSpace
 
 }
 ```
-
+Template message
 ```c#
 1、@Model.ClassName     -----------> c# or java class name
 2、@Model.NameSpace     -----------> c# namespace or java package
