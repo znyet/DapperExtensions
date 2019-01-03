@@ -80,10 +80,21 @@ namespace DapperExtensions
             return await conn.ExecuteAsync(builder.GetInsertSql<T>(), model, tran, commandTimeout);
         }
 
-        public static async Task<dynamic> InsertReturnIdAsync<T>(this IDbConnection conn, T model, string sequence = null, IDbTransaction tran = null, int? commandTimeout = null)
+        public static async Task<dynamic> InsertReturnIdAsync<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return await conn.ExecuteScalarAsync<dynamic>(builder.GetInsertReturnIdSql<T>(sequence), model, tran, commandTimeout);
+            return await conn.ExecuteScalarAsync<dynamic>(builder.GetInsertReturnIdSql<T>(), model, tran, commandTimeout);
+        }
+
+        public async static Task<decimal> InsertReturnIdForOracleAsync<T>(this IDbConnection conn, T model, string sequence, IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            return await Task.Run(() =>
+            {
+                var builder = BuilderFactory.GetBuilder(conn);
+                conn.Execute(builder.GetInsertReturnIdSql<T>(sequence), model, tran, commandTimeout);
+                return GetSequenceCurrent<decimal>(conn, sequence, tran, null);
+            });
+
         }
 
         public static async Task<int> InsertIdentityAsync<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null)
@@ -303,6 +314,22 @@ namespace DapperExtensions
             return await Task.Run(() =>
             {
                 return GetPageDynamic<T>(conn, pageIndex, pageSize, where, param, returnFields, orderBy, tran, commandTimeout);
+            });
+        }
+
+        public static async Task<PageEntity<T>> GetPageForOracleAsync<T>(this IDbConnection conn, int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            return await Task.Run(() =>
+            {
+                return GetPageForOracle<T>(conn, pageIndex, pageSize, where, param, returnFields, orderBy, tran, commandTimeout);
+            });
+        }
+
+        public static async Task<PageEntity<dynamic>> GetPageDynamicOracleAsync<T>(this IDbConnection conn, int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            return await Task.Run(() =>
+            {
+                return GetPageForOracleDynamic<T>(conn, pageIndex, pageSize, where, param, returnFields, orderBy, tran, commandTimeout);
             });
         }
 

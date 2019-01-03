@@ -169,7 +169,7 @@ namespace DapperExtensions
             var table = SqliteCache.GetTableEntity<T>();
             if (string.IsNullOrEmpty(returnFields))
                 returnFields = table.AllFields;
-            return string.Format("SELECT {0} FROM [{1}] {2}", returnFields, table.TableName, where);
+            return string.Format("SELECT {0} FROM [{1}] {2} {3}", returnFields, table.TableName, where, orderBy);
         }
 
         public string GetByWhereFirstSql<T>(string where, string returnFields)

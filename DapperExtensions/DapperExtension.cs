@@ -31,6 +31,10 @@ namespace DapperExtensions
 
         public static DataSet GetDataSet(this IDbConnection conn, string sql, object param = null, IDbTransaction tran = null, int? commandTimeout = null, CommandType? commandType = null)
         {
+            if (conn.GetType().Name.Equals("OracleConnection"))
+            {
+                throw new Exception("sorry oracle do no support GetDataSet");
+            }
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using (IDataReader reader = conn.ExecuteReader(sql, param, tran, commandTimeout, commandType))
@@ -69,7 +73,7 @@ namespace DapperExtensions
         /// <returns></returns>
         public static string BulkCopy(this IDbConnection conn, DataTable dt, string tableName, string copyFields = null, bool insert_identity = false, int batchSize = 20000, int timeout = 100)
         {
-            if (!conn.ToString().EndsWith("SqlConnection"))
+            if (!conn.GetType().Name.Equals("SqlConnection"))
             {
                 throw new Exception("only sqlserver can use BulkCopy");
             }
@@ -130,7 +134,7 @@ namespace DapperExtensions
 
         public static string BulkUpdate(this IDbConnection conn, DataTable dt, string tableName, string column = "*", int batchSize = 20000, int timeout = 100)
         {
-            if (!conn.ToString().EndsWith("SqlConnection"))
+            if (!conn.GetType().Name.Equals("SqlConnection"))
             {
                 throw new Exception("only sqlserver can use BulkUpdate");
             }
@@ -185,7 +189,22 @@ namespace DapperExtensions
         }
 
         /// <summary>
-        /// if conn is oracle the [sequence] can't be null
+        /// sqlserver、mysql、sqlite、postgresql
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="conn"></param>
+        /// <param name="model"></param>
+        /// <param name="tran"></param>
+        /// <param name="commandTimeout"></param>
+        /// <returns></returns>
+        public static dynamic InsertReturnId<T>(this IDbConnection conn, T model, IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return conn.ExecuteScalar<dynamic>(builder.GetInsertReturnIdSql<T>(), model, tran, commandTimeout);
+        }
+
+        /// <summary>
+        /// only oracle use
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="conn"></param>
@@ -194,11 +213,13 @@ namespace DapperExtensions
         /// <param name="tran"></param>
         /// <param name="commandTimeout"></param>
         /// <returns></returns>
-        public static dynamic InsertReturnId<T>(this IDbConnection conn, T model, string sequence = null, IDbTransaction tran = null, int? commandTimeout = null)
+        public static decimal InsertReturnIdForOracle<T>(this IDbConnection conn, T model, string sequence, IDbTransaction tran = null, int? commandTimeout = null)
         {
             var builder = BuilderFactory.GetBuilder(conn);
-            return conn.ExecuteScalar<dynamic>(builder.GetInsertReturnIdSql<T>(sequence), model, tran, commandTimeout);
+            conn.Execute(builder.GetInsertReturnIdSql<T>(sequence), model, tran, commandTimeout);
+            return GetSequenceCurrent<decimal>(conn, sequence, tran, null);
         }
+
 
         /// <summary>
         /// for sqlserver insert identity
@@ -468,6 +489,24 @@ namespace DapperExtensions
                 else
                     pageEntity.Data = Enumerable.Empty<dynamic>();
             }
+            return pageEntity;
+        }
+
+        public static PageEntity<T> GetPageForOracle<T>(this IDbConnection conn, int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            PageEntity<T> pageEntity = new PageEntity<T>();
+            pageEntity.Total = GetTotal<T>(conn, where, param, tran, commandTimeout);
+            pageEntity.Data = GetByPageIndex<T>(conn, pageIndex, pageSize, where, param, returnFields, orderBy, tran, commandTimeout);
+            return pageEntity;
+        }
+
+        public static PageEntity<dynamic> GetPageForOracleDynamic<T>(this IDbConnection conn, int pageIndex, int pageSize, string where = null, object param = null, string returnFields = null, string orderBy = null, IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            PageEntity<dynamic> pageEntity = new PageEntity<dynamic>();
+            pageEntity.Total = GetTotal<T>(conn, where, param, tran, commandTimeout);
+            pageEntity.Data = GetByPageIndexDynamic<T>(conn, pageIndex, pageSize, where, param, returnFields, orderBy, tran, commandTimeout);
             return pageEntity;
         }
 

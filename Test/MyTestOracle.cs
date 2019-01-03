@@ -12,14 +12,14 @@ using Newtonsoft.Json;
 namespace Test
 {
     [TestFixture]
-    public class MyTest  //DapperExtensions test
+    public class MyTestOracle  //DapperExtensions test
     {
         int Second = DateTime.Now.Second;
 
         [Test]
         public void GetDataTable()
         {
-            string sql = "SELECT * FROM People";
+            string sql = "SELECT * FROM \"People\"";
             using (var conn = DbHelper.GetConn())
             {
                 DataTable dt = conn.GetDataTable(sql);
@@ -29,88 +29,12 @@ namespace Test
         }
 
         [Test]
-        public void GetDataSet()
-        {
-            string sql = "SELECT * FROM People;SELECT * FROM Student;SELECT * FROM School";
-            using (var conn = DbHelper.GetConn())
-            {
-                DataSet ds = conn.GetDataSet(sql);
-                Assert.Pass(ds.Tables.Count.ToString());
-            }
-        }
-
-        [Test]
         public void GetSchemaTable()
         {
             using (var conn = DbHelper.GetConn())
             {
-                DataTable dt = conn.GetSchemaTable<PeopleTable>();
+                DataTable dt = conn.GetSchemaTable<PeopleTableOracle>();
                 Assert.Pass(dt.Columns[1].ColumnName);
-            }
-        }
-
-        [Test]
-        public void BulkCopy()
-        {
-            using (var conn = DbHelper.GetConn())
-            {
-                string sql = "SELECT Top 1 * FROM School";
-                DataTable dt = conn.GetDataTable(sql);
-                foreach (DataRow row in dt.Rows)
-                {
-                    row["Name"] = "钱七" + Second;
-                }
-                string msg = conn.BulkCopy(dt, "School", null);
-                Assert.Pass(msg);
-            }
-        }
-
-        [Test]
-        public void BulkCopy_T()
-        {
-            using (var conn = DbHelper.GetConn())
-            {
-                string sql = "SELECT Top 1 * FROM School";
-                DataTable dt = conn.GetDataTable(sql);
-                foreach (DataRow row in dt.Rows)
-                {
-                    row["Name"] = "钱七" + Second;
-                }
-                string msg = conn.BulkCopy<SchoolTable>(dt);
-                Assert.Pass(msg);
-
-            }
-        }
-
-        [Test]
-        public void BulkUpdate()
-        {
-            using (var conn = DbHelper.GetConn())
-            {
-                string sql = "SELECT * FROM School";
-                DataTable dt = conn.GetDataTable(sql);
-                foreach (DataRow row in dt.Rows)
-                {
-                    row["Name"] = "钱七" + Second;
-                }
-                string msg = conn.BulkUpdate(dt, "School");
-                Assert.Pass(msg);
-            }
-        }
-
-        [Test]
-        public void BulkUpdate_T()
-        {
-            using (var conn = DbHelper.GetConn())
-            {
-                string sql = "SELECT * FROM School";
-                DataTable dt = conn.GetDataTable(sql);
-                foreach (DataRow row in dt.Rows)
-                {
-                    row["Name"] = "钱七" + Second;
-                }
-                string msg = conn.BulkUpdate<SchoolTable>(dt);
-                Assert.Pass(msg);
             }
         }
 
@@ -119,7 +43,8 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PeopleTable people = new PeopleTable();
+                PeopleTableOracle people = new PeopleTableOracle();
+                people.Id = conn.GetSequenceNext<int>("seq_my");
                 people.Name = "李四" + Second;
                 people.Sex = Second;
                 int effect = conn.Insert(people);
@@ -139,10 +64,10 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PeopleTable people = new PeopleTable();
+                PeopleTableOracle people = new PeopleTableOracle();
                 people.Name = "李四" + Second;
                 people.Sex = Second;
-                var id = conn.InsertReturnId(people);
+                var id = conn.InsertReturnIdForOracle(people,"seq_my");
                 Assert.Pass(id.ToString());
             }
 
@@ -153,7 +78,7 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PeopleTable people = new PeopleTable();
+                PeopleTableOracle people = new PeopleTableOracle();
                 people.Id = 1;
                 people.Name = "李四" + Second;
                 people.Sex = Second;
@@ -167,7 +92,7 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PeopleTable people = new PeopleTable();
+                PeopleTableOracle people = new PeopleTableOracle();
                 people.Id = 1;
                 people.Name = "李四" + Second;
                 people.Sex = Second;
@@ -182,12 +107,13 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PeopleTable people = new PeopleTable();
+                PeopleTableOracle people = new PeopleTableOracle();
                 people.Id = 1;
                 people.Name = "钱七" + Second;
                 people.Sex = 47;
 
-                int effect = conn.UpdateByWhere(people, "WHERE Sex=@Sex", "Name"); //update people set Name=@Name WHERE Sex=@Sex
+                int effect = conn.UpdateByWhere(people, "WHERE \"Sex\"=:Sex", "Name");
+
                 Assert.Pass(effect.ToString());
             }
 
@@ -198,12 +124,12 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PeopleTable people = new PeopleTable();
+                PeopleTableOracle people = new PeopleTableOracle();
                 people.Id = 1;
                 people.Name = "王五" + Second;
                 people.Sex = Second;
 
-                PeopleTable p2 = new PeopleTable();
+                PeopleTableOracle p2 = new PeopleTableOracle();
                 p2.Id = 2;
                 p2.Name = "王五" + Second;
                 p2.Sex = Second;
@@ -221,13 +147,13 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PeopleTable people = new PeopleTable();
+                PeopleTableOracle people = new PeopleTableOracle();
                 people.Id = 1;
                 people.Name = "王五" + Second;
                 people.Sex = Second;
                 int effect = conn.InsertIdentityOrUpdate(people);
 
-                PeopleTable p2 = new PeopleTable();
+                PeopleTableOracle p2 = new PeopleTableOracle();
                 p2.Id = 52;
                 p2.Name = "小罗" + Second;
                 p2.Sex = Second;
@@ -242,7 +168,7 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                int effecf = conn.Delete<PeopleTable>(1);
+                int effecf = conn.Delete<PeopleTableOracle>(1);
                 Assert.Pass(effecf.ToString());
             }
         }
@@ -276,7 +202,7 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                string where = "WHERE Name=@Name";
+                string where = "WHERE \"Name\"=:Name";
                 int effect = conn.DeleteByWhere<SchoolTable>(where, new { Name = "2" });
                 Assert.Pass(effect.ToString());
             }
@@ -303,8 +229,8 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                long total = conn.GetTotal<PeopleTable>();
-                total += conn.GetTotal<PeopleTable>("WHERE Id=@Id", new { id = 1 });
+                long total = conn.GetTotal<PeopleTableOracle>();
+                total += conn.GetTotal<PeopleTableOracle>("WHERE \"Id\"=:Id", new { id = 1 });
                 Assert.Pass(total.ToString());
             }
         }
@@ -314,9 +240,9 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                IEnumerable<PeopleTable> data = conn.GetAll<PeopleTable>();
-                //IEnumerable<PeopleTable> data = conn.GetAll<PeopleTable>("Name"); //only return [name] field split with , "Name,Sex"
-                //IEnumerable<PeopleTable> data = conn.GetAll<PeopleTable>(null,"ORDER BY Id DESC");
+                IEnumerable<PeopleTableOracle> data = conn.GetAll<PeopleTableOracle>();
+                //IEnumerable<PeopleTableOracle> data = conn.GetAll<PeopleTableOracle>("\"Name\""); //only return [name] field split with , "Name,Sex"
+                //IEnumerable<PeopleTableOracle> data = conn.GetAll<PeopleTableOracle>(null,"ORDER BY \"Id\" DESC");
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -327,7 +253,7 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                IEnumerable<dynamic> data = conn.GetAllDynamic<PeopleTable>("Id,Name");
+                IEnumerable<dynamic> data = conn.GetAllDynamic<PeopleTableOracle>("\"Id\",\"Name\"");
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -338,8 +264,8 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PeopleTable people = conn.GetById<PeopleTable>(1);
-                //PeopleTable people = conn.GetById<PeopleTable>(1,"Name"); //only return [name] field
+                PeopleTableOracle people = conn.GetById<PeopleTableOracle>(1);
+                //PeopleTableOracle people = conn.GetById<PeopleTableOracle>(1,"\"Name\""); //only return [name] field
                 string json = JsonConvert.SerializeObject(people);
                 Assert.Pass(json);
             }
@@ -350,7 +276,7 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                dynamic people = conn.GetByIdDynamic<PeopleTable>(1);
+                dynamic people = conn.GetByIdDynamic<PeopleTableOracle>(1);
                 string json = JsonConvert.SerializeObject(people);
                 Assert.Pass(json);
             }
@@ -363,8 +289,8 @@ namespace Test
             using (var conn = DbHelper.GetConn())
             {
                 List<int> ids = new List<int>() { 1, 2, 3 };
-                IEnumerable<PeopleTable> data = conn.GetByIds<PeopleTable>(ids); //select * from people where id in @ids
-                //IEnumerable<PeopleTable> data = conn.GetByIds<PeopleTable>(ids, "Name"); //select name from people where id in @ids
+                IEnumerable<PeopleTableOracle> data = conn.GetByIds<PeopleTableOracle>(ids); //select * from people where id in @ids
+                //IEnumerable<PeopleTableOracle> data = conn.GetByIds<PeopleTableOracle>(ids, "\"Name\""); //select name from people where id in @ids
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -376,8 +302,8 @@ namespace Test
             using (var conn = DbHelper.GetConn())
             {
                 int[] ids = new int[] { 1, 2, 3 };
-                IEnumerable<dynamic> data = conn.GetByIdsDynamic<PeopleTable>(ids);
-                //IEnumerable<dynamic> data = conn.GetByIdsDynamic<PeopleTable>(ids, "Name"); //only return [name] field
+                IEnumerable<dynamic> data = conn.GetByIdsDynamic<PeopleTableOracle>(ids);
+                //IEnumerable<dynamic> data = conn.GetByIdsDynamic<PeopleTableOracle>(ids, "\"Name\""); //only return [name] field
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -389,8 +315,8 @@ namespace Test
             using (var conn = DbHelper.GetConn())
             {
                 int[] ids = new int[] { 18, 1, 19 };
-                IEnumerable<PeopleTable> data = conn.GetByIdsWithField<PeopleTable>(ids, "Sex"); //select * from people where Sex in @ids
-                //IEnumerable<PeopleTable> data = conn.GetByIdsWithField<PeopleTable>(ids, "Sex","Name"); //only return [name] field
+                IEnumerable<PeopleTableOracle> data = conn.GetByIdsWithField<PeopleTableOracle>(ids, "Sex"); //select * from people where Sex in @ids
+                //IEnumerable<PeopleTableOracle> data = conn.GetByIdsWithField<PeopleTableOracle>(ids, "Sex","\"Name\""); //only return [name] field
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -402,8 +328,8 @@ namespace Test
             using (var conn = DbHelper.GetConn())
             {
                 int[] ids = new int[] { 18, 1, 19 };
-                IEnumerable<dynamic> data = conn.GetByIdsWithFieldDynamic<PeopleTable>(ids, "Sex"); //select * from people where sex in @ids
-                //IEnumerable<dynamic> data = conn.GetByIdsWithFieldDynamic<PeopleTable>(ids, "Sex","Name,Sex"); //only return [name] field
+                IEnumerable<dynamic> data = conn.GetByIdsWithFieldDynamic<PeopleTableOracle>(ids, "Sex"); //select * from people where sex in @ids
+                //IEnumerable<dynamic> data = conn.GetByIdsWithFieldDynamic<PeopleTableOracle>(ids, "Sex","\"Name\",\"Sex\""); //only return [name] field
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -414,9 +340,9 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                IEnumerable<PeopleTable> data = conn.GetByWhere<PeopleTable>("WHERE Id<@Id", new { Id = 3 });
-                //IEnumerable<PeopleTable> data = conn.GetByWhere<PeopleTable>("WHERE Id<@Id", new { Id = 3 }, "Name");//only return [name] field
-                //IEnumerable<PeopleTable> data = conn.GetByWhere<PeopleTable>("WHERE Id<@Id", new { Id = 3 }, null, "ORDER BY Id DESC"); // order by
+                IEnumerable<PeopleTableOracle> data = conn.GetByWhere<PeopleTableOracle>("WHERE \"Id\"<:Id", new { Id = 3 });
+                //IEnumerable<PeopleTableOracle> data = conn.GetByWhere<PeopleTableOracle>("WHERE \"Id\"<:Id", new { Id = 3 }, "\"Name\"");//only return [name] field
+                //IEnumerable<PeopleTableOracle> data = conn.GetByWhere<PeopleTableOracle>("WHERE \"Id\"<:Id", new { Id = 3 }, null, "ORDER BY \"Id\" DESC"); // order by
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -427,9 +353,9 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                IEnumerable<dynamic> data = conn.GetByWhereDynamic<PeopleTable>("WHERE Id<@Id", new { Id = 3 });
-                //IEnumerable<dynamic> data = conn.GetByWhereDynamic<PeopleTable>("WHERE Id<@Id", new { Id = 3 }, "Name,Sex");//only return [name] field
-                //IEnumerable<dynamic> data = conn.GetByWhereDynamic<PeopleTable>("WHERE Id<@Id", new { Id = 3 }, null, "ORDER BY Id DESC"); // order by
+                IEnumerable<dynamic> data = conn.GetByWhereDynamic<PeopleTableOracle>("WHERE \"Id\"<:Id", new { Id = 3 });
+                //IEnumerable<dynamic> data = conn.GetByWhereDynamic<PeopleTableOracle>("WHERE \"Id\"<:Id", new { Id = 3 }, "\"Name\",\"Sex\"");//only return [name] field
+                //IEnumerable<dynamic> data = conn.GetByWhereDynamic<PeopleTableOracle>("WHERE \"Id\"<:Id", new { Id = 3 }, null, "ORDER BY \"Id\" DESC"); // order by
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -440,8 +366,8 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PeopleTable people = conn.GetByWhereFirst<PeopleTable>("WHERE Id<@Id", new { Id = 4 });
-                //PeopleTable people = conn.GetByWhereFirst<PeopleTable>("WHERE Id<@Id", new { Id = 4 },"Name"); //only return [Name] field
+                PeopleTableOracle people = conn.GetByWhereFirst<PeopleTableOracle>("WHERE \"Id\"<:Id", new { Id = 4 });
+                //PeopleTableOracle people = conn.GetByWhereFirst<PeopleTableOracle>("WHERE \"Id\"<:Id", new { Id = 4 },"\"Name\""); //only return [Name] field
                 string json = JsonConvert.SerializeObject(people);
                 Assert.Pass(json);
             }
@@ -452,8 +378,8 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                dynamic people = conn.GetByWhereFirstDynamic<PeopleTable>("WHERE Id<@Id", new { Id = 4 });
-                //dynamic people = conn.GetByWhereFirstDynamic<PeopleTable>("WHERE Id<@Id", new { Id = 4 },"Name"); //only return [Name] field
+                dynamic people = conn.GetByWhereFirstDynamic<PeopleTableOracle>("WHERE \"Id\"<:Id", new { Id = 4 });
+                //dynamic people = conn.GetByWhereFirstDynamic<PeopleTableOracle>("WHERE \"Id\"<:Id", new { Id = 4 },"\"Name\""); //only return [Name] field
                 string json = JsonConvert.SerializeObject(people);
                 Assert.Pass(json);
             }
@@ -464,10 +390,10 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                IEnumerable<PeopleTable> data = conn.GetBySkipTake<PeopleTable>(0, 5);
-                //IEnumerable<PeopleTable> data = conn.GetBySkipTake<PeopleTable>(0, 10, "WHERE Id<@Id", new { Id = 5 }); //where
-                //IEnumerable<PeopleTable> data = conn.GetBySkipTake<PeopleTable>(0, 2,returnFields:"Name"); //only return field [name]
-                //IEnumerable<PeopleTable> data = conn.GetBySkipTake<PeopleTable>(0, 10, orderBy:"ORDER BY Id DESC"); //order by
+                IEnumerable<PeopleTableOracle> data = conn.GetBySkipTake<PeopleTableOracle>(2, 5);
+                //IEnumerable<PeopleTableOracle> data = conn.GetBySkipTake<PeopleTableOracle>(0, 10, "WHERE \"Id\"<:Id", new { Id = 5 }); //where
+                //IEnumerable<PeopleTableOracle> data = conn.GetBySkipTake<PeopleTableOracle>(0, 2,returnFields:"\"Name\""); //only return field [name]
+                //IEnumerable<PeopleTableOracle> data = conn.GetBySkipTake<PeopleTableOracle>(0, 10, orderBy:"ORDER BY \"Id\" DESC"); //order by
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -478,10 +404,10 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                IEnumerable<dynamic> data = conn.GetBySkipTakeDynamic<PeopleTable>(0, 2);
-                //IEnumerable<dynamic> data = conn.GetBySkipTakeDynamic<PeopleTable>(0, 10, "WHERE Id<@Id", new { Id = 5 }); //where
-                //IEnumerable<dynamic> data = conn.GetBySkipTakeDynamic<PeopleTable>(0, 2, returnFields: "Name"); //only return field [name]
-                //IEnumerable<dynamic> data = conn.GetBySkipTakeDynamic<PeopleTable>(0, 10, orderBy: "ORDER BY Id DESC"); //order by
+                //IEnumerable<dynamic> data = conn.GetBySkipTakeDynamic<PeopleTableOracle>(0, 2);
+                //IEnumerable<dynamic> data = conn.GetBySkipTakeDynamic<PeopleTableOracle>(0, 10, "WHERE \"Id\"<:Id", new { Id = 5 }); //where
+                //IEnumerable<dynamic> data = conn.GetBySkipTakeDynamic<PeopleTableOracle>(0, 2, returnFields: "\"Name\""); //only return field [name]
+                IEnumerable<dynamic> data = conn.GetBySkipTakeDynamic<PeopleTableOracle>(0, 10, orderBy: "ORDER BY \"Id\" DESC"); //order by
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -492,10 +418,10 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                IEnumerable<PeopleTable> data = conn.GetByPageIndex<PeopleTable>(2, 2);
-                //IEnumerable<PeopleTable> data = conn.GetByPageIndex<PeopleTable>(1, 10, "WHERE Id<@Id", new { Id = 5 }); //where
-                //IEnumerable<PeopleTable> data = conn.GetByPageIndex<PeopleTable>(1, 2, returnFields: "Name"); //only return field [name]
-                //IEnumerable<PeopleTable> data = conn.GetByPageIndex<PeopleTable>(1, 10, orderBy: "ORDER BY Id DESC"); //order by
+                IEnumerable<PeopleTableOracle> data = conn.GetByPageIndex<PeopleTableOracle>(2, 2);
+                //IEnumerable<PeopleTableOracle> data = conn.GetByPageIndex<PeopleTableOracle>(1, 10, "WHERE \"Id\"<:Id", new { Id = 5 }); //where
+                //IEnumerable<PeopleTableOracle> data = conn.GetByPageIndex<PeopleTableOracle>(1, 2, returnFields: "\"Name\""); //only return field [name]
+                //IEnumerable<PeopleTableOracle> data = conn.GetByPageIndex<PeopleTableOracle>(1, 10, orderBy: "ORDER BY \"Id\" DESC"); //order by
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -506,10 +432,10 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                IEnumerable<dynamic> data = conn.GetByPageIndexDynamic<PeopleTable>(1, 2);
-                //IEnumerable<dynamic> data = conn.GetByPageIndexDynamic<PeopleTable>(1, 10, "WHERE Id<@Id", new { Id = 5 }); //where
-                //IEnumerable<dynamic> data = conn.GetByPageIndexDynamic<PeopleTable>(1, 2, returnFields: "Name"); //only return field [name]
-                //IEnumerable<dynamic> data = conn.GetByPageIndexDynamic<PeopleTable>(1, 10, orderBy: "ORDER BY Id DESC"); //order by
+                IEnumerable<dynamic> data = conn.GetByPageIndexDynamic<PeopleTableOracle>(1, 2);
+                //IEnumerable<dynamic> data = conn.GetByPageIndexDynamic<PeopleTableOracle>(1, 10, "WHERE \"Id\"<:Id", new { Id = 5 }); //where
+                //IEnumerable<dynamic> data = conn.GetByPageIndexDynamic<PeopleTableOracle>(1, 2, returnFields: "\"Name\""); //only return field [name]
+                //IEnumerable<dynamic> data = conn.GetByPageIndexDynamic<PeopleTableOracle>(1, 10, orderBy: "ORDER BY \"Id\" DESC"); //order by
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -520,10 +446,10 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PageEntity<PeopleTable> data = conn.GetPage<PeopleTable>(1, 2);
-                //PageEntity<PeopleTable> data = conn.GetPage<PeopleTable>(1, 10, "WHERE Id<@Id", new { Id = 5 }); //where
-                //PageEntity<PeopleTable> data = conn.GetPage<PeopleTable>(1, 2, returnFields: "Name"); //only return field [name]
-                //PageEntity<PeopleTable> data = conn.GetPage<PeopleTable>(1, 10, orderBy: "ORDER BY Id DESC"); //order by
+                PageEntity<PeopleTableOracle> data = conn.GetPageForOracle<PeopleTableOracle>(1, 2);
+                //PageEntity<PeopleTableOracle> data = conn.GetPageForOracle<PeopleTableOracle>(1, 10, "WHERE \"Id\"<:Id", new { Id = 5 }); //where
+                //PageEntity<PeopleTableOracle> data = conn.GetPageForOracle<PeopleTableOracle>(1, 2, returnFields: "\"Name\""); //only return field [name]
+                //PageEntity<PeopleTableOracle> data = conn.GetPageForOracle<PeopleTableOracle>(1, 10, orderBy: "ORDER BY \"Id\" DESC"); //order by
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
@@ -534,10 +460,10 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                PageEntity<dynamic> data = conn.GetPageDynamic<PeopleTable>(1, 2);
-                //PageEntity<dynamic> data = conn.GetPageDynamic<PeopleTable>(1, 10, "WHERE Id<@Id", new { Id = 5 }); //where
-                //PageEntity<dynamic> data = conn.GetPageDynamic<PeopleTable>(1, 2, returnFields: "Name"); //only return field [name]
-                //PageEntity<dynamic> data = conn.GetPageDynamic<PeopleTable>(1, 10, orderBy: "ORDER BY Id DESC"); //order by
+                PageEntity<dynamic> data = conn.GetPageForOracleDynamic<PeopleTableOracle>(1, 2);
+                //PageEntity<dynamic> data = conn.GetPageDynamicOracle<PeopleTableOracle>(1, 10, "WHERE \"Id\"<:Id", new { Id = 5 }); //where
+                //PageEntity<dynamic> data = conn.GetPageDynamicOracle<PeopleTableOracle>(1, 2, returnFields: "\"Name\""); //only return field [name]
+                //PageEntity<dynamic> data = conn.GetPageDynamicOracle<PeopleTableOracle>(1, 10, orderBy: "ORDER BY \"Id\" DESC"); //order by
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
