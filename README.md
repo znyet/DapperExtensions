@@ -31,7 +31,7 @@ public class PeopleTable
     
 }
 ```
-##### 2、Ready to fly
+##### 2、Ready to fly (all the method has Async extensions)
 ```c#
 using DapperExtensions;
 
