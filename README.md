@@ -2,6 +2,9 @@
 Dapper <br>
 https://github.com/StackExchange/Dapper <br>
 
+download <br>
+https://github.com/znyet/DapperExtensions/releases <br>
+
 open source and zero config
 ##### 1、IDbConnection
 ```c#
