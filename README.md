@@ -217,7 +217,7 @@ using (var conn = GetConn()) //IDbConnection (sqlserver、mysql、oracle、postg
 <img src="https://github.com/znyet/img/blob/master/code/4.png"  /><br>
 <img src="https://github.com/znyet/img/blob/master/code/5.png"  /><br>
 
-also java getter setter
+also java getter setter <br>
 <img src="https://github.com/znyet/img/blob/master/code/6.png"  /><br>
 <img src="https://github.com/znyet/img/blob/master/code/7.png"  /><br>
 
