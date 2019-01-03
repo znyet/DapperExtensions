@@ -190,6 +190,23 @@ using (var conn = GetConn()) //IDbConnection (sqlserver、mysql、oracle、postg
       PageEntity<PeopleTableOracle> data = conn.GetPageForOracle<PeopleTableOracle>(1, 10, "WHERE \"Id\"<:Id", new { Id = 5 }); //where
       PageEntity<PeopleTableOracle> data = conn.GetPageForOracle<PeopleTableOracle>(1, 2, returnFields: "\"Name\""); //only return field [name]
       PageEntity<PeopleTableOracle> data = conn.GetPageForOracle<PeopleTableOracle>(1, 10, orderBy: "ORDER BY \"Id\" DESC"); //order by
+    
+      //GetDataTable
+      string sql = "SELECT * FROM People";
+      DataTable dt = conn.GetDataTable(sql);
+      
+      //GetDataSet
+      string sql = "SELECT * FROM People;SELECT * FROM Student;SELECT * FROM School";
+      DataSet ds = conn.GetDataSet(sql);
+      
+      //GetSchemaTable
+      DataTable dt = conn.GetSchemaTable<PeopleTable>();
+      
+      //SqlBulkCopy
+      string msg = conn.BulkCopy(dt, "School", null);
+      
+      //SqlBulkUpdate
+      string msg = conn.BulkUpdate(dt, "School");
       
 }
 ```
