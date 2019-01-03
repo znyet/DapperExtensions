@@ -42,16 +42,10 @@ namespace DapperExtensions
         public string GetSchemaTableSql<T>(string returnFields)
         {
             var table = SqlServerCache.GetTableEntity<T>();
-            string sql;
-            if (returnFields == null)
-            {
-                sql = string.Format("SELECT TOP 0 {0} FROM [{1}]", table.AllFields, table.TableName);
-            }
+            if (string.IsNullOrEmpty(returnFields))
+                return string.Format("SELECT TOP 0 {0} FROM [{1}] WITH(NOLOCK)", table.AllFields, table.TableName);
             else
-            {
-                sql = string.Format("SELECT TOP 0 {0} FROM [{1}]", returnFields, table.TableName);
-            }
-            return sql;
+                return string.Format("SELECT TOP 0 {0} FROM [{1}] WITH(NOLOCK)", returnFields, table.TableName);
         }
 
         public string GetInsertSql<T>()
@@ -145,13 +139,9 @@ namespace DapperExtensions
         {
             var table = SqlServerCache.GetTableEntity<T>();
             if (string.IsNullOrEmpty(returnFields))
-            {
                 return table.GetAllSql + orderBy;
-            }
             else
-            {
                 return string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) {2}", returnFields, table.TableName, orderBy);
-            }
         }
 
         public string GetByIdSql<T>(string returnFields)
@@ -178,7 +168,6 @@ namespace DapperExtensions
         public string GetByIdsWithFieldSql<T>(string field, string returnFields)
         {
             var table = SqlServerCache.GetTableEntity<T>();
-            CommonUtil.CheckTableKey(table);
             if (string.IsNullOrEmpty(returnFields))
                 returnFields = table.AllFields;
             return string.Format("SELECT {0} FROM [{1}] WITH(NOLOCK) WHERE [{2}] IN @ids", returnFields, table.TableName, field);
