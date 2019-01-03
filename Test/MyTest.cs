@@ -331,7 +331,7 @@ namespace Test
         {
             using (var conn = DbHelper.GetConn())
             {
-                IEnumerable<dynamic> data = conn.GetAllDynamic<PeopleTable>("Id");
+                IEnumerable<dynamic> data = conn.GetAllDynamic<PeopleTable>("Id,Name");
                 string json = JsonConvert.SerializeObject(data);
                 Assert.Pass(json);
             }
