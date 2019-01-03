@@ -194,7 +194,16 @@ using (var conn = GetConn()) //IDbConnection (sqlserver、mysql、oracle、postg
 }
 ```
 # CodeGenerator
+<img src="https://github.com/znyet/img/blob/master/code/1.png"  /><br>
+<img src="https://github.com/znyet/img/blob/master/code/2.png"  /><br>
+<img src="https://github.com/znyet/img/blob/master/code/3.png"  /><br>
+<img src="https://github.com/znyet/img/blob/master/code/4.png"  /><br>
+<img src="https://github.com/znyet/img/blob/master/code/5.png"  /><br>
 
-If you think it's very helpful to you, you can buy me a cup of coffee. Thank you. <br>  
+also java getter setter
+<img src="https://github.com/znyet/img/blob/master/code/6.png"  /><br>
+<img src="https://github.com/znyet/img/blob/master/code/7.png"  /><br>
+
+If you think it's very helpful to you, you can buy me a cup of coffee. Thank you. <br>  <br>
 <img src="https://github.com/znyet/img/blob/master/wx.jpg?raw=true"  /><br>  
 <img src="https://github.com/znyet/img/blob/master/zfb.jpg?raw=true" />
