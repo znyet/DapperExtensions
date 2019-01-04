@@ -28,7 +28,7 @@ public class PeopleTable
 
     public int Id { get; set; }
 
-    [Column(Name = "name")] //if database is oracle or postgresql(Inconsistent case and case)
+    [Column(Name = "name")] //if database is oracle or postgresql(Case-sensitive)
     public string Name { get; set; }
 
     public int Sex { get; set; }
@@ -224,7 +224,10 @@ using (var conn = GetConn()) //IDbConnection (sqlserver、mysql、oracle、postg
 <img src="https://github.com/znyet/img/blob/master/code/4.png"  /><br>
 <img src="https://github.com/znyet/img/blob/master/code/5.png"  /><br>
 
-also java getter setter <br>
+If database is oracle or postgresql please use ModelDapperExtensionsForOracleAndPgsql.txt template<br><br>
+<img src="https://github.com/znyet/img/blob/master/code/8.png"  /><br>
+
+Also java getter and setter <br>
 <img src="https://github.com/znyet/img/blob/master/code/6.png"  /><br>
 <img src="https://github.com/znyet/img/blob/master/code/7.png"  /><br>
 
