@@ -67,7 +67,6 @@
     <Compile Include="Sqlbuilder\SqliteBuilder.cs" />
     <Compile Include="Sqlbuilder\SqlServerBuilder.cs" />
     <Compile Include="Util\CommonUtil.cs" />
-    <Compile Include="Util\ExtHelper.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
