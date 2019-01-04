@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attribute\ColumnAttribute.cs" />
     <Compile Include="Attribute\IgoreAttribute.cs" />
     <Compile Include="Attribute\TableAttribute.cs" />
     <Compile Include="Cache\MySqlCache.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Sqlbuilder\SqliteBuilder.cs" />
     <Compile Include="Sqlbuilder\SqlServerBuilder.cs" />
     <Compile Include="Util\CommonUtil.cs" />
+    <Compile Include="Util\ExtHelper.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

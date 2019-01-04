@@ -497,7 +497,10 @@ namespace DapperExtensions
             var builder = BuilderFactory.GetBuilder(conn);
             PageEntity<T> pageEntity = new PageEntity<T>();
             pageEntity.Total = GetTotal<T>(conn, where, param, tran, commandTimeout);
-            pageEntity.Data = GetByPageIndex<T>(conn, pageIndex, pageSize, where, param, returnFields, orderBy, tran, commandTimeout);
+            if (pageEntity.Total > 0)
+                pageEntity.Data = GetByPageIndex<T>(conn, pageIndex, pageSize, where, param, returnFields, orderBy, tran, commandTimeout);
+            else
+                pageEntity.Data = Enumerable.Empty<T>();
             return pageEntity;
         }
 
@@ -506,7 +509,10 @@ namespace DapperExtensions
             var builder = BuilderFactory.GetBuilder(conn);
             PageEntity<dynamic> pageEntity = new PageEntity<dynamic>();
             pageEntity.Total = GetTotal<T>(conn, where, param, tran, commandTimeout);
-            pageEntity.Data = GetByPageIndexDynamic<T>(conn, pageIndex, pageSize, where, param, returnFields, orderBy, tran, commandTimeout);
+            if (pageEntity.Total > 0)
+                pageEntity.Data = GetByPageIndexDynamic<T>(conn, pageIndex, pageSize, where, param, returnFields, orderBy, tran, commandTimeout);
+            else
+                pageEntity.Data = Enumerable.Empty<dynamic>();
             return pageEntity;
         }
 

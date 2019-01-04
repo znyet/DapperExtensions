@@ -43,7 +43,7 @@ namespace DapperExtensions
             StringBuilder sb = new StringBuilder();
             foreach (var item in fieldList)
             {
-                sb.AppendFormat("{0}{1}", symbol, item);
+                sb.AppendFormat("{0}{1}", symbol, item.ToUpperCase());
 
                 if (item != fieldList.Last())
                 {
@@ -66,7 +66,7 @@ namespace DapperExtensions
             StringBuilder sb = new StringBuilder();
             foreach (var item in fieldList)
             {
-                sb.AppendFormat("{0}{1}{2}={3}{1}", leftChar, item, rightChar, symbol);
+                sb.AppendFormat("{0}{1}{2}={3}{4}", leftChar, item, rightChar, symbol, item.ToUpperCase());
 
                 if (item != fieldList.Last())
                 {
@@ -125,12 +125,17 @@ namespace DapperExtensions
                     var igore = item.GetCustomAttributes(false).FirstOrDefault(f => f is IgoreAttribute) as IgoreAttribute;
                     if (igore == null)
                     {
-                        model.AllFieldList.Add(item.Name); //所有列
+                        string Name = item.Name;
+                        var column = item.GetCustomAttributes(false).FirstOrDefault(f => f is ColumnAttribute) as ColumnAttribute;
+                        if (column != null)
+                            Name = column.Name;
 
-                        if (item.Name == model.KeyName)
+                        model.AllFieldList.Add(Name); //所有列
+
+                        if (Name.ToLower().Equals(model.KeyName.ToLower()))
                             model.KeyType = item.PropertyType;
                         else
-                            model.ExceptKeyFieldList.Add(item.Name); //去除主键后的所有列
+                            model.ExceptKeyFieldList.Add(Name); //去除主键后的所有列
                     }
                 }
 
@@ -390,7 +395,7 @@ namespace DapperExtensions
         public static string CreateUpdateSql(TableEntity table, string updateFields, string leftChar, string rightChar, string symbol = "@") //oracle @换成 :
         {
             string updateList = GetFieldsEqStr(updateFields.Split(',').ToList(), leftChar, rightChar, symbol);
-            return string.Format("UPDATE {0}{1}{2} SET {3} WHERE {0}{4}{2}={5}{4}", leftChar, table.TableName, rightChar, updateList, table.KeyName, symbol);
+            return string.Format("UPDATE {0}{1}{2} SET {3} WHERE {0}{4}{2}={5}{6}", leftChar, table.TableName, rightChar, updateList, table.KeyName, symbol, table.KeyName.ToUpperCase());
         }
 
         public static string CreateUpdateByWhereSql(TableEntity table, string where, string updateFields, string leftChar, string rightChar, string symbol = "@") //oracle @换成 

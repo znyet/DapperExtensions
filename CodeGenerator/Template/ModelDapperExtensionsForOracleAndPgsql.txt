@@ -1,0 +1,30 @@
+﻿using System;
+using DapperExtensions;
+//using System.Dynamic;
+
+namespace @Model.NameSpace
+{
+    /// <summary>
+    /// @Raw(Model.Table.Comment)
+    /// </summary>
+    [Table(TableName = "@Model.Table.Name", KeyName = "@Model.Table.KeyName", IsIdentity = @Model.Table.IsIdentity)]
+    public class @Model.ClassName
+    {
+
+		@foreach (var item in Model.ColumnList)
+		{
+			@Raw("        /// <summary>\r\n")
+			@Raw("        /// Descript: " + item.Comment + "\r\n")
+			@Raw("        /// DbType: " + item.DbType + "\r\n")
+			@Raw("        /// AllowNull: " + item.AllowNull + "\r\n")
+			@Raw("        /// Defaultval: " + item.DefaultValue + "\r\n")
+			@Raw("        /// </summary>\r\n")
+			@Raw("        [Column(Name = \""+item.Name+"\")]\r\n")
+			@Raw("        public " + item.CsType + " " + item.NameUpper + " { get; set; }\r\n\r\n")
+		}
+        //[Igore]
+        //public dynamic OtherData = new ExpandoObject();
+
+    }
+
+}
