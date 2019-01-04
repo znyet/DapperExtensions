@@ -28,6 +28,7 @@ public class PeopleTable
 
     public int Id { get; set; }
 
+    [Column(Name = "name")] //if database is oracle or postgresql(Inconsistent case and case)
     public string Name { get; set; }
 
     public int Sex { get; set; }
