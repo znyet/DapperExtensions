@@ -224,7 +224,10 @@ using (var conn = GetConn()) //IDbConnection (sqlserver、mysql、oracle、postg
 <img src="https://github.com/znyet/img/blob/master/code/4.png"  /><br>
 <img src="https://github.com/znyet/img/blob/master/code/5.png"  /><br>
 
-also java getter setter <br>
+if database is oracle or postgresql please use ModelDapperExtensionsForOracleAndPgsql.txt template<br>
+<img src="https://github.com/znyet/img/blob/master/code/8.png"  /><br>
+
+Also java getter and setter <br>
 <img src="https://github.com/znyet/img/blob/master/code/6.png"  /><br>
 <img src="https://github.com/znyet/img/blob/master/code/7.png"  /><br>
 
