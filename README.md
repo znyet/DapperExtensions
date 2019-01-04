@@ -2,6 +2,9 @@
 Dapper <br>
 https://github.com/StackExchange/Dapper <br>
 
+DapperExtensions Download <br>
+https://github.com/znyet/DapperExtensions/releases <br>
+
 open source and zero config
 ##### 1、IDbConnection
 ```c#
@@ -25,6 +28,7 @@ public class PeopleTable
 
     public int Id { get; set; }
 
+    [Column(Name = "name")] //if database is oracle or postgresql(Inconsistent case and case)
     public string Name { get; set; }
 
     public int Sex { get; set; }
@@ -223,6 +227,80 @@ using (var conn = GetConn()) //IDbConnection (sqlserver、mysql、oracle、postg
 also java getter setter <br>
 <img src="https://github.com/znyet/img/blob/master/code/6.png"  /><br>
 <img src="https://github.com/znyet/img/blob/master/code/7.png"  /><br>
+
+Razor template <br>
+```c#
+using System;
+using DapperExtensions;
+//using System.Dynamic;
+
+namespace @Model.NameSpace
+{
+    /// <summary>
+    /// @Raw(Model.Table.Comment)
+    /// </summary>
+    [Table(TableName = "@Model.Table.Name", KeyName = "@Model.Table.KeyName", IsIdentity = @Model.Table.IsIdentity)]
+    public class @Model.ClassName
+    {
+
+		@foreach (var item in Model.ColumnList)
+		{
+			@Raw("        /// <summary>\r\n")
+			@Raw("        /// Descript: " + item.Comment + "\r\n")
+			@Raw("        /// DbType: " + item.DbType + "\r\n")
+			@Raw("        /// AllowNull: " + item.AllowNull + "\r\n")
+			@Raw("        /// Defaultval: " + item.DefaultValue + "\r\n")
+			@Raw("        /// </summary>\r\n")
+			@Raw("        public " + item.CsType + " " + item.NameUpper + " { get; set; }\r\n\r\n")
+		}
+        //[Igore]
+        //public dynamic OtherData = new ExpandoObject();
+
+    }
+
+}
+```
+Template message
+```c#
+1、@Model.ClassName     -----------> c# or java class name
+2、@Model.NameSpace     -----------> c# namespace or java package
+3、@Model.Table         -----------> TableEntity
+4、@Model.ColumnList    -----------> List<ColumnEntity>
+5、@Raw                 -----------> special tag like <  > you must use @Raw
+
+public class TableEntity
+{
+    public string Name { get; set; } //tableName
+    public string NameUpper { get; set; } //TableName
+    public string NameLower { get; set; } //tableName
+    public string Comment { get; set; } //Descript
+    public string KeyName { get; set; } //primary key name
+    public string IsIdentity { get; set; } //true false
+}
+
+public class ColumnEntity
+{
+    public string Name { get; set; } //name
+    public string NameUpper { get; set; } //Name
+    public string NameLower { get; set; } //name
+    public string CsType { get; set; } //c# type(string  int long double...)
+    public string JavaType { get; set; } //java type(String Date...)
+    public string Comment { get; set; } //Descript
+    public string DbType { get; set; } //(int varchar(20) text...)
+    public string AllowNull { get; set; }
+    public string DefaultValue { get; set; }
+}
+
+=========================================================================================
+
+DbTypeMap.xml
+you can config DbType change to c# or java type
+
+
+=========================================================================================
+see more razor grammar,you can go to
+https://github.com/Antaris/RazorEngine
+```
 
 If you think it's very helpful to you, you can buy me a cup of coffee. Thank you. <br>  <br>
 <img src="https://github.com/znyet/img/blob/master/wx.jpg?raw=true"  /><br>  
