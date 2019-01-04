@@ -96,8 +96,8 @@ namespace Test
                 people.Id = 1;
                 people.Name = "李四" + Second;
                 people.Sex = Second;
-                //int effect = conn.Update(people);
-                int effect = conn.Update(people, "Name"); //update people set Name=@Name where Id=@Id
+                int effect = conn.Update(people);
+                //int effect = conn.Update(people, "Name"); //update people set Name=@Name where Id=@Id
                 Assert.Pass(effect.ToString());
             }
         }

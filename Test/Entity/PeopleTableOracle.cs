@@ -34,10 +34,9 @@ namespace Test
         /// Defaultval: 
         /// </summary>
         public int Sex { get; set; }
-
+        
         //[Igore]
         //public dynamic OtherData = new ExpandoObject();
-
     }
 
 }

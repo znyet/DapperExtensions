@@ -43,7 +43,7 @@ namespace DapperExtensions
             StringBuilder sb = new StringBuilder();
             foreach (var item in fieldList)
             {
-                sb.AppendFormat("{0}{1}", symbol, item.ToUpperCase());
+                sb.AppendFormat("{0}{1}", symbol, item);
 
                 if (item != fieldList.Last())
                 {
@@ -66,7 +66,7 @@ namespace DapperExtensions
             StringBuilder sb = new StringBuilder();
             foreach (var item in fieldList)
             {
-                sb.AppendFormat("{0}{1}{2}={3}{4}", leftChar, item, rightChar, symbol, item.ToUpperCase());
+                sb.AppendFormat("{0}{1}{2}={3}{1}", leftChar, item, rightChar, symbol);
 
                 if (item != fieldList.Last())
                 {
@@ -395,7 +395,7 @@ namespace DapperExtensions
         public static string CreateUpdateSql(TableEntity table, string updateFields, string leftChar, string rightChar, string symbol = "@") //oracle @换成 :
         {
             string updateList = GetFieldsEqStr(updateFields.Split(',').ToList(), leftChar, rightChar, symbol);
-            return string.Format("UPDATE {0}{1}{2} SET {3} WHERE {0}{4}{2}={5}{6}", leftChar, table.TableName, rightChar, updateList, table.KeyName, symbol, table.KeyName.ToUpperCase());
+            return string.Format("UPDATE {0}{1}{2} SET {3} WHERE {0}{4}{2}={5}{4}", leftChar, table.TableName, rightChar, updateList, table.KeyName, symbol);
         }
 
         public static string CreateUpdateByWhereSql(TableEntity table, string where, string updateFields, string leftChar, string rightChar, string symbol = "@") //oracle @换成 
