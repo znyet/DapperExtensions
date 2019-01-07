@@ -108,10 +108,10 @@ namespace DapperExtensions
             return OracleCache.GetTableEntity<T>().DeleteAllSql;
         }
 
-        //public string GetIdentitySql()
-        //{
-        //    throw new Exception("for oracle please use [GetSequenceNext] or [GetSequenceCurrent] or use [InsertReturnId]");
-        //}
+        public string GetIdentitySql()
+        {
+            throw new Exception("for oracle please use [GetSequenceNext] or [GetSequenceCurrent] or use [InsertReturnId]");
+        }
 
         public string GetSequenceCurrentSql(string sequence)
         {

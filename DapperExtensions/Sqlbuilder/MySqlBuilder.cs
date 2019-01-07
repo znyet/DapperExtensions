@@ -108,10 +108,10 @@ namespace DapperExtensions
             return MySqlCache.GetTableEntity<T>().DeleteAllSql;
         }
 
-        //public string GetIdentitySql()
-        //{
-        //    return "SELECT @@IDENTITY";
-        //}
+        public string GetIdentitySql()
+        {
+            return "SELECT @@IDENTITY";
+        }
 
         public string GetSequenceCurrentSql(string sequence)
         {

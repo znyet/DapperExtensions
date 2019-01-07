@@ -106,10 +106,10 @@ namespace DapperExtensions
             return SqliteCache.GetTableEntity<T>().DeleteAllSql;
         }
 
-        //public string GetIdentitySql()
-        //{
-        //    return "SELECT last_insert_rowid()";
-        //}
+        public string GetIdentitySql()
+        {
+            return "SELECT last_insert_rowid()";
+        }
 
         public string GetSequenceCurrentSql(string sequence)
         {

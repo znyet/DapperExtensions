@@ -326,11 +326,11 @@ namespace DapperExtensions
 
         #region method (Query)
 
-        //public static IdType GetIdentity<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
-        //{
-        //    var builder = BuilderFactory.GetBuilder(conn);
-        //    return conn.ExecuteScalar<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
-        //}
+        public static IdType GetIdentity<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return conn.ExecuteScalar<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
+        }
 
         public static IdType GetSequenceCurrent<IdType>(this IDbConnection conn, string sequence, IDbTransaction tran = null, int? commandTimeout = null)
         {

@@ -165,11 +165,11 @@ namespace DapperExtensions
 
         #region method (Query)
 
-        //public static async Task<IdType> GetIdentityAsync<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
-        //{
-        //    var builder = BuilderFactory.GetBuilder(conn);
-        //    return await conn.ExecuteScalarAsync<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
-        //}
+        public static async Task<IdType> GetIdentityAsync<IdType>(this IDbConnection conn, IDbTransaction tran = null, int? commandTimeout = null)
+        {
+            var builder = BuilderFactory.GetBuilder(conn);
+            return await conn.ExecuteScalarAsync<IdType>(builder.GetIdentitySql(), null, tran, commandTimeout);
+        }
 
         public static async Task<IdType> GetSequenceCurrentAsync<IdType>(this IDbConnection conn, string sequence, IDbTransaction tran = null, int? commandTimeout = null)
         {

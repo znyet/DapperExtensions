@@ -108,10 +108,10 @@ namespace DapperExtensions
             return PostgreCache.GetTableEntity<T>().DeleteAllSql;
         }
 
-        //public string GetIdentitySql()
-        //{
-        //    throw new Exception("for postgresql please use [GetSequenceCurrent],when [Insert] you can get the insert id,or use [InsertReturnId]");
-        //}
+        public string GetIdentitySql()
+        {
+            throw new Exception("for postgresql please use [GetSequenceCurrent],when [Insert] you can get the insert id,or use [InsertReturnId]");
+        }
 
         public string GetSequenceCurrentSql(string sequence)
         {
