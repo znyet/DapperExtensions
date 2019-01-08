@@ -55,7 +55,9 @@
     <Compile Include="Cache\SqliteCache.cs" />
     <Compile Include="Cache\SqlServerCache.cs" />
     <Compile Include="DapperExtension.cs" />
-    <Compile Include="DapperExtensionAsync.cs" />
+    <Compile Include="DapperExtensionAsync.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Entity\PageEntity.cs" />
     <Compile Include="Entity\TableEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
