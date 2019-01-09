@@ -5,7 +5,7 @@ https://github.com/StackExchange/Dapper <br>
 DapperExtensions Download <br>
 https://github.com/znyet/DapperExtensions/releases <br>
 
-open source and zero config
+open source and zero config (simple CURD)
 ##### 1、IDbConnection
 ```c#
 public static IDbConnection GetConn()
