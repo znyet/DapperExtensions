@@ -184,7 +184,11 @@ namespace CodeGenerator
         //开始
         private void button1_Click(object sender, EventArgs e)
         {
-
+            if (!System.IO.File.Exists(ConfigHelper.Template))
+            {
+                MessageBox.Show("can no find template---> " + ConfigHelper.Template);
+                return;
+            }
             string content = System.IO.File.ReadAllText(ConfigHelper.Template, System.Text.Encoding.UTF8);
             List<TableEntity> tables = GetSelectTableList();
             if (tables.Count == 0)

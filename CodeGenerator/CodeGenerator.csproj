@@ -67,8 +67,9 @@
     <Reference Include="RazorEngine">
       <HintPath>..\Lib\RazorEngine\RazorEngine.dll</HintPath>
     </Reference>
-    <Reference Include="SharpConfig">
-      <HintPath>..\Lib\sharpconfig\SharpConfig.dll</HintPath>
+    <Reference Include="SharpConfig, Version=3.2.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\SharpConfig\SharpConfig.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
