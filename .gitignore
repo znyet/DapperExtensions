@@ -1,3 +1,4 @@
+*.vs
 DapperExtensions/bin
 DapperExtensions/obj
 Test/bin
